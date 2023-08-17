@@ -7,12 +7,8 @@ description: A Helm chart for Kubernetes
 keywords:
   - loop
 maintainers:
-  - name: Openoms
-    email: openoms@galoy.io
-  - name: Nick
-    email: nicktee@galoy.io
-  - name: Galoy
-    email: dev@galoy.io
+  - name: dread
+    email: dread@getflash.io
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
