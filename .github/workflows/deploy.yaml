@@ -1,0 +1,31 @@
+name: Deploy Flash
+on:
+  push:
+    branches:
+      - doc
+
+jobs:
+  build:
+    env:
+      CLUSTER_NAME: flash-cluster
+      CHART_NAME: .
+      RELEASE_NAME: flash
+      NAMESPACE: default
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Save DigitalOcean Kubernetes credentials
+        uses: digitalocean/action-doctl@master
+        env:
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DO_ACCESS_TOKEN }}
+        with:
+          args: kubernetes cluster kubeconfig show $CLUSTER_NAME > $GITHUB_WORKSPACE/.kubeconfig
+      - name: Helm install flash stack
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kubectl: "1.18.0"
+          helm: "3.2.4"
+          command: |
+            helmv3 repo add galoy https://GaloyMoney.github.io/charts
+            helmv3 dep update ./$CHART_NAME
+            helmv3 upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $RELEASE_NAME $CHART_NAME

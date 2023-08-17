@@ -6,10 +6,10 @@ description: LND helm chart
 keywords:
   - lnd
 maintainers:
-  - name: krtk6160
-    email: krtk6160@galoy.io
-  - name: nicolasburtey
-    email: nb@galoy.io
+  - name: dread
+    email: dread@getflash.io
+  - name: dread
+    email: dread@getflash.io
 engine: gotpl
 dependencies:
   - name: common
