@@ -24,7 +24,7 @@ jobs:
       - name: List all Helm charts directories
         id: list-charts
         run: |
-          echo "::set-output name=charts::$(find . -maxdepth 2 -type f -name 'Chart.yaml' | xargs -n 1 dirname | tr '\n' ' ')"
+          echo "::set-output name=charts::$(find ./charts -maxdepth 2 -type f -name 'Chart.yaml' | xargs -n 1 dirname | tr '\n' ' ')"
 
       - name: Helm install/upgrade charts
         uses: stefanprodan/kube-tools@v1
