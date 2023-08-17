@@ -8,8 +8,6 @@ keywords:
 maintainers:
   - name: dread
     email: dread@getflash.io
-  - name: dread
-    email: dread@getflash.io
 engine: gotpl
 dependencies:
   - name: common
