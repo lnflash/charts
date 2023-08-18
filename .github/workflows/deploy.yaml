@@ -36,7 +36,7 @@ jobs:
           command: |
             charts=(
               ./charts/bitcoind
-              # ./charts/lnd
+              ./charts/lnd
               # ./charts/mempool
               # ./charts/fulcrum
               # ./charts/loop
