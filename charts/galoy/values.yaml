@@ -592,40 +592,40 @@ secrets:
   ##
   create: true
   ## Secrets for MongoDB
-  mongodbPassword: Mortal20!6
-  mongodbRootPassword: Mortal20!6
-  mongodbMetricsPassword: Mortal20!6
-  mongodbReplicaSetKey: ""
+  mongodbPassword:
+  mongodbRootPassword:
+  mongodbMetricsPassword:
+  mongodbReplicaSetKey:
   ## Secrets for Redis
-  redisPassword: Mortal20!6
+  redisPassword:
   ## Secrets for PostgreSQL
-  postgresPassword: Mortal20!6
+  postgresPassword:
   ## Secrets for Geetest
-  geetestId: Mortal20!6
-  geetestSecretKey: ""
+  geetestId:
+  geetestSecretKey:
   ## Secret for Twilio
-  twilioVerifyService: "VA5feeb85d99401b287e8e0547c7abe448"
-  twilioAccountSid: "AC47db6946f29ced2fd7202b8dbf006ffb"
-  twilioAuthToken: "606638f7bba9e76530abd6c1a123acb2"
+  twilioVerifyService:
+  twilioAccountSid:
+  twilioAuthToken:
   ## Secrets for LND1
-  lnd1Macaroon: ""
-  lnd1Tls: ""
-  lnd1LoopMacaroon: ""
-  lnd1LoopTls: ""
-  lnd1PubKey: ""
+  lnd1Macaroon:
+  lnd1Tls:
+  lnd1LoopMacaroon:
+  lnd1LoopTls:
+  lnd1PubKey:
   ## Secrets for LND2
-  lnd2Macaroon: ""
-  lnd2Tls: ""
-  lnd2LoopMacaroon: ""
-  lnd2LoopTls: ""
-  lnd2PubKey: ""
+  lnd2Macaroon:
+  lnd2Tls:
+  lnd2LoopMacaroon:
+  lnd2LoopTls:
+  lnd2PubKey:
   ## Secrets for Bria
-  briaApiKey: ""
+  briaApiKey:
   ## Secret for Galoy app
-  kratosMasterUserPassword: ""
-  kratosCallbackApiKey: ""
+  kratosMasterUserPassword:
+  kratosCallbackApiKey:
   ## Secret for Svix
-  svixSecretKey: ""
+  svixSecretKey:
 ## Tracing details
 ##
 tracing:

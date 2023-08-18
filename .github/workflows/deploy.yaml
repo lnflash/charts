@@ -45,7 +45,7 @@ jobs:
               ./charts/specter
               ./charts/galoy-deps
               ./charts/monitoring
-              ./charts/galoy
+              # ./charts/galoy
             )
 
             for dir in "${charts[@]}"; do
