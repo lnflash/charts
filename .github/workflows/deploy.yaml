@@ -30,7 +30,7 @@ jobs:
         uses: stefanprodan/kube-tools@v1
         with:
           kubectl: "1.18.0"
-          helm: "3.2.4"
+          helm: "3.12.3"
           command: |
             charts=(
               ./charts/bitcoind
