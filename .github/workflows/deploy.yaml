@@ -52,5 +52,5 @@ jobs:
               chart_name=$(basename $dir)
               release="${RELEASE_NAME}-${chart_name}"
               helm dep update $dir
-              helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir --debug
+              helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
             done
