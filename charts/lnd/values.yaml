@@ -92,7 +92,10 @@ lndGeneralConfig:
   - prometheus.enable=1
   - gc-canceled-invoices-on-the-fly=true
   - gc-canceled-invoices-on-startup=true
-bitcoindRpcPassSecretName: bitcoind-rpcpassword
+  - tor.active=true
+  - tor.v3=true
+  - tor.skip-proxy-for-clearnet-targets=true
+bitcoindRpcPassSecretName: flash-bitcoind-rpcpassword
 rbac:
   create: true
 autoGenerateSeed:
