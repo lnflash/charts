@@ -5,7 +5,7 @@ global:
       rpc: 18443
 
 secrets:
-  create: false
+  create: true
 
 replicaCount: 1
 
