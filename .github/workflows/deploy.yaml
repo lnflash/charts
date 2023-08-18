@@ -23,7 +23,7 @@ jobs:
         with:
           args: kubernetes cluster kubeconfig show $CLUSTER_NAME > $GITHUB_WORKSPACE/.kubeconfig
       - name: Set kubeconfig permissions
-        run: chmod 600 $GITHUB_WORKSPACE/.kubeconfig
+        run: sudo chmod 600 $GITHUB_WORKSPACE/.kubeconfig
 
       - name: Add Galoy Helm repository
         run: helm repo add galoy https://GaloyMoney.github.io/charts
