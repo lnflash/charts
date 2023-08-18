@@ -31,11 +31,8 @@ jobs:
         with:
           kubectl: "1.18.0"
           helm: "3.2.4"
-          command: |
-            helmv3 repo add galoy https://GaloyMoney.github.io/charts
-            for dir in ${{ steps.list-charts.outputs.charts }}; do
-              chart_name=$(basename $dir)
-              release="${RELEASE_NAME}-${chart_name}"
-              helmv3 dep update $dir
-              helmv3 upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
-            done
+
+      - name: Deploy galoy-deps chart
+        run: |
+          helm repo add galoy https://GaloyMoney.github.io/charts
+          helm upgrade --install galoy-deps ./charts/galoy-deps
