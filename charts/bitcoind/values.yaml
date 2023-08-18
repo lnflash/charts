@@ -1,11 +1,11 @@
 global:
-  network: mainnet
+  network: regtest
   service:
     ports:
-      rpc: 8332
+      rpc: 18443
 
 secrets:
-  create: true
+  create: false
 
 replicaCount: 1
 
@@ -49,8 +49,7 @@ service:
   ports:
     zmqpubrawtx: 28333
     zmqpubrawblock: 28332
-    p2p: 8333
-    metrics: 3000
+    p2p: 18444
 
 ingress:
   enabled: false
@@ -81,7 +80,7 @@ resources:
   #   memory: 4096Mi
 
 persistence:
-  enabled: true
+  enabled: false
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -90,8 +89,8 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 750Gi
+  # accessMode: ReadWriteOnce
+  # size: 750Gi
 
 autoscaling:
   enabled: false
@@ -125,6 +124,7 @@ podLabels: {}
 # TODO: Document the usage of generic and custom config to instruct where to put specific flags
 
 bitcoindGenericConfig:
+  - regtest=1
   - debug=mempool
   - debug=rpc
   - shrinkdebugfile=1
@@ -141,6 +141,7 @@ bitcoindCustomConfig:
   bind: 0.0.0.0
   rpcbind: 0.0.0.0
   rpcallowip: 0.0.0.0/0
+  fallbackfee: 0.0002
 
 descriptor:
   secretName: ""
