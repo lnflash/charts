@@ -1,11 +1,25 @@
+# Example of values for signet bitcoind.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 global:
-  network: mainnet
+  network: signet
   service:
     ports:
-      rpc: 8332
+      rpc: 38332
 
 secrets:
-  create: true
+  create: false
+
+persistence:
+  enabled: true
+  size: 2Gi
+
+service:
+  type: ClusterIP
+  ports:
+    zmqpubrawtx: 28333
+    zmqpubrawblock: 28332
+    p2p: 38333
 
 replicaCount: 1
 
@@ -44,17 +58,18 @@ securityContext:
   runAsUser: 1000
   runAsGroup: 3000
 
-service:
-  type: ClusterIP
-  ports:
-    zmqpubrawtx: 28333
-    zmqpubrawblock: 28332
-    p2p: 8333
-    metrics: 3000
+# service:
+#   type: ClusterIP
+#   ports:
+#     zmqpubrawtx: 28333
+#     zmqpubrawblock: 28332
+#     p2p: 8333
+#     metrics: 3000
 
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -65,7 +80,8 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -78,18 +94,18 @@ resources: {}
   #   cpu: 100m
   #   memory: 4096Mi
 
-persistence:
-  enabled: true
-  ## database data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 750Gi
+# persistence:
+#   enabled: true
+#   ## database data Persistent Volume Storage Class
+#   ## If defined, storageClassName: <storageClass>
+#   ## If set to "-", storageClassName: "", which disables dynamic provisioning
+#   ## If undefined (the default) or set to null, no storageClassName spec is
+#   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+#   ##   GKE, AWS & OpenStack)
+#   ##
+#   # storageClass: "-"
+#   accessMode: ReadWriteOnce
+#   size: 750Gi
 
 autoscaling:
   enabled: false
@@ -123,16 +139,16 @@ podLabels: {}
 # TODO: Document the usage of generic and custom config to instruct where to put specific flags
 
 bitcoindGenericConfig:
-- debug=mempool
-- debug=rpc
-- shrinkdebugfile=1
-- server=1
-- txindex=1
-- printtoconsole=1
-- rpcuser=rpcuser
-- zmqpubrawtx=tcp://0.0.0.0:28333
-- zmqpubrawblock=tcp://0.0.0.0:28332
-- blockfilterindex=1
+  - debug=mempool
+  - debug=rpc
+  - shrinkdebugfile=1
+  - server=1
+  - txindex=1
+  - printtoconsole=1
+  - rpcuser=rpcuser
+  - zmqpubrawtx=tcp://0.0.0.0:28333
+  - zmqpubrawblock=tcp://0.0.0.0:28332
+  - blockfilterindex=1
 
 # these flags need to be here and not in bitcoindGenericConfig because they have to be present under a separate section inside bitcoind.conf when in testnet/regtest mode
 bitcoindCustomConfig:
