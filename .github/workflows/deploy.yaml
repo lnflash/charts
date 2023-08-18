@@ -54,3 +54,24 @@ jobs:
               helm dep update $dir
               helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
             done
+
+      - name: Delete unwanted Helm releases
+        uses: stefanprodan/kube-tools@v1
+        with:
+          kubectl: "1.18.0"
+          helm: "3.12.3"
+          command: |
+            unwanted_releases=(
+              "${RELEASE_NAME}-mempool"
+              "${RELEASE_NAME}-fulcrum"
+              "${RELEASE_NAME}-loop"
+              "${RELEASE_NAME}-kafka-connect"
+              "${RELEASE_NAME}-specter"
+              "${RELEASE_NAME}-galoy-deps"
+              "${RELEASE_NAME}-monitoring"
+              "${RELEASE_NAME}-galoy"
+            )
+
+            for release in "${unwanted_releases[@]}"; do
+              helm uninstall --namespace $NAMESPACE $release || true
+            done
