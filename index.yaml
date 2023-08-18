@@ -1,3 +1,35 @@
 apiVersion: v1
-entries: {}
+entries:
+  bitcoind:
+    - apiVersion: v2
+      appVersion: 0.21.0
+      created: "2023-06-13T12:20:04.560825387Z"
+      description: A Helm chart for Kubernetes
+      digest: 06f7858614af3a09327b08aca3b2d7e499a6c66eb91a2cbdaa28bf8ebf5f3022
+      name: bitcoind
+      type: application
+      urls:
+        - https://github.com/GaloyMoney/charts/releases/download/bitcoind-v0.2.19/bitcoind-0.2.19.tgz
+      version: 0.2.19
+  lnd:
+    - apiVersion: v2
+      appVersion: 0.16.1
+      created: "2023-07-08T07:15:25.419425343Z"
+      dependencies:
+        - name: common
+          repository: https://charts.bitnami.com/bitnami
+          version: 2.6.0
+      description: LND helm chart
+      digest: 61587081c684d256db6d3a759fb17b6a89a726ada22692176ca4300069f12db2
+      keywords:
+        - lnd
+      maintainers:
+        - email: krtk6160@galoy.io
+          name: krtk6160
+        - email: nb@galoy.io
+          name: nicolasburtey
+      name: lnd
+      urls:
+        - https://github.com/GaloyMoney/charts/releases/download/lnd-v0.5.1/lnd-0.5.1.tgz
+      version: 0.5.1
 generated: "2023-08-12T15:03:48.488456-04:00"
