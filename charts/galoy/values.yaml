@@ -604,9 +604,9 @@ secrets:
   geetestId: Mortal20!6
   geetestSecretKey: ""
   ## Secret for Twilio
-  twilioVerifyService: ""
-  twilioAccountSid: ""
-  twilioAuthToken: ""
+  twilioVerifyService: "VA5feeb85d99401b287e8e0547c7abe448"
+  twilioAccountSid: "AC47db6946f29ced2fd7202b8dbf006ffb"
+  twilioAuthToken: "606638f7bba9e76530abd6c1a123acb2"
   ## Secrets for LND1
   lnd1Macaroon: ""
   lnd1Tls: ""
