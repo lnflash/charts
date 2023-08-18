@@ -57,13 +57,14 @@ jobs:
 
       - name: Delete unwanted Helm releases
         uses: stefanprodan/kube-tools@v1
+        env:
+          KUBECONFIG: $GITHUB_WORKSPACE/.kubeconfig
         with:
           kubectl: "1.18.0"
           helm: "3.12.3"
           command: |
             unwanted_releases=(
               "flash-admin-panel-7ffb95c94d-lgksf"
-              "flash-bitcoind-0"
               "flash-fulcrum-0"
               "flash-galoy-deps-cert-manager-54d4dcb968-nsxzf"
               "flash-galoy-deps-cert-manager-cainjector-dc866d4b7-zmp8t"
@@ -71,7 +72,6 @@ jobs:
               "flash-galoy-deps-ingress-nginx-controller-667846f448-2dw"
               "flash-galoy-deps-ingress-nginx-controller-667846f448-gxxml"
               "flash-galoy-deps-opentelemetry-collector-9f7f445cf-snjt7"
-              "flash-lnd-0"
               "flash-loop-0"
               "flash-loopserver-0"
               "flash-mempool-0"
