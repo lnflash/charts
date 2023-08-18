@@ -1,5 +1,5 @@
 global:
-  network: mainnet
+  network: regtest
 image:
   repository: lightninglabs/lnd
   tag: v0.16.2-beta
@@ -67,13 +67,7 @@ lndGeneralConfig:
   - listen=0.0.0.0:9735
   - prometheus.listen=0.0.0.0:9092
   - bitcoin.active=true
-  - bitcoin.node=neutrino
-  - neutrino.addpeer=btcd-mainnet.lightning.computer
-  - neutrino.addpeer=mainnet1-btcd.zaphq.io
-  - neutrino.addpeer=mainnet2-btcd.zaphq.io
-  - neutrino.addpeer=mainnet3-btcd.zaphq.io
-  - neutrino.addpeer=mainnet4-btcd.zaphq.io
-  - neutrino.feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json
+  - bitcoin.node=bitcoind
   - bitcoind.rpcuser=rpcuser
   - bitcoind.zmqpubrawblock=tcp://bitcoind:28332
   - bitcoind.zmqpubrawtx=tcp://bitcoind:28333
