@@ -26,7 +26,7 @@ jobs:
         run: sudo chmod 600 $GITHUB_WORKSPACE/.kubeconfig
 
       - name: Add Galoy Helm repository
-        run: helm repo add galoy https://GaloyMoney.github.io/charts
+        run: helm repo add galoy https://lnflash.github.io/charts
 
       - name: Install/upgrade charts in specified order
         uses: stefanprodan/kube-tools@v1
