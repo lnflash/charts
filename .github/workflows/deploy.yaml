@@ -38,13 +38,13 @@ jobs:
               ./charts/bitcoind
               ./charts/lnd
               # ./charts/mempool
-              ./charts/fulcrum
-              ./charts/loop
-              ./charts/loop
-              ./charts/kafka-connect
+              # ./charts/fulcrum
+              # ./charts/loop
+              # ./charts/loop
+              # ./charts/kafka-connect
               # ./charts/specter
-              ./charts/galoy-deps
-              ./charts/monitoring
+              # ./charts/galoy-deps
+              # ./charts/monitoring
               # ./charts/galoy
             )
 
