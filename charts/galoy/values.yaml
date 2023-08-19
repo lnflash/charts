@@ -400,12 +400,12 @@ galoy:
   lnd1:
     ## DNS for LND1
     ##
-    dns: lnd1.default.svc.cluster.local
+    dns: lnd.default.svc.cluster.local
     ## Credentials to access LND RPC
     ##
     credentialsExistingSecret:
       ## Secret Name
-      name: lnd1-credentials
+      name: lnd-credentials
       ## Macaroon Key
       macaroon_key: admin_macaroon_base64
       ## TLS Key
@@ -414,7 +414,7 @@ galoy:
     ##
     pubkeyExistingSecret:
       ## Secret Name
-      name: lnd1-pubkey
+      name: lnd-pubkey
       ## Secret Key
       key: pubkey
     ## Loop Credentials
