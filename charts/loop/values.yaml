@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 global:
-  network: mainnet
+  network: regtest
 
 image:
   repository: lightninglabs/loop
@@ -19,10 +19,12 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -45,9 +47,9 @@ tolerations: []
 affinity: {}
 
 persistence:
-  enabled: true
-  size: 16Mi
-  accessMode: ReadWriteOnce
+  enabled: false
+  # size: 16Mi
+  # accessMode: ReadWriteOnce
 
 serviceAccount:
   create: true
@@ -55,7 +57,7 @@ rbac:
   create: true
 
 loopserver:
-  enabled: false
+  enabled: true
 
 lndConfig:
   lndReleaseName: lnd1
