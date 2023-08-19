@@ -76,7 +76,7 @@ lndGeneralConfig:
   - listen=0.0.0.0:9735
   - prometheus.listen=0.0.0.0:9092
   - bitcoin.active=true
-  - bitcoin.node=flash-bitcoind
+  - bitcoin.node=bitcoind
   - bitcoind.rpcuser=rpcuser
   - bitcoind.zmqpubrawblock=tcp://flash-bitcoind:28332
   - bitcoind.zmqpubrawtx=tcp://flash-bitcoind:28333
