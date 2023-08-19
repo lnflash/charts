@@ -4,7 +4,7 @@
 
 image:
   repository: lightninglabs/loopserver
-  tag: v0.9.52-beta
+  tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -13,10 +13,12 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
