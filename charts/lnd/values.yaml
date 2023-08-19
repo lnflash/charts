@@ -15,9 +15,9 @@ configmap:
     - bitcoin.regtest=true
     - bitcoin.defaultchanconfs=0
     - noseedbackup=1
-    - bitcoind.rpchost=bitcoind:18443
+    - bitcoind.rpchost=flash-bitcoind:18443
     - keysend-hold-time=2s
-    - tlsextradomain=lnd1.flash-bitcoin.svc.cluster.local
+    - tlsextradomain=lnd1.flash-bitcoind.svc.cluster.local
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
