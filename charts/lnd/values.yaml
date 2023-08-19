@@ -54,7 +54,7 @@ persistence:
   ##
   # storageClass: "-"
   # accessMode: ReadWriteOnce
-  # size: 10Gi
+  # size: 11Gi
 affinity:
   podAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
