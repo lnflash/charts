@@ -5,7 +5,7 @@ image:
 ingress:
   enabled: false
 lnd1:
-  dns: "lnd1.galoy-dev-bitcoin.svc.cluster.local"
+  dns: "lnd.default.svc.cluster.local"
 redis:
   ## Redis replica config params
   redis0Dns: "galoy-redis-node-0.galoy-redis-headless"

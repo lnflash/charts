@@ -37,7 +37,7 @@ spec:
           args:
             - daemon
             - --maxamt=5000000
-            - --lnd.host=lnd1.galoy-dev-bitcoin.svc.cluster.local:10009
+            - --lnd.host=lnd.default.svc.cluster.local:10009
             - --lnd.macaroondir=/root/.lnd/data/chain/bitcoin/regtest
             - --lnd.tlspath=/root/.lnd/tls.cert
           securityContext:
