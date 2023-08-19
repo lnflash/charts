@@ -40,7 +40,7 @@ spec:
             - --lnd.host=lnd.default.svc.cluster.local:10009
             - --lnd.macaroondir=/root/.lnd/data/chain/bitcoin/regtest
             - --lnd.tlspath=/root/.lnd/tls.cert
-            - --lnd.zmqpubrawblock=tcp://bitcoind.default.svc.cluster.local:28332
+            - --bitcoin.zmqpubrawblock=tcp://bitcoind.default.svc.cluster.local:28332
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
