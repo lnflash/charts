@@ -17,7 +17,7 @@ configmap:
     - noseedbackup=1
     - bitcoind.rpchost=bitcoind:18443
     - keysend-hold-time=2s
-    - tlsextradomain=lnd1.bitcoind.svc.cluster.local
+    - tlsextradomain=lnd.bitcoind.svc.cluster.local
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -80,7 +80,7 @@ lndGeneralConfig:
   - bitcoind.rpcuser=rpcuser
   - bitcoind.zmqpubrawblock=tcp://bitcoind:28332
   - bitcoind.zmqpubrawtx=tcp://bitcoind:28333
-  - tlsextradomain=lnd1
+  - tlsextradomain=lnd
   - accept-keysend=1
   - allow-circular-route=1
   - stagger-initial-reconnect=1
