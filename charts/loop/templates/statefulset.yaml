@@ -41,7 +41,7 @@ spec:
             - --experimental
             {{- if eq .Values.global.network "regtest" }}
             - --debuglevel=debug
-            - --server.host=loop1-loopserver.galoy-dev-bitcoin.svc.cluster.local:11009
+            - --server.host=loop1-loopserver.default.svc.cluster.local:11009
             - --server.notls
             {{- end }}
             - --lnd.host={{ .Values.lndConfig.lndReleaseName }}.{{ .Release.Namespace }}.svc.cluster.local:10009
