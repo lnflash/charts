@@ -34,8 +34,8 @@ service:
   type: ClusterIP
 
 lnds:
-  - url: lnd1
-    secretName: lnd1-credentials
+  - url: lnd
+    secretName: lnd-credentials
     dark: true
     themeColor: YELLOW
 
