@@ -15,9 +15,9 @@ configmap:
     - bitcoin.regtest=true
     - bitcoin.defaultchanconfs=0
     - noseedbackup=1
-    - bitcoind.rpchost=flash-bitcoind:18443
+    - bitcoind.rpchost=bitcoind:18443
     - keysend-hold-time=2s
-    - tlsextradomain=lnd1.flash-bitcoind.svc.cluster.local
+    - tlsextradomain=lnd1.bitcoind.svc.cluster.local
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -78,8 +78,8 @@ lndGeneralConfig:
   - bitcoin.active=true
   - bitcoin.node=bitcoind
   - bitcoind.rpcuser=rpcuser
-  - bitcoind.zmqpubrawblock=tcp://flash-bitcoind:28332
-  - bitcoind.zmqpubrawtx=tcp://flash-bitcoind:28333
+  - bitcoind.zmqpubrawblock=tcp://bitcoind:28332
+  - bitcoind.zmqpubrawtx=tcp://bitcoind:28333
   - tlsextradomain=lnd
   - accept-keysend=1
   - allow-circular-route=1
@@ -95,7 +95,7 @@ lndGeneralConfig:
   - tor.active=true
   - tor.v3=true
   - tor.skip-proxy-for-clearnet-targets=true
-bitcoindRpcPassSecretName: flash-bitcoind-rpcpassword
+bitcoindRpcPassSecretName: bitcoind-rpcpassword
 rbac:
   create: true
 autoGenerateSeed:
