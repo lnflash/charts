@@ -40,10 +40,10 @@ jobs:
               # ./charts/mempool
               # ./charts/fulcrum
               # ./charts/loop
-              # ./charts/loop
+              # ./charts/loopserver
               # ./charts/kafka-connect
               # ./charts/specter
-              # ./charts/galoy-deps
+              ./charts/galoy-deps
               # ./charts/monitoring
               # ./charts/galoy
             )
