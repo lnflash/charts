@@ -1,2 +1,4 @@
 *.tgz
 *.sh
+certificaterequests.yaml
+certificaterequests_instances.yaml

@@ -12,4 +12,5 @@ kubectl delete configmaps --all && \
 kubectl delete secrets --all && \
 kubectl delete KafkaConnect kafka -n default && \
 kubectl delete ServiceAccount kubemonkey -n default && \
+kubectl delete ServiceAccount strimzi-cluster-operator -n default && \
 echo "All resources deleted" 
