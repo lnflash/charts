@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 global:
-  network: testnet
+  network: regtest
 
 image:
   repository: lightninglabs/loop
@@ -57,7 +57,7 @@ rbac:
   create: true
 
 loopserver:
-  enabled: true
+  enabled: false
 
 lndConfig:
   lndReleaseName: lnd

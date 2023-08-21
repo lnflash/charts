@@ -1,8 +1,8 @@
 global:
-  network: testnet
+  network: regtest
   service:
     ports:
-      rpc: 18332
+      rpc: 18443
 
 secrets:
   create: true
@@ -49,7 +49,7 @@ service:
   ports:
     zmqpubrawtx: 28333
     zmqpubrawblock: 28332
-    p2p: 18333
+    p2p: 18444
     metrics: 3000
 
 ingress:
@@ -81,7 +81,7 @@ resources:
   #   memory: 4096Mi
 
 persistence:
-  enabled: true
+  enabled: false
   ## database data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -90,8 +90,8 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-  accessMode: ReadWriteOnce
-  size: 50Gi
+  # accessMode: ReadWriteOnce
+  # size: 750Gi
 
 autoscaling:
   enabled: false
@@ -125,7 +125,7 @@ podLabels: {}
 # TODO: Document the usage of generic and custom config to instruct where to put specific flags
 
 bitcoindGenericConfig:
-  - testnet=1
+  - regtest=1
   - debug=mempool
   - debug=rpc
   - shrinkdebugfile=1
