@@ -40,7 +40,7 @@ jobs:
               ./charts/loop
               ./charts/galoy-deps
               ./charts/kafka-connect
-              # ./charts/galoy
+              ./charts/galoy
               # ./charts/monitoring
             )
             for dir in "${charts[@]}"; do
