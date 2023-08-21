@@ -57,7 +57,7 @@ rbac:
   create: true
 
 loopserver:
-  enabled: true
+  enabled: false
 
 lndConfig:
   lndReleaseName: lnd

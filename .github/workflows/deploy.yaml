@@ -40,10 +40,10 @@ jobs:
               ./charts/loop
               # ./charts/mempool
               # ./charts/fulcrum
-              # ./charts/kafka-connect
+              ./charts/kafka-connect
               # ./charts/specter
               # ./charts/monitoring
-              # ./charts/galoy-deps
+              ./charts/galoy-deps
               # ./charts/galoy
             )
             for dir in "${charts[@]}"; do
