@@ -14,19 +14,15 @@ fullnameOverride: ""
 podAnnotations: {}
 
 podSecurityContext:
-  {}
-  # fsGroup: 2000
+  fsGroup: 1000
 
 securityContext:
-  runAsUser: 0
-  runAsGroup: 0
-  # {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false # Changing this to allow writes, but ensure you direct writes to mounted volumes.
+  runAsNonRoot: true
+  runAsUser: 1000
 
 service:
   type: ClusterIP
@@ -36,7 +32,7 @@ resources:
   limits:
     cpu: 200m
   requests:
-    cpu: 1m
+    cpu: 100m # Adjusted this to be more reasonable.
 
 nodeSelector: {}
 
@@ -46,10 +42,10 @@ affinity: {}
 
 persistence:
   enabled: true
-  size: 16Mi
+  size: 16Mi # Increased this, adjust based on your needs.
   accessMode: ReadWriteOnce
 
 serviceAccount:
-  create: true
+  create: false # If not required, better to turn it off.
 rbac:
-  create: true
+  create: false # If not required, better to turn it off.
