@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     env:
-      CLUSTER_NAME: flash-cluster
+      CLUSTER_NAME: flashapp
       CHART_NAME: .
       RELEASE_NAME: flash
       NAMESPACE: default
