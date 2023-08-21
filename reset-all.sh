@@ -10,7 +10,14 @@ kubectl delete jobs --all && \
 kubectl delete cronjobs --all && \
 kubectl delete configmaps --all && \
 kubectl delete secrets --all && \
-kubectl delete KafkaConnect kafka -n default && \
-kubectl delete ServiceAccount kubemonkey -n default && \
-kubectl delete ServiceAccount strimzi-cluster-operator -n default && \
+kubectl delete kafka --all && \
+kubectl delete KafkaConnect --all && \
+kubectl delete ServiceAccount --all && \
+kubectl delete clusterrole --all && \
+kubectl delete clusterrolebinding --all && \
+kubectl delete ServiceAccount --all && \
+kubectl delete crd --all && \
+kubectl delete ingressclass --all && \
+kubectl delete ingress --all && \
+kubectl delete pvc --all && \
 echo "All resources deleted" 

@@ -11,7 +11,7 @@ fullnameOverride:
 galoy:
   ## Bitcoin Network to run this Galoy instance on
   ##
-  network: mainnet
+  network: regtest
   ## Application Custom Config
   ## Ref: https://github.com/GaloyMoney/galoy/blob/main/default.yaml
   ##
@@ -30,8 +30,8 @@ galoy:
       corsAllowedOrigins:
         - https://localhost:8080
     cronConfig:
-      rebalanceEnabled: true
-      swapEnabled: true
+      rebalanceEnabled: false
+      swapEnabled: false
     bria:
       hotWalletName: dev
       queueNames:
@@ -421,7 +421,7 @@ galoy:
     ##
     loopCredentialsExistingSecret:
       ## Secret Name
-      name: loop1-credentials
+      name: loop-credentials
       ## Macaroon Key
       macaroon_key: loop_macaroon_base64
       ## TLS Key

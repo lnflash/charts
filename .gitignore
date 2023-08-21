@@ -2,3 +2,4 @@
 *.sh
 certificaterequests.yaml
 certificaterequests_instances.yaml
+values-secrets.yaml
