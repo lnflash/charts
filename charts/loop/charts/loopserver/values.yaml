@@ -14,13 +14,15 @@ fullnameOverride: ""
 podAnnotations: {}
 
 podSecurityContext:
-  fsGroup: 1000
+  # {}
+  fsGroup: 2000
 
 securityContext:
+  # {}
   capabilities:
     drop:
       - ALL
-  readOnlyRootFilesystem: false # Changing this to allow writes, but ensure you direct writes to mounted volumes.
+  readOnlyRootFilesystem: false
   runAsNonRoot: true
   runAsUser: 1000
 
@@ -32,7 +34,7 @@ resources:
   limits:
     cpu: 200m
   requests:
-    cpu: 100m # Adjusted this to be more reasonable.
+    cpu: 1m
 
 nodeSelector: {}
 
@@ -42,10 +44,10 @@ affinity: {}
 
 persistence:
   enabled: true
-  size: 16Mi # Increased this, adjust based on your needs.
+  size: 16Mi
   accessMode: ReadWriteOnce
 
 serviceAccount:
-  create: false # If not required, better to turn it off.
+  create: true
 rbac:
-  create: false # If not required, better to turn it off.
+  create: true
