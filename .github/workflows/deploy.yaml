@@ -38,13 +38,10 @@ jobs:
               ./charts/bitcoind
               ./charts/lnd
               ./charts/loop
-              # ./charts/mempool
-              # ./charts/fulcrum
               ./charts/kafka-connect
-              # ./charts/specter
-              # ./charts/monitoring
               ./charts/galoy-deps
               # ./charts/galoy
+              # ./charts/monitoring
             )
             for dir in "${charts[@]}"; do
               chart_name=$(basename $dir)
