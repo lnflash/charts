@@ -10,4 +10,6 @@ kubectl delete jobs --all && \
 kubectl delete cronjobs --all && \
 kubectl delete configmaps --all && \
 kubectl delete secrets --all && \
+kubectl delete KafkaConnect kafka -n default && \
+kubectl delete ServiceAccount kubemonkey -n default && \
 echo "All resources deleted" 
