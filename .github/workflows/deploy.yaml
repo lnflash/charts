@@ -40,12 +40,12 @@ jobs:
               ./charts/loop
               ./charts/galoy-deps
               ./charts/kafka-connect
-              ./charts/galoy
+              # ./charts/galoy
               # ./charts/monitoring
             )
             for dir in "${charts[@]}"; do
               chart_name=$(basename $dir)
               release="${chart_name}"
               helm dep update $dir
-              helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir --debug
+              helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
             done
