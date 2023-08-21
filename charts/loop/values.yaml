@@ -60,4 +60,4 @@ loopserver:
   enabled: true
 
 lndConfig:
-  lndReleaseName: lnd1
+  lndReleaseName: lnd
