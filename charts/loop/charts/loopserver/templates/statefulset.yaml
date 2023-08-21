@@ -43,8 +43,7 @@ spec:
             - --bitcoin.zmqpubrawblock=tcp://bitcoind.default.svc.cluster.local:28332
             - --bitcoin.zmqpubrawtx=tcp://bitcoind.default.svc.cluster.local:28333
           securityContext:
-            runAsUser: 0
-            runAsGroup: 0
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
