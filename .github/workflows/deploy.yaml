@@ -43,7 +43,6 @@ jobs:
               # ./charts/galoy
               # ./charts/monitoring
             )
-
             for dir in "${charts[@]}"; do
               chart_name=$(basename $dir)
               release="${chart_name}"
