@@ -47,5 +47,5 @@ jobs:
               chart_name=$(basename $dir)
               release="${chart_name}"
               helm dep update $dir
-              helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
+              helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir -f $dir/values.yaml -f $dir/values-secrets.yaml
             done
