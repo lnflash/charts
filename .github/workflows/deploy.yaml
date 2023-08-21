@@ -38,8 +38,8 @@ jobs:
               ./charts/bitcoind
               ./charts/lnd
               ./charts/loop
-              ./charts/kafka-connect
               ./charts/galoy-deps
+              ./charts/kafka-connect
               # ./charts/galoy
               # ./charts/monitoring
             )
