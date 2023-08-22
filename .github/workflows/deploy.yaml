@@ -12,6 +12,8 @@ jobs:
       CHART_NAME: .
       RELEASE_NAME: flash
       NAMESPACE: default
+      GALOY_NAMESPACE: galoy
+      GALOY_DEPS_NAMESPACE: galoy-deps
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -51,11 +53,11 @@ jobs:
           helm: "3.12.3"
           command: |
             charts=(
+              ./charts/galoy-deps
+              ./charts/kafka-connect
               ./charts/bitcoind
               ./charts/lnd
               ./charts/loop
-              ./charts/galoy-deps
-              ./charts/kafka-connect
               ./charts/galoy
               # ./charts/monitoring
             )
@@ -64,7 +66,9 @@ jobs:
               release="${chart_name}"
               helm dep update $dir
               if [ "$dir" == "./charts/galoy" ]; then
-                helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir -f $dir/values.yaml -f $dir/values-secrets.yaml
+                helm upgrade --install --namespace $GALOY_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir -f $dir/values.yaml -f $dir/values-secrets.yaml
+              elif
+                helm upgrade --install --namespace $GALOY_DEPS_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
               else
                 helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
               fi
