@@ -67,7 +67,7 @@ jobs:
               helm dep update $dir
               if [ "$dir" == "./charts/galoy" ]; then
                 helm upgrade --install --namespace $GALOY_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir -f $dir/values.yaml -f $dir/values-secrets.yaml
-              elif
+              elif [ "$dir" == "./charts/galoy-deps" ]; then
                 helm upgrade --install --namespace $GALOY_DEPS_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
               else
                 helm upgrade --install --namespace $NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
