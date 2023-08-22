@@ -43,9 +43,6 @@ jobs:
           lnd1PubKey: ${{ secrets.LND1PUBKEY }}
           EOF
 
-      - name: Remove lnd-credentials Secret if exists
-        run: kubectl delete secret lnd-credentials --namespace $NAMESPACE || true
-
       - name: Install/upgrade charts in specified order
         uses: stefanprodan/kube-tools@v1
         with:
