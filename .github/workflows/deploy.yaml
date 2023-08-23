@@ -30,19 +30,6 @@ jobs:
       - name: Add Galoy Helm repository
         run: helm repo add flash https://lnflash.github.io/charts
 
-      - name: Create values-secrets.yaml for Galoy
-        run: |
-          cat <<EOF > ./charts/galoy/values-secrets.yaml            
-          twilioVerifyService: ${{ secrets.TWILIOVERIFYSERVICE }}
-          twilioAccountSid: ${{ secrets.TWILIOACCOUNTSID }}
-          twilioAuthToken: ${{ secrets.TWILIOAUTHTOKEN }}
-          lnd1Macaroon: ${{ secrets.LND1MACAROON }}
-          lnd1Tls: ${{ secrets.LND1TLS }}
-          lnd1LoopMacaroon: ${{ secrets.LND1LOOPMACAROON }}
-          lnd1LoopTls: ${{ secrets.LND1LOOPTLS }}
-          lnd1PubKey: ${{ secrets.LND1PUBKEY }}
-          EOF
-
       - name: Install/upgrade charts in specified order
         uses: stefanprodan/kube-tools@v1
         with:
@@ -63,7 +50,7 @@ jobs:
               release="${chart_name}"
               helm dep update $dir
               if [ "$dir" == "./charts/galoy" ]; then
-                helm upgrade --install --namespace $GALOY_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir -f $dir/values.yaml -f $dir/values-secrets.yaml --debug
+                helm upgrade --install --namespace $GALOY_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir --debug
               elif [ "$dir" == "./charts/galoy-deps" ]; then
                 helm upgrade --install --namespace $GALOY_DEPS_NAMESPACE --create-namespace --kubeconfig $GITHUB_WORKSPACE/.kubeconfig $release $dir
               else
