@@ -17,7 +17,8 @@ module "infra_services" {
 
   name_prefix      = local.name_prefix
   cluster_endpoint = "https://172.16.0.2"
-  cluster_ca_cert  = "-----BEGIN CERTIFICATE-----
+  cluster_ca_cert  = EOT
+-----BEGIN CERTIFICATE-----
 MIIELTCCApWgAwIBAgIRAJOQ0jfwX5XRX/52h/IdFPMwDQYJKoZIhvcNAQELBQAw
 LzEtMCsGA1UEAxMkZmNhYzIzNmYtYjNhZS00Yzg1LThiMmItNmMwNjBjM2FjYmU5
 MCAXDTIzMDgyNzEzMjc1NVoYDzIwNTMwODE5MTQyNzU1WjAvMS0wKwYDVQQDEyRm
@@ -41,7 +42,8 @@ guzTrZ5RUqb+KHbyFOI5PzyPPaJrt3ShxvuQ0h7wC7scpGTtkEUaZc/EuODS38bb
 2oqZsQDBtcbPmX1LQnoEFkqg3201cb2NbsQnZl9+gSE/WWvtzTmTMKIf+2vForI/
 E5uQ9oav+GMqOoQ8lt4C7OzLgfE50MnUNKYzsGDj3MdUyQzE+vEe1y9GZnheAD4H
 H60Yt7BjENZPYFEefuy0rVs=
------END CERTIFICATE-----"
+-----END CERTIFICATE-----
+EOT"
 }
 
 module "kafka_connect" {
