@@ -17,7 +17,7 @@ module "infra_services" {
 
   name_prefix      = local.name_prefix
   cluster_endpoint = "https://172.16.0.2"
-  cluster_ca_cert  = EOT
+  cluster_ca_cert  = "<<EOT
 -----BEGIN CERTIFICATE-----
 MIIELTCCApWgAwIBAgIRAJOQ0jfwX5XRX/52h/IdFPMwDQYJKoZIhvcNAQELBQAw
 LzEtMCsGA1UEAxMkZmNhYzIzNmYtYjNhZS00Yzg1LThiMmItNmMwNjBjM2FjYmU5
