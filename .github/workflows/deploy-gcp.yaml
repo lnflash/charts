@@ -27,6 +27,10 @@ jobs:
         with:
           project_id: flash-staging-cluster
 
+      # Install the gke-gcloud-auth-plugin
+      - name: Install gke-gcloud-auth-plugin
+        run: gcloud components install gke-gcloud-auth-plugin
+
       - name: Configure Kubernetes Cluster
         run: |
           gcloud container clusters get-credentials $CLUSTER_NAME --zone us-east1
