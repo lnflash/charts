@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v1.1.1
         with:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           project_id: flash-staging-cluster
