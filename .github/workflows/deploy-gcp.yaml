@@ -6,44 +6,54 @@ on:
       - gcp
 
 jobs:
-  build:
-    env:
-      CLUSTER_NAME: flash-cluster
-      NAMESPACE: default
-      GALOY_NAMESPACE: galoy
-      GALOY_DEPS_NAMESPACE: galoy-deps
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+  job_id:
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
+    build:
+      env:
+        CLUSTER_NAME: flash-cluster
+        NAMESPACE: default
+        GALOY_NAMESPACE: galoy
+        GALOY_DEPS_NAMESPACE: galoy-deps
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
 
-      - name: Setup Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1.1.1
-        with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: flash-staging-cluster
-          export_default_credentials: true
+        - id: "auth"
+          uses: "google-github-actions/auth@v1"
+          with:
+            service_account: "flash-cluster@flash-staging-cluster.iam.gserviceaccount.com"
 
-      - name: Configure Kubernetes Cluster
-        run: |
-          gcloud container clusters get-credentials $CLUSTER_NAME --zone us-east1
+        - name: Setup Google Cloud SDK
+          uses: google-github-actions/setup-gcloud@v1.1.1
+          with:
+            service_account_key: ${{ secrets.GCP_SA_KEY }}
+            project_id: flash-staging-cluster
+            export_default_credentials: true
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
+        - name: Configure Kubernetes Cluster
+          run: |
+            gcloud container clusters get-credentials $CLUSTER_NAME --zone us-east1
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ./dev
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v1
+          with:
+            terraform_version: 1.0.0
 
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: ./dev
+        - name: Terraform Init
+          run: terraform init
+          working-directory: ./dev
 
-      - name: Terraform Plan
-        run: terraform plan -var 'bitcoin_network=signet' -var 'name_prefix=galoy-sig'
-        working-directory: ./dev
+        - name: Terraform Validate
+          run: terraform validate
+          working-directory: ./dev
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -var 'bitcoin_network=signet' -var 'name_prefix=galoy-sig'
-        working-directory: ./dev
+        - name: Terraform Plan
+          run: terraform plan -var 'bitcoin_network=signet' -var 'name_prefix=galoy-sig'
+          working-directory: ./dev
+
+        - name: Terraform Apply
+          run: terraform apply -auto-approve -var 'bitcoin_network=signet' -var 'name_prefix=galoy-sig'
+          working-directory: ./dev
