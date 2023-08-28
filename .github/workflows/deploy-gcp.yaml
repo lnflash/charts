@@ -33,7 +33,7 @@ jobs:
 
       - name: Configure Kubernetes Cluster
         run: |
-          gcloud container clusters get-credentials $CLUSTER_NAME --zone us-east1-b --project flash-staging-cluster
+          gcloud container clusters get-credentials $CLUSTER_NAME --zone us-east1 --project flash-staging-cluster
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
