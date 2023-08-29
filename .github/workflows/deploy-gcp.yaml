@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     env:
-      TF_LOG: DEBUG
       CLUSTER_NAME: flash-cluster
       NAMESPACE: default
       GALOY_NAMESPACE: galoy
@@ -36,6 +35,10 @@ jobs:
       - name: Configure Kubernetes Cluster
         run: |
           gcloud container clusters get-credentials $CLUSTER_NAME --zone us-east1 --project flash-staging-cluster
+
+      - name: Verify kubeconfig
+        run: |
+          cat $KUBECONFIG
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
