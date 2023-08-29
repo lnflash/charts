@@ -1,4 +1,4 @@
-name: Deploy Flash to GCP
+name: Deploy Flash
 
 on:
   push:
@@ -12,7 +12,6 @@ jobs:
       NAMESPACE: default
       GALOY_NAMESPACE: galoy
       GALOY_DEPS_NAMESPACE: galoy-deps
-      KUBECONFIG: "$HOME/.kube/config"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
