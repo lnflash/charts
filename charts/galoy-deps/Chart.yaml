@@ -13,7 +13,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.5.5-dev
+version: 0.9.3-dev
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
@@ -22,7 +22,7 @@ appVersion: "0.1.0"
 dependencies:
   - name: "cert-manager"
     repository: "https://charts.jetstack.io"
-    version: v1.13.0
+    version: v1.13.3
     condition: cert-manager.enabled
   - name: "ingress-nginx"
     repository: "https://kubernetes.github.io/ingress-nginx"
@@ -30,7 +30,7 @@ dependencies:
     condition: ingress-nginx.enabled
   - name: strimzi-kafka-operator
     repository: https://strimzi.io/charts/
-    version: 0.36.1
+    version: 0.39.0
     condition: strimzi-kafka-operator.enabled
   - name: kube-monkey
     alias: kubemonkey
@@ -39,5 +39,5 @@ dependencies:
     condition: kubemonkey.enabled
   - name: opentelemetry-collector
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
-    version: 0.68.1
+    version: 0.77.0
     condition: opentelemetry-collector.enabled

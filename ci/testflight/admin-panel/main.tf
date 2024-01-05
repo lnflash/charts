@@ -26,11 +26,30 @@ resource "kubernetes_secret" "smoketest" {
   }
 }
 
+resource "kubernetes_secret" "admin_panel" {
+  metadata {
+    name      = "admin-panel"
+    namespace = local.testflight_namespace
+  }
+
+  data = {
+    "next-auth-secret" : "dummy123"
+    "google-oauth-client-id" : "dummy"
+    "google-oauth-client-secret" : "dummy"
+    "github-oauth-client-id" : "dummy"
+    "github-oauth-client-secret" : "dummy"
+  }
+}
+
 resource "helm_release" "admin_panel" {
   name       = "admin-panel"
   chart      = "${path.module}/chart"
   repository = "https://galoymoney.github.io/charts/"
   namespace  = kubernetes_namespace.testflight.metadata[0].name
+
+  values = [
+    file("${path.module}/testflight-values.yml")
+  ]
 }
 
 data "google_container_cluster" "primary" {

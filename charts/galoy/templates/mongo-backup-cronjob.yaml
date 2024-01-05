@@ -17,6 +17,9 @@ spec:
       activeDeadlineSeconds: 300
 
       template:
+        metadata:
+          labels:
+            app: {{ template "galoy.mongoBackupCron.jobname" . }}
         spec:
           restartPolicy: OnFailure
 
@@ -44,12 +47,19 @@ spec:
               value: "/var/secret/cloud.google.com/gcs-sa-key.json"
             {{ end }}
 
-            {{ if .Values.galoy.trigger.backups.dropbox.enabled }}
-            - name: DROPBOX_ACCESS_TOKEN
+            {{ if .Values.galoy.trigger.backups.s3.enabled }}
+            - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.galoy.trigger.backups.dropbox.accessTokenExistingSecret.name | quote }}
-                  key: {{ .Values.galoy.trigger.backups.dropbox.accessTokenExistingSecret.key | quote }}
+                  name: {{ .Values.galoy.trigger.backups.s3.accessKeyExistingSecret.name | quote }}
+                  key: {{ .Values.galoy.trigger.backups.s3.accessKeyExistingSecret.key | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.galoy.trigger.backups.s3.secretKeyExistingSecret.name | quote }}
+                  key: {{ .Values.galoy.trigger.backups.s3.secretKeyExistingSecret.key | quote }}
+            - name: AWS_REGION
+              value: {{ .Values.galoy.trigger.backups.s3.region | quote }}
             {{ end }}
 
             volumeMounts:

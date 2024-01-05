@@ -19,6 +19,7 @@ spec:
       template:
         metadata:
           labels:
+            app: {{ template "galoy.cron.jobname" . }}
         spec:
           serviceAccountName: {{ template "galoy.name" . }}
           restartPolicy: OnFailure
@@ -32,11 +33,7 @@ spec:
 
           containers:
           - name: {{ template "galoy.cron.jobname" . }}
-            image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
-            args:
-            - "-r"
-            - "/app/lib/services/tracing.js"
-            - "lib/servers/cron.js"
+            image: "{{ .Values.galoy.images.cron.repository }}@{{ .Values.galoy.images.cron.digest }}"
             resources:
               {{ toYaml .Values.galoy.galoyCron.resources | nindent 14 }}
             env:
@@ -94,14 +91,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.galoy.svixExistingSecret.name }}
                   key: {{ .Values.galoy.svixExistingSecret.secret_key }}
-
-            {{ if .Values.galoy.trigger.backups.dropbox.enabled }}
-            - name: DROPBOX_ACCESS_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.galoy.trigger.backups.dropbox.accessTokenExistingSecret.name | quote }}
-                  key: {{ .Values.galoy.trigger.backups.dropbox.accessTokenExistingSecret.key | quote }}
-            {{ end }}
 
             {{ if .Values.galoy.api.firebaseNotifications.enabled }}
             - name: GOOGLE_APPLICATION_CREDENTIALS

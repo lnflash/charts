@@ -68,7 +68,7 @@ resource "kubernetes_manifest" "issuer" {
     spec = {
       acme = {
         server = "https://acme-v02.api.letsencrypt.org/directory"
-        email  = local.letsencrypt_issuer_email
+        email  = "dev@galoy.io"
         privateKeySecretRef = {
           name = "letsencrypt-issuer"
         }

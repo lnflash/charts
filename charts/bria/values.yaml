@@ -7,7 +7,7 @@ bria:
   resources: {}
   tracing:
     host: localhost
-    port: 4318
+    port: 4317
     serviceName: bria-dev
   app:
     blockchain:
@@ -16,6 +16,7 @@ bria:
     fees:
       mempoolSpace:
         url: https://mempool.space
+        numberOfRetries: 3
     security:
       blockedAddresses: []
     deprecatedEncryptionKey:
@@ -36,8 +37,8 @@ bria:
   labels: {}
   image:
     repository: us.gcr.io/galoy-org/bria
-    digest: "sha256:3575e5810fd56c8718e6bdc530dc3d85f083ce22a070cb4bff6fa95ab20d4620"
-    git_ref: "a24e420"
+    digest: "sha256:c08d21c17972b48715cc9b6b9c31ce4db67871d081324e464408ed996a4ff958" # METADATA:: repository=https://github.com/GaloyMoney/bria;commit_ref=30b5a13;app=bria;
+    git_ref: "55654e2"
   replicas: 2
   annotations:
   secrets:

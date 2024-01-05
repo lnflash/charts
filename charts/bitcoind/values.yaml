@@ -12,7 +12,7 @@ replicaCount: 1
 image:
   repository: lncm/bitcoind
   pullPolicy: IfNotPresent
-  tag: v24.0.1
+  tag: v25.1
 
 extraInitContainers: []
 sidecarContainers: []
@@ -90,13 +90,6 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 750Gi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

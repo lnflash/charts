@@ -1,18 +1,18 @@
 dependencies:
 - name: cert-manager
   repository: https://charts.jetstack.io
-  version: v1.13.0
+  version: v1.13.3
 - name: ingress-nginx
   repository: https://kubernetes.github.io/ingress-nginx
   version: 4.7.1
 - name: strimzi-kafka-operator
   repository: https://strimzi.io/charts/
-  version: 0.36.1
+  version: 0.39.0
 - name: kube-monkey
   repository: https://asobti.github.io/kube-monkey/charts/repo
   version: 1.5.2
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
-  version: 0.68.1
-digest: sha256:1a028a39cf673b13881bb718587cd5705a92acf4dd199c82cb492e4c576cb80d
-generated: "2023-09-28T13:08:32.416833863Z"
+  version: 0.77.0
+digest: sha256:e2ba9f6a26f63946612f84989b6b31f0ccd861d96b80c2fb6bbac654d48d15a3
+generated: "2023-12-31T07:58:16.613654333Z"

@@ -1,13 +1,23 @@
 image:
   repository: us.gcr.io/galoy-org/admin-panel
-  digest: "sha256:ff07e561cb0966af99dcf07d1028f6d7708b21f4aec63f361b277e59c1de7406"
-  git_ref: "91dbb97" # Not used by helm
+  digest: "sha256:a07fe56c63df446761f2766896e2d64d3519ec6e86037a895dc9e227a47c4188" # METADATA:: repository=https://github.com/GaloyMoney/admin-panel;commit_ref=a3c11ac;app=admin-panel;
+  git_ref: "ef99dc0" # Not used by helm
 ingress:
   enabled: false
 service:
   port: 3000
   type: ClusterIP
 adminPanel:
-  graphqlUrl: http://localhost:4002/graphql
-  galoyAuthEndpoint: http://localhost:4002/auth
+  adminCoreApi: http://admin-api.galoy-dev-galoy.svc.cluster.local:4001/admin/graphql
+  nextAuthUrl: http://localhost:3000
+  authorizedEmails: "satoshi@galoy.io,nakamoto@blink.sv"
 resources: {}
+secrets:
+  create: true
+  googleOauthClientId: ""
+  googleOauthClientSecret: ""
+  nextAuthSecret: ""
+  githubOauthClientId: ""
+  githubOauthClientSecret: ""
+otelExporterOtlpEndpoint: http://localhost:4318
+tracingServiceName: "admin-panel"

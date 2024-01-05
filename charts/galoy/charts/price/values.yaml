@@ -32,11 +32,14 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 realtime:
+  tracing:
+    otelExporterOtlpEndpoint: http://localhost:4318/v1/traces
+    otelServiceName: galoy-price-realtime-dev
   config: {}
   image:
     repository: us.gcr.io/galoy-org/price
-    digest: "sha256:044912ac18529955a2c37c1bc201f0ddb37b0e878f7f4d10ea084e750f00b44c"
-    git_ref: "53860b0"
+    digest: "sha256:691c94b88b57b23918edf5929c08b0eb597e2d240a950935d03f7b07b0d7c2b6"
+    git_ref: "8bb472c"
   service:
     type: ClusterIP
     prometheus: 9464
@@ -46,17 +49,20 @@ realtime:
     prometheus.io/port: "9464"
     prometheus.io/scrape: "true"
 history:
+  tracing:
+    otelExporterOtlpEndpoint: http://localhost:4318/v1/traces
+    otelServiceName: galoy-price-history-dev
   valuesOverride: {}
   image:
     repository: us.gcr.io/galoy-org/price-history
-    digest: "sha256:14ba8a6ab92f5c5c7d7682bbf93d0db5a3ad980b29c53432d4b888d223c25f3a"
+    digest: "sha256:13838520b7080a071b7699607f7c25cb9914f4bf0ec5e929e54c61876c1ce29c"
   service:
     type: ClusterIP
     prometheus: 9464
     grpc: 50052
   migrateImage:
     repository: us.gcr.io/galoy-org/price-history-migrate
-    digest: sha256:84c48c442ac15903f8ed3ff373ea0cccb64fe6a1d48d3fc456780217fccf85ae
+    digest: sha256:501fe3d5a2c71b055b142bd5c0fb1d39b2eb7abe3f03a5a2b0d38e371bfc54a4
   postgresqlHost: postgresql
   cron:
     resources: {}

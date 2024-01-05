@@ -1,0 +1,20 @@
+secrets:
+  create: true
+  nextAuthSecret: ""
+  clientSecret: ""
+apiDashboard:
+  hydraPublic: "http://galoy-hydra-public.galoy-dev-galoy.svc.cluster.local:4444"
+  coreUrl: "http://galoy-oathkeeper-proxy.galoy-dev-galoy.svc.cluster.local:4455/graphql"
+  nextAuthUrl: ""
+  clientId: ""
+  otelExporterOtlpEndpoint: http://localhost:4318
+  tracingServiceName: "dashboard"
+image:
+  repository: us.gcr.io/galoy-org/galoy-dashboard
+  digest: "sha256:baaac4ba0071b2e77fbbfbf45bfc0b6a813ea2ee89ad23822f7d64dffe878bf0" # METADATA:: repository=https://github.com/GaloyMoney/galoy;commit_ref=54b4b3d;app=dashboard;
+ingress:
+  enabled: false
+service:
+  port: 3000
+  type: ClusterIP
+resources: {}

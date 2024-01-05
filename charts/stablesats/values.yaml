@@ -14,8 +14,7 @@ stablesats:
     resources: {}
   image:
     repository: us.gcr.io/galoy-org/stablesats-rs
-    digest: "sha256:1cfd97eacf5423a34fcf443a2cda17b42d8c7fc27c02a07b6a6595d0c0de5fb8"
-    git_ref: "20b3f25"
+    digest: "sha256:a63c22f2d7586a55a0c31049550f2120441448c6d54a79bec64ce7167c599a23" # METADATA:: repository=https://github.com/GaloyMoney/stablesats-rs;commit_ref=815fae1;app=stablesats;
   crash_report_config_danger: false
   db:
     poolSize: 20

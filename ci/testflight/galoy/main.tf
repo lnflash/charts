@@ -65,17 +65,6 @@ resource "kubernetes_secret" "geetest_key" {
   }
 }
 
-resource "kubernetes_secret" "dropbox_access_token" {
-  metadata {
-    name      = "dropbox-access-token"
-    namespace = kubernetes_namespace.testflight.metadata[0].name
-  }
-
-  data = {
-    token = "dummy"
-  }
-}
-
 resource "kubernetes_secret" "mongodb_creds" {
   metadata {
     name      = "galoy-mongodb"
@@ -347,6 +336,16 @@ resource "kubernetes_secret" "proxy_check_api_key" {
   }
 }
 
+resource "kubernetes_secret" "api_keys" {
+  metadata {
+    name      = "api-keys"
+    namespace = kubernetes_namespace.testflight.metadata[0].name
+  }
+  data = {
+    pg-con : "postgres://api-keys:api-keys@api-keys-postgresql:5432/api-keys"
+  }
+}
+
 resource "helm_release" "postgresql" {
   name       = "postgresql"
   repository = "https://charts.bitnami.com/bitnami"
@@ -356,6 +355,18 @@ resource "helm_release" "postgresql" {
 
   values = [
     file("${path.module}/postgresql-values.yml")
+  ]
+}
+
+resource "helm_release" "api_keys_postgresql" {
+  name       = "api-keys-postgresql"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "postgresql"
+  version    = "11.9.13"
+  namespace  = kubernetes_namespace.testflight.metadata[0].name
+
+  values = [
+    file("${path.module}/api-keys-postgresql-values.yml")
   ]
 }
 

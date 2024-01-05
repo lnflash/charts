@@ -33,23 +33,44 @@ galoy:
     ## Galoy Application Image details
     ##
     app:
-      ## Has api, trigger and exporter
-      ##
-      repository: us.gcr.io/galoy-org/galoy-app
+      repository: us.gcr.io/galoy-org/galoy-api
       ## Digest of the image
       ##
-      digest: "sha256:ac8cfa36ae6dc4bb3fc92c006628cc3a9ceacf125dec7868e783ad6c21241b06"
+      digest: "sha256:45e707dd07a30dee9dd4144fa33fd52620a7d62e2f02dfa6c1f194a8167c0d28"
       ## Not used by Helm, just used to ref to the source https://github.com/GaloyMoney/galoy.git
       ## Reference for timestamping the corresponding docker image and used by internal CI.
       ##
-      git_ref: "157400b"
+      git_ref: "5825080"
     websocket:
-      ## Has websocket
-      ##
-      repository: us.gcr.io/galoy-org/galoy-app-websocket
+      repository: us.gcr.io/galoy-org/galoy-api-ws-server
       ## Digest of the image
       ##
-      digest: "sha256:6383819eeb5eb01f06507cd078724994d56e4951e5abcab9d7b3e1ae3085d28f"
+      digest: "sha256:1a9d75c765b57a1817bd9d78fff438b38733da85c9f1c8f0874cae9d1806fb65"
+    trigger:
+      repository: us.gcr.io/galoy-org/galoy-api-trigger
+      ## Digest of the image
+      ##
+      digest: "sha256:9b8f297628f6af1851b48b857d027c2bbcf9f0933084b6b79b2563b1b9b05a25"
+    cron:
+      repository: us.gcr.io/galoy-org/galoy-api-cron
+      ## Digest of the image
+      ##
+      digest: "sha256:e9a057573dc0e7f961ac043334c57747c1e4effa1fa8d541f3253c2ed2668f9e"
+    exporter:
+      repository: us.gcr.io/galoy-org/galoy-api-exporter
+      ## Digest of the image
+      ##
+      digest: "sha256:60401fc49dfea9f2b8c5eecbee9ce108f05c1e427d856dafad790278783f89a7"
+    consent:
+      repository: us.gcr.io/galoy-org/galoy-consent
+      ## Digest of the image
+      ##
+      digest: "sha256:c9d3d8a18fd64475eb6c6baa1c3ccbb1f2215128a53c0d5c4355945cc4db053f" # METADATA:: repository=https://github.com/GaloyMoney/galoy;commit_ref=e446eda;app=consent;
+    apiKeys:
+      repository: us.gcr.io/galoy-org/galoy-api-keys
+      ## Digest of the image
+      ##
+      digest: "sha256:5a1b6144829f4c34ba336a019ed924042db736037d6ad1b21696a5148d1ea8dc" # METADATA:: repository=https://github.com/GaloyMoney/galoy;commit_ref=4242d78;app=api-keys;
     ## Galoy Application MongoDB Migration Image details
     ##
     mongodbMigrate:
@@ -58,7 +79,7 @@ galoy:
       repository: us.gcr.io/galoy-org/galoy-app-migrate
       ## Digest of the image
       ##
-      digest: "sha256:997ada867d689d089c0c8f62c5520e19fade7fe95b0e84a963208348bc4e51e0"
+      digest: "sha256:c37a9f636b3fcc910a80ce1828cfe58b63dbbc091e0377313eed8dabf65e706a"
     ## Galoy Application MongoDB Backup Image details
     ##
     mongoBackup:
@@ -66,11 +87,11 @@ galoy:
       ##
       repository: us.gcr.io/galoy-org/mongo-backup
       ## Digest of the image
-      digest: "sha256:4cfc197ea082ef3dae2d4321a9dfa31ef185f43d578a37a224095b75de656e6a"
+      digest: "sha256:66d22e50f472f8fb43a93edec095cd724df2393130d6fa3f17e98906eaedb269"
       ## Not used by Helm, just used to ref to the source https://github.com/GaloyMoney/galoy.git
       ## Reference for timestamping the corresponding docker image and used by internal CI.
       ##
-      git_ref: "872b70e"
+      git_ref: "ce9792c"
   ## Configuration values for Galoy API components.
   ##
   api:
@@ -117,6 +138,13 @@ galoy:
         name: galoyapp-firebase-serviceaccount
         # Secret Key
         key: galoyapp-firebase-serviceaccount.json
+    ## CAUTION - UNSECURE FLAG!
+    ## Enable Unsercure default logins to any phone number via the code
+    unsecureDefaultLoginCode:
+      enabled: false # Should be disabled in all production systems
+      existingSecret:
+        name: galoyapp-unsecure-login-code
+        key: code
     ## Liveness/Readiness Probes Configuration
     ## Determines if pod is healthy or if it should be killed.
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -197,19 +225,29 @@ galoy:
           name: gcs-sa-key
           # Secret Key
           key: gcs-sa-key.json
-      ## Backup data to Dropbox
-      ## To backup to dropbox, you would need an access token to upload
-      ## data to your dropbox account
+      ## Backup data to S3 bucket
+      ## To backup to S3 bucket, you would need an access key and secret key
+      ## to upload data to your S3 bucket
       ##
-      dropbox:
-        # Enable/disable uploading backup to dropbox
+      s3:
+        # Enable/disable uploading backup to S3 bucket
         enabled: false
-        # Dropbox Access Token must be injected via a secret
-        accessTokenExistingSecret:
-          # Secret Name
-          name: dropbox-access-token
+        # S3 bucket name to upload to (it should already be created)
+        bucketName: s3-bucket-name
+        # Aws region
+        region: us-east-1
+        # S3 access key to use to upload backup to above-mentioned bucket
+        accessKeyExistingSecret:
+          # Secret name
+          name: s3-creds
           # Secret Key
-          key: token
+          key: access-key
+        # S3 secret key to use to upload backup to above-mentioned bucket
+        secretKeyExistingSecret:
+          # Secret name
+          name: s3-creds
+          # Secret Key
+          key: secret-key
   ## Configuration values for Galoy Admin components.
   ##
   admin:
@@ -363,6 +401,26 @@ galoy:
         failureThreshold: 5
         successThreshold: 2
         timeoutSeconds: 1
+  apiKeys:
+    nameOverride:
+    replicas: 2
+    port: 5397
+    serviceType: ClusterIP
+    resources: {}
+    config:
+      keyPrefix: galoy
+  consent:
+    resources: {}
+    port: 80
+    containerPort: 3000
+    graphqlPublicApi: http://galoy-oathkeeper-proxy:4455/graphql
+    coreAuthUrl: http://galoy-oathkeeper-proxy:4455/auth
+    hydraAdminUrl: http://galoy-hydra-admin:4445
+    ingress:
+      enabled: false
+      hosts: [consent.staging.galoy.io]
+      clusterIssuer: letsencrypt-issuer
+      tlsSecretName: consent-tls
   mongoBackupCron:
     resources: {}
   galoyCron:
@@ -623,12 +681,15 @@ secrets:
   svixSecretKey:
   ## Api key for proxy check
   proxyCheckApiKey:
+  ## postgres secret for api-keys
+  apiKeysPgCon:
 ## Tracing details
 ##
 tracing:
   ## OTEL Exporter OTLP Endpoint
   ##
   otelExporterOtlpEndpoint: http://localhost:4318
+  otelExporterGrpcEndpoint: http://localhost:4317
   ## Prefix for tracing
   ##
   prefix: galoy-dev
@@ -673,6 +734,12 @@ oathkeeper:
             preserve_path: true
             subject_from: identity.id
             extra_from: identity.traits
+        oauth2_introspection:
+          enabled: true
+          config:
+            introspection_url: http://galoy-hydra-admin:4445/admin/oauth2/introspect
+            token_from:
+              header: Oauth2-Token
         anonymous:
           enabled: true
           config:
@@ -697,6 +764,12 @@ oathkeeper:
           config:
             jwks_url: "http://galoy-oathkeeper-api:4456/.well-known/jwks.json"
             issuer_url: "galoy.io"
+        header:
+          enabled: true
+          config:
+            headers:
+              X-Appcheck-Jti: "{{ print .Extra.jti }}"
+              Authorization: '{{ .MatchContext.Header.Get "Authorization" }}'
       errors:
         fallback:
           - json
@@ -709,131 +782,103 @@ oathkeeper:
         matching_strategy: regexp
     mutatorIdTokenJWKs: "http://galoy-oathkeeper-api:4456/.well-known/jwks.json"
     accessRules: |
-      [
-        {
-          "id": "anonymous-rest-auth",
-          "upstream": { "url": "http://api:4002" },
-          "match": {
-            "url": "<(http|https)>://<[a-zA-Z0-9-.:]+>/auth/<(clearCookies|login|logout|email/code|email/login|email/login/cookie)>",
-            "methods": ["GET", "POST", "OPTIONS"]
-          },
-          "authenticators": [{ "handler": "anonymous" }],
-          "authorizer": { "handler": "allow" },
-          "mutators": [{ "handler": "noop" }]
-        },
-        {
-          "id": "device-login",
-          "upstream": {
-            "url": "http://api:4002"
-          },
-          "match": {
-            "url": "<(http|https)>://<[a-zA-Z0-9-.:]+>/auth/create/device-account",
-            "methods": ["POST"]
-          },
-          "authenticators": [
-            {
-              "handler": "jwt",
-              "config": {
-                "trusted_issuers": [ "https://firebaseappcheck.googleapis.com/806646140435" ],
-                "target_audience": [ "projects/806646140435", "projects/avid-ceiling-390418" ],
-                "jwks_urls": [ "https://firebaseappcheck.googleapis.com/v1beta/jwks" ],
-                "token_from": {
-                  "header": "Appcheck"
-                }
-              }
-            },
-          ],
-          "authorizer": { "handler": "allow" },
-          "mutators": [{ "handler": "noop" }]
-        },
-        {
-          "id": "galoy-router",
-          "upstream": {
-            "url": "http://galoy-router:80"
-          },
-          "match": {
-            "url": "<(http|https)>://<[a-zA-Z0-9-.:]+>/graphql",
-            "methods": [ "POST", "GET", "OPTIONS" ]
-          },
-          "authenticators": [
-            {
-              "handler": "cookie_session",
-              "config": {
-                "check_session_url": "http://galoy-kratos-public:80/sessions/whoami",
-                "preserve_path": true,
-                "preserve_query": true,
-                "subject_from": "identity.id",
-                "extra_from": "@this"
-              }
-            },
-            {
-              "handler": "bearer_token",
-              "config": {
-                "check_session_url": "http://galoy-kratos-public:80/sessions/whoami",
-                "preserve_path": true,
-                "preserve_query": true,
-                "subject_from": "identity.id",
-                "extra_from": "@this"
-              }
-            },
-            { "handler": "anonymous" }
-          ],
-          "authorizer": { "handler": "allow" },
-          "mutators": [
-            {
-              "handler": "id_token",
-              "config": {
-                "claims": '{"sub": "{{ print .Subject }}", "session_id": "{{ print .Extra.id }}", "expires_at": "{{ print .Extra.expires_at }}" }'
-              }
-            }
-          ]
-        },
-        {
-          "id": "admin-backend",
-          "upstream": {
-            "url": "http://graphql-admin:4001",
-            "strip_path": "/admin"
-          },
-          "match": {
-            "url": "<(http|https)>://<.*><[0-9]*>/admin/<.*>",
-            "methods": ["GET", "POST", "OPTIONS"]
-          },
-          "authenticators": [
-            {
-              "handler": "cookie_session",
-              "config": {
-                "check_session_url": "http://galoy-kratos-public:80/sessions/whoami",
-                "preserve_path": true,
-                "preserve_query": true,
-                "subject_from": "identity.id",
-                "extra_from": "@this"
-              }
-            },
-            {
-              "handler": "bearer_token",
-              "config": {
-              "check_session_url": "http://galoy-kratos-public:80/sessions/whoami",
-                "preserve_path": true,
-                "preserve_query": true,
-                "subject_from": "identity.id",
-                "extra_from": "@this"
-              }
-            },
-            { "handler": "anonymous" }
-          ],
-          "authorizer": {
-            "handler": "allow"
-          },
-          "mutators": [
-            {
-              "handler": "id_token",
-              "config": {
-                "claims": '{"sub": "{{ print .Subject }}"}'
-              }
-            }
-          ]
-        }
-      ]
+      - id: anonymous-rest-auth
+        upstream:
+          url: http://api:4002
+        match:
+          url: "<(http|https)>://<[a-zA-Z0-9-.:]+>/auth/<.*>"
+          methods:
+            - GET
+            - POST
+            - OPTIONS
+        authenticators:
+          - handler: jwt
+            config:
+              trusted_issuers:
+                - https://firebaseappcheck.googleapis.com/806646140435
+              target_audience:
+                - projects/806646140435
+              jwks_urls:
+                - https://firebaseappcheck.googleapis.com/v1beta/jwks
+              token_from:
+                header: Appcheck
+          - handler: anonymous
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: header
+      - id: galoy-router
+        upstream:
+          url: http://galoy-router:80
+        match:
+          url: "<(http|https)>://<[a-zA-Z0-9-.:]+>/graphql"
+          methods:
+            - POST
+            - GET
+            - OPTIONS
+        authenticators:
+          - handler: cookie_session
+            config:
+              check_session_url: http://galoy-kratos-public:80/sessions/whoami
+              preserve_path: true
+              preserve_query: true
+              subject_from: identity.id
+              extra_from: "@this"
+          - handler: bearer_token
+            config:
+              check_session_url: http://galoy-kratos-public:80/sessions/whoami
+              preserve_path: true
+              preserve_query: true
+              subject_from: identity.id
+              extra_from: "@this"
+          - handler: bearer_token
+            config:
+              token_from:
+                header: X-API-KEY
+              forward_http_headers:
+              - "X-API-KEY"
+              check_session_url: "http://api-keys:5397/auth/check"
+              force_method: GET
+              preserve_path: true
+              preserve_query: true
+              subject_from: sub
+              extra_from: "@this"
+          - handler: anonymous
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: id_token
+            config:
+              claims: '{"sub": "{{ print .Subject }}", "session_id": "{{ print .Extra.id }}", "expires_at": "{{ print .Extra.expires_at }}" }'
+      - id: admin-backend
+        upstream:
+          url: http://graphql-admin:4001
+          strip_path: /admin
+        match:
+          url: "<(http|https)>://<.*><[0-9]*>/admin/<.*>"
+          methods:
+            - GET
+            - POST
+            - OPTIONS
+        authenticators:
+          - handler: cookie_session
+            config:
+              check_session_url: http://galoy-kratos-public:80/sessions/whoami
+              preserve_path: true
+              preserve_query: true
+              subject_from: identity.id
+              extra_from: "@this"
+          - handler: oauth2_introspection
+            config:
+              introspection_url: http://galoy-hydra-admin:4445/admin/oauth2/introspect
+              token_from:
+                header: Oauth2-Token
+        authorizer:
+          handler: allow
+        mutators:
+          - handler: id_token
+            config:
+              claims: '{"sub": "{{ print .Subject }}", "scope": "{{ print .Extra.scope }}" }'
   maester:
     enabled: false
 kratos:
@@ -858,6 +903,8 @@ kratos:
         domain: localhost # var.root_domain
       serve:
         public:
+          request_log:
+            disable_for_health: true
           base_url: http://galoy-kratos-public:80/
           cors:
             enabled: true
@@ -878,6 +925,8 @@ kratos:
               - Set-Cookie
             debug: true
         admin:
+          request_log:
+            disable_for_health: true
           base_url: http://galoy-kratos-admin:80/
       selfservice:
         default_browser_return_url: http://localhost:3000/
@@ -1151,6 +1200,24 @@ kratos:
           }
         }
     emailTemplates: {}
+hydra:
+  enabled: true
+  replicaCount: 2
+  maester:
+    enabled: false
+  hydra:
+    config:
+      dsn: memory
+    dev: true
+    serve:
+      cookies:
+        same_site_mode: Lax
+    urls:
+      self:
+        issuer: http://127.0.0.1:4444
+      consent: http://127.0.0.1:3000/consent
+      login: http://127.0.0.1:3000/login
+      logout: http://127.0.0.1:3000/logout
 router:
   supergraphFilePath: apollo-router/supergraph.graphql
   extraEnvVars:

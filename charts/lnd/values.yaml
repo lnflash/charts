@@ -2,12 +2,12 @@ global:
   network: mainnet
 image:
   repository: lightninglabs/lnd
-  tag: v0.16.2-beta
+  tag: v0.17.3-beta
   pullPolicy: IfNotPresent
 sidecarImage:
   repository: us.gcr.io/galoy-org/lnd-sidecar
-  digest: "sha256:e3ad153f0fe8dc8418c0e0c3cc6baf74ecc2a6b7c1436a6154e52330eb02167f"
-  git_ref: 2614f2e
+  digest: "sha256:f748f0728d4db112e2961beb58d7b4e4e6f25e36441454ec777dc02603501b4f"
+  git_ref: 083c7f7
 kubemonkey:
   enabled: false
 configmap:

@@ -10,9 +10,7 @@ metadata:
     {{- end }}
 spec:
   serviceName: {{ include "bitcoind.fullname" . }}
-{{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-{{- end }}
   selector:
     matchLabels:
       {{- include "bitcoind.selectorLabels" . | nindent 6 }}
@@ -124,7 +122,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         {{- if and .Values.descriptor.secretName .Values.descriptor.secretKey }}
         - name: descriptor-import
-          image: lncm/bitcoind:v24.0.1
+          image: lncm/bitcoind:v25.1
           command: ['/bin/sh']
           args:
           - '-c'

@@ -43,11 +43,7 @@ spec:
 
       containers:
       - name: api
-        image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
-        args:
-        - "-r"
-        - "/app/lib/services/tracing.js"
-        - "lib/servers/trigger.js"
+        image: "{{ .Values.galoy.images.trigger.repository }}@{{ .Values.galoy.images.trigger.digest }}"
         resources:
           {{ toYaml .Values.galoy.trigger.resources | nindent 10 }}
         ports:
@@ -120,12 +116,19 @@ spec:
           value: "/var/secret/cloud.google.com/gcs-sa-key.json"
         {{ end }}
 
-        {{ if .Values.galoy.trigger.backups.dropbox.enabled }}
-        - name: DROPBOX_ACCESS_TOKEN
+        {{ if .Values.galoy.trigger.backups.s3.enabled }}
+        - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.galoy.trigger.backups.dropbox.accessTokenExistingSecret.name | quote }}
-              key: {{ .Values.galoy.trigger.backups.dropbox.accessTokenExistingSecret.key | quote }}
+              name: {{ .Values.galoy.trigger.backups.s3.accessKeyExistingSecret.name | quote }}
+              key: {{ .Values.galoy.trigger.backups.s3.accessKeyExistingSecret.key | quote }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.trigger.backups.s3.secretKeyExistingSecret.name | quote }}
+              key: {{ .Values.galoy.trigger.backups.s3.secretKeyExistingSecret.key | quote }}
+        - name: AWS_REGION
+          value: {{ .Values.galoy.trigger.backups.s3.region | quote }}
         {{ end }}
 
         {{ if .Values.galoy.api.firebaseNotifications.enabled }}

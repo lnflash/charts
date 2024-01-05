@@ -9,35 +9,6 @@ create-cluster:
 delete-cluster:
 	k3d cluster delete && rm terraform.tfstate
 
-init:
-	terraform init
-
-deploy-services:
-	$(TF) apply -target module.galoy_deps.helm_release.cert_manager \
-				-var="bitcoin_network=regtest"	\
-				-var="name_prefix=galoy-dev" -auto-approve
-	$(TF) apply -target module.galoy_deps \
-				-var="bitcoin_network=regtest" 	\
-				-var="name_prefix=galoy-dev" -auto-approve
-
-destroy-services:
-	$(TF) destroy -var="bitcoin_network=regtest"	\
-				-var="name_prefix=galoy-dev" -auto-approve
-
-
-redeploy-kafka:
-	-kubectl delete namespace galoy-dev-kafka --force
-	$(TF) apply -target=module.galoy_deps.helm_release.kafka \
-				-var="bitcoin_network=regtest" \
-				-var="name_prefix=galoy-dev" -auto-approve
-	cd kafka-connect
-	$(TF) apply -var="bitcoin_network=regtest" \
-				-var="name_prefix=galoy-dev" -auto-approve
-
-deploy:
-	$(TF) apply -var="bitcoin_network=regtest" \
-				-var="name_prefix=galoy-dev" -auto-approve
-
 all: create-cluster init deploy-services deploy
 
 refresh:
@@ -121,24 +92,17 @@ run-galoy-smoketest:
     ./galoy-smoketest.sh && \
     rm -rf smoketest-settings response.json"
 
+run-bitcoin-smoketest:
+	kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
+		CHART=bitcoind ./dev-smoketest-settings.sh && \
+		./bitcoind-smoketest.sh regtest && \
+		rm -rf smoketest-settings"
+
 run-kafka-connect-smoketest:
 	kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
     CHART=kafka-connect ./dev-smoketest-settings.sh && \
     ./kafka-connect-smoketest.sh && \
     rm -rf smoketest-settings response.json"
-
-fmt:
-	cd ..
-	$(TF) fmt -recursive
-
-plan:
-	$(TF) plan -var="bitcoin_network=regtest" -var="name_prefix=galoy-dev"
-
-review:
-	$(TF) show -json | jq
-
-delete:
-	kubectl delete namespace $(ns) --force
 
 helm-dep-updates:
 	for dir in $$(ls ../charts); do \

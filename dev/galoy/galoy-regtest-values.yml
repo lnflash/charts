@@ -67,6 +67,11 @@ mongodb:
   metrics:
     enabled: false
   initDbScripts: {}
+  customReadinessProbe:
+    timeoutSeconds: 7
+    exec:
+      command:
+        - /bitnami/scripts/readiness-probe.sh
 
 redis:
   replica:
@@ -94,6 +99,9 @@ oathkeeper:
     enabled: false
 
 kratos:
+  replicaCount: 1
+
+hydra:
   replicaCount: 1
 
 secrets:
