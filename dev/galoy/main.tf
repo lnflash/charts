@@ -52,6 +52,19 @@ resource "kubernetes_secret" "bria" {
   }
 }
 
+# Should be defined as data?
+resource "kubernetes_secret" "ibex_auth" {
+  metadata {
+    name      = "ibex-auth"
+    namespace = kubernetes_namespace.galoy.metadata[0].name
+  }
+
+  data = {
+    "api-password" : "set-manually"
+    "webhook-secret" : "not-so-secret"
+  }
+}
+
 resource "kubernetes_secret" "gcs_sa_key" {
   metadata {
     name      = "gcs-sa-key"
@@ -332,6 +345,7 @@ resource "helm_release" "galoy" {
     kubernetes_secret.lnd2_pubkey,
     kubernetes_secret.price_history_postgres_creds,
     kubernetes_secret.kratos_master_user_password,
+    kubernetes_secret.ibex_auth,
     helm_release.postgresql
   ]
 

@@ -82,6 +82,7 @@ spec:
         - name: LND_PRIORITY
           value: {{ .Values.galoy.lndPriority }}
 
+
 {{/* Databases */}}
 {{ include "galoy.mongodb.env" . | indent 8 }}
 {{ include "galoy.redis.env" . | indent 8 }}
@@ -95,6 +96,7 @@ spec:
 {{ include "galoy.geetest.env" . | indent 8 }}
 
 {{ include "galoy.kratos.env" . | indent 8 }}
+{{ include "galoy.ibex.env" . | indent 8 }}
 
         - name: OATHKEEPER_DECISION_ENDPOINT
           value: http://galoy-oathkeeper-api:4456
