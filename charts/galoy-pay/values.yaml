@@ -1,15 +1,15 @@
 image:
   repository: lnflash/flash-pay:latest
-  digest: "sha256:2396ef9235e7ba68d96e268d54625b6b35907be36d8694d712cb7ad13a8013ee"
+  digest: "sha256:5171bdc1827be0726f348b2331492a1a50af6ae78954bd733a7fbe8cecab4438"
   git_ref: "cf1ff28" # Not used by helm
 ingress:
   enabled: false
 service:
   port: 80
   type: ClusterIP
-graphqlUrl: http://staging.flashapp.me:8080/graphql
+graphqlUrl: https://api.staging.flashapp.me:8080/graphql
 graphqlUrlInternal: http://api.galoy-dev-galoy.svc.cluster.local
-graphqlWebsocketUrl: wss://staging.flashapp.me:4000/graphql
+graphqlWebsocketUrl: wss://ws.staging.flashapp.me:4000/graphql
 nostrPubkey: "npub1qqqqqqrm4aehwh4t0mknaxvaqvhxdrvrnquz7a7npdgll3lezkpqq3j5a5"
 galoy-nostr:
   enabled: true

@@ -100,7 +100,7 @@ galoy:
       enabled: true
       ## Ingress Host
       ##
-      hosts: ["staging.flashapp.me", "localhost"]
+      hosts: ["api.staging.flashapp.me", "localhost"]
       ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
       ## Read More: https://cert-manager.io/docs/usage/ingress/
       ##
@@ -237,7 +237,7 @@ galoy:
       enabled: true
       ## Ingress Host
       ##
-      hosts: ["staging.flashapp.me", "localhost"]
+      hosts: ["admin.staging.flashapp.me", "localhost"]
       ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
       ## Read More: https://cert-manager.io/docs/usage/ingress/
       ##
@@ -329,7 +329,7 @@ galoy:
       enabled: true
       ## Ingress Host
       ##
-      hosts: ["staging.flashapp.me", "localhost"]
+      hosts: ["ws.staging.flashapp.me", "localhost"]
       ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
       ## Read More: https://cert-manager.io/docs/usage/ingress/
       ##
@@ -454,7 +454,7 @@ galoy:
     url: https://api-sandbox.poweredbyibex.io
     email: mail2michaelennis@gmail.com
     listener:
-      host: ibex-api.galoy-dev-bitcoin.svc.cluster.local
+      host: ibex-api.galoy-dev-galoy.svc.cluster.local
       port: 8889
     secrets: 
       name: ibex-auth 

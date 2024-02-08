@@ -238,9 +238,8 @@ Define kratos env vars
 - name: IBEX_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.galoy.ibex.password.name | quote }}
-      key: {{ .Values.galoy.ibex.password.key | quote }}
-  value: {{ .Values.galoy.ibex.password | quote }}
+      name: {{ .Values.galoy.ibex.secrets.name | quote }}
+      key: {{ .Values.galoy.ibex.secrets.password.key | quote }}
 - name: IBEX_LISTENER_HOST
   value: {{ .Values.galoy.ibex.listener.host | quote }}
 - name: IBEX_LISTENER_PORT
@@ -248,8 +247,8 @@ Define kratos env vars
 - name: IBEX_WEBHOOK_SECRET
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.galoy.ibex.listener.webhookSecret.name | quote }}
-      key: {{ .Values.galoy.ibex.listener.webhookSecret.key | quote }}
+      name: {{ .Values.galoy.ibex.secrets.name | quote }}
+      key: {{ .Values.galoy.ibex.secrets.webhook.key | quote }}
 {{- end -}}
 
 {{/*

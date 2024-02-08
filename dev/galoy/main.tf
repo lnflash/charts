@@ -3,6 +3,7 @@ variable "bitcoin_network" {}
 variable "TWILIO_VERIFY_SERVICE_ID" {}
 variable "TWILIO_ACCOUNT_SID" {}
 variable "TWILIO_AUTH_TOKEN" {}
+variable "IBEX_PASSWORD" {}
 
 locals {
   bitcoin_network     = var.bitcoin_network
@@ -60,7 +61,7 @@ resource "kubernetes_secret" "ibex_auth" {
   }
 
   data = {
-    "api-password" : "set-manually"
+    "api-password" : var.IBEX_PASSWORD 
     "webhook-secret" : "not-so-secret"
   }
 }
