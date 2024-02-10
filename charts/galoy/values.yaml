@@ -136,6 +136,40 @@ galoy:
         failureThreshold: 5
         successThreshold: 2
         timeoutSeconds: 1
+  ## Configuration values for Ibex webhook
+  ##
+  ibex:
+    ## Override the components name (defaults to api).
+    ##
+    nameOverride: 
+    ## Number of replicas.
+    ##
+    replicas: 2
+    ## Log Level
+    ##
+    logLevel: debug
+    ## Port on which API Server is running
+    ##
+    port: 4008
+    ## Service type
+    ##
+    serviceType: ClusterIP
+    ## Resource configuration
+    resources: {}
+    ## Ingress configuration.
+    ## Ref: https://kubernetes.io/docs/user-guide/ingress/
+    ##
+    ingress:
+      ## Enable Ingress.
+      ##
+      enabled: true
+      ## Ingress Host
+      ##
+      hosts: ["ibex.staging.flashapp.me"]
+      ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
+      ## Read More: https://cert-manager.io/docs/usage/ingress/
+      ##
+      clusterIssuer: letsencrypt-issuer
   ## Configuration values for Trigger components.
   ##
   trigger:
@@ -451,11 +485,8 @@ galoy:
       name: bria-api-key
       key: api-key
   ibex:
-    url: https://api-sandbox.poweredbyibex.io
-    email: mail2michaelennis@gmail.com
-    listener:
-      host: ibex-api.galoy-dev-galoy.svc.cluster.local
-      port: 8889
+    webhook:
+      port: 4008
     secrets: 
       name: ibex-auth 
       password:
