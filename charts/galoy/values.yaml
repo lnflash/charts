@@ -139,37 +139,40 @@ galoy:
   ## Configuration values for Ibex webhook
   ##
   ibex:
-    ## Override the components name (defaults to api).
-    ##
-    nameOverride: 
-    ## Number of replicas.
-    ##
-    replicas: 2
-    ## Log Level
-    ##
-    logLevel: debug
-    ## Port on which API Server is running
-    ##
-    port: 4008
-    ## Service type
-    ##
-    serviceType: ClusterIP
-    ## Resource configuration
-    resources: {}
-    ## Ingress configuration.
-    ## Ref: https://kubernetes.io/docs/user-guide/ingress/
-    ##
-    ingress:
-      ## Enable Ingress.
-      ##
-      enabled: true
-      ## Ingress Host
-      ##
-      hosts: ["ibex.staging.flashapp.me"]
-      ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
-      ## Read More: https://cert-manager.io/docs/usage/ingress/
-      ##
-      clusterIssuer: letsencrypt-issuer
+    url: # set by env
+    email: # set by env
+    secrets: 
+      name: ibex-auth 
+      password:
+        key: api-password
+      webhook:
+        key: webhook-secret
+    webhook:
+      nameOverride: 
+      replicas: 1
+      logLevel: debug
+      port: 4008
+      serviceType: ClusterIP
+      resources: {}
+      ingress:
+        enabled: true
+        hosts: ["ibex.staging.flashapp.me"]
+        clusterIssuer: letsencrypt-issuer
+      probes:
+        ## Enable/disable API probes for healthcheck
+        enabled: false
+        ## If pod is starting up/healthy
+        liveness:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 5
+          timeoutSeconds: 1
+        ## When to expose the pod to the service
+        readiness:
+          initialDelaySeconds: 5
+          failureThreshold: 5
+          successThreshold: 2
+          timeoutSeconds: 1
   ## Configuration values for Trigger components.
   ##
   trigger:
@@ -484,15 +487,6 @@ galoy:
     apiKeyExistingSecret:
       name: bria-api-key
       key: api-key
-  ibex:
-    webhook:
-      port: 4008
-    secrets: 
-      name: ibex-auth 
-      password:
-        key: api-password
-      webhook:
-        key: webhook-secret
   ## Dealer Service Connection details
   ##
   dealer:
