@@ -244,10 +244,10 @@ Define kratos env vars
     secretKeyRef:
       name: {{ .Values.galoy.ibex.secrets.name | quote }}
       key: {{ .Values.galoy.ibex.secrets.password.key | quote }}
-- name: IBEX_LISTENER_HOST
-  value: {{ .Values.galoy.ibex.listener.host | quote }}
 - name: IBEX_LISTENER_PORT
   value: {{ .Values.galoy.ibex.webhook.port | quote }}
+- name: IBEX_EXTERNAL_URI
+  value: {{ .Values.galoy.ibex.webhook.externalUri | quote }}
 - name: IBEX_WEBHOOK_SECRET
   valueFrom:
     secretKeyRef:

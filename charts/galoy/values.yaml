@@ -136,8 +136,6 @@ galoy:
         failureThreshold: 5
         successThreshold: 2
         timeoutSeconds: 1
-  ## Configuration values for Ibex webhook
-  ##
   ibex:
     url: # set by env
     email: # set by env
@@ -154,6 +152,7 @@ galoy:
       port: 4008
       serviceType: ClusterIP
       resources: {}
+      externalUri: # set by env
       ingress:
         enabled: true
         hosts: ["ibex.staging.flashapp.me"]
