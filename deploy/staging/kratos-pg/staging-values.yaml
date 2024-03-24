@@ -1,0 +1,15 @@
+
+persistence:
+  enabled: true
+  storageClass: do-block-storage-retain # xfs vs non-xsf? 
+  size: 8Gi # default
+
+# What's the difference?
+persistentVolumeClaimRetentionPolicy:
+  enabled: false
+
+auth:
+  enablePostgresUser: false
+  username: kratos-pg
+  database: kratos-pg
+  password: kratos-pg
