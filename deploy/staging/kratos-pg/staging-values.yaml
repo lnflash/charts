@@ -1,10 +1,11 @@
 
 persistence:
   enabled: true
-  storageClass: do-block-storage-retain # xfs vs non-xsf? 
+  storageClass: do-block-storage-xfs-retain # xfs is file system format
   size: 8Gi # default
+  # annotations: consider backups 
 
-# What's the difference?
+# This becomes relevant when scaling the persistent volume
 persistentVolumeClaimRetentionPolicy:
   enabled: false
 
