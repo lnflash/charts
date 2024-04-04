@@ -172,7 +172,7 @@ galoy:
   ## Exporter records metrics, primarly for Bitcoin & Lightning services.
   ## Turning off for now as most (if not all) of these metrics are irrelevant to Flash
   exporter:
-    enabled: false
+    enabled: true
     ## Override the components name (defaults to admin).
     ##
     nameOverride:
