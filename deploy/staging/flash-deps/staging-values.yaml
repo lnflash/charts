@@ -5,7 +5,7 @@ kubemonkey:
   enabled: false
 
 opentelemetry-collector:
-  enabled: false
+  enabled: true
 
 # cert-manager:
 #   enabled: false

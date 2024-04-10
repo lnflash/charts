@@ -34,3 +34,9 @@ variable "IBEX_PASSWORD" {
 #   type        = string
 #   sensitive   = true
 # }
+
+variable "HONEYCOMB_API_KEY" {
+  description = "The api key to write open-telemetry data to Honeycomb"
+  type        = string
+  sensitive   = true
+}

@@ -63,10 +63,11 @@ history:
 postgresql:
   enabled: true
   nameOverride: price-history-db
-  persistence:
-    enabled: true
-    storageClass: do-block-storage-xfs-retain # xfs is file system format
-    size: 8Gi # Default. Current size is 7756 kB. Find out why 
+  primary:
+    persistence:
+      enabled: true
+      storageClass: do-block-storage-xfs-retain # xfs is file system format
+      size: 8Gi # Default. Current size is 7756 kB. Find out why 
   auth:
     enablePostgresUser: false
     username: price-history
