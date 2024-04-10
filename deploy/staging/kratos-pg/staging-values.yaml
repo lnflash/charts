@@ -1,13 +1,14 @@
 
-persistence:
-  enabled: true
-  storageClass: do-block-storage-xfs-retain # xfs is file system format
-  size: 8Gi # default
-  # annotations: consider backups 
+primary:
+  persistence:
+    enabled: true
+    storageClass: do-block-storage-xfs-retain # xfs is file system format
+    size: 8Gi # default
+    # annotations: consider backups 
 
-# This becomes relevant when scaling the persistent volume
-persistentVolumeClaimRetentionPolicy:
-  enabled: false
+  # This becomes relevant when scaling the persistent volume
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
 
 auth:
   enablePostgresUser: false

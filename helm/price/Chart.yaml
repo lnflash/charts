@@ -2,12 +2,12 @@ apiVersion: v2
 name: price
 description: A helm chart for real-time and historical BTC price data
 type: application
-version: 0.3.0
+version: 0.3.4
 appVersion: 0.1.0
 
 dependencies:
   - name: postgresql
     repository: https://charts.bitnami.com/bitnami
-    version: 14.2.3
+    version: 14.3.1
     condition: postgresql.enabled
 

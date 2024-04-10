@@ -18,10 +18,10 @@ galoy:
         hotToColdRebalanceQueueName: dev
   images:
     app:
-      repository: lnflash/flash-dev:latest
+      repository: brh28/flash-dev:latest
       imagePullPolicy: Always
       ## TODO: remove digest and commit hash
-      digest: sha256:0f4c5aa2f011eb657e05d2a4cf5f01ae02c6bc202305a7146d1c2023cd0b912b
+      digest: sha256:e252557744f18e660b9874e428baa14fc162c54cb6be5f0b4a05774c1b5fe981
       git_ref: "d2a438"
     websocket:
       repository: us.gcr.io/galoy-org/galoy-app-websocket
@@ -448,7 +448,7 @@ secrets:
 tracing:
   ## OTEL Exporter OTLP Endpoint
   ##
-  otelExporterOtlpEndpoint: http://localhost:4318
+  otelExporterOtlpEndpoint: http://opentelemetry-collector.otel.svc.cluster.local:4318
   ## Prefix for tracing
   ##
   prefix: galoy-dev
@@ -1021,7 +1021,7 @@ router:
       telemetry:
         tracing:
           otlp:
-            endpoint: http://localhost:4318
+            endpoint: http://opentelemetry-collector.otel.svc.cluster.local:4318
             protocol: http
 
 ingress-nginx:

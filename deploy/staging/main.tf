@@ -59,6 +59,12 @@ resource "helm_release" "flash-pay" {
   ]
 }
 
+module "otel" {
+  source = "./otel"
+  
+  HONEYCOMB_API_KEY = var.HONEYCOMB_API_KEY
+}
+
 module "flash-deps" {
   source = "./flash-deps"
 }
