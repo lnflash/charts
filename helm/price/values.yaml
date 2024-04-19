@@ -45,7 +45,6 @@ realtime:
       - { code: "KYD", symbol: "$", name: "Cayman Islands Dollar", flag: "🇰🇾" }
       - { code: "CUP", symbol: "$", name: "Cuban Peso", flag: "🇨🇺" }
       - { code: "DOP", symbol: "RD$", name: "Dominican Peso", flag: "🇩🇴" }
-      - { code: "XCD", symbol: "$", name: "East Caribbean Dollar", flag: "🇬🇩" }
       - { code: "TTD", symbol: "TT$", name: "Trinidad and Tobago Dollar", flag: "🇹🇹" }
   image:
     repository: us.gcr.io/galoy-org/price
