@@ -1,3 +1,2 @@
 *.tgz
 .direnv
-node_modules/
