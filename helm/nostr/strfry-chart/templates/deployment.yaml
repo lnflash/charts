@@ -21,8 +21,7 @@ spec:
             - name: strfry-db
               mountPath: /app/strfry-db
             - name: strfry-conf
-              mountPath: /etc/
-              subPath: strfry.conf
+              mountPath: /etc/store.conf
       volumes:
         - name: strfry-db
           persistentVolumeClaim:

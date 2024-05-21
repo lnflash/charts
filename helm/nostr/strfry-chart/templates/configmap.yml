@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "strfry-chart.fullname" . }}-configmap
 data:
-  store.conf: |
+  strfry.conf: |
     ##
     ## Default strfry config
     ##
