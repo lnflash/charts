@@ -9,4 +9,4 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: 7777
   selector:
-    app: {{ .Chart.Name }}
+    app: strfry
