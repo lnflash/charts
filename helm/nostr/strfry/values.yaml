@@ -17,7 +17,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-strfry-chart:
+strfry:
   name: "strfry"
   fullname: "strfry-chart"
 

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: strfry
+  name: {{ include "strfry.name" . }}
 spec:
   replicas: 1
   selector:
@@ -21,11 +21,12 @@ spec:
             - name: strfry-db
               mountPath: /app/strfry-db
             - name: strfry-conf
-              mountPath: /etc/store.conf
+              mountPath: /etc/strfry.conf
+              subPath: strfry.conf
       volumes:
         - name: strfry-db
           persistentVolumeClaim:
-            claimName: strfry-chart-db-pvc
+            claimName: {{ include "strfry.fullname" . }}-db-pvc
         - name: strfry-conf
           configMap:
-            name: strfry-chart-configmap
+            name: {{ include "strfry.fullname" . }}-configmap

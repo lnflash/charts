@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "strfry-chart.fullname" . }}-configmap
+  name: {{ include "strfry.fullname" . }}-configmap
 data:
   strfry.conf: |
     ##
@@ -60,16 +60,16 @@ data:
 
       info {
         # NIP-11: Name of this server. Short/descriptive (< 30 characters)
-        name = "strfry default"
+        name = "Flash Relay"
 
         # NIP-11: Detailed information about relay, free-form
-        description = "This is a strfry instance."
+        description = "For enhancing the payment experience for Flash users with other Lightning users.This relay is meant to serve the Flash application and it's users. Unrelated notes may not be persisted or relayed."
 
         # NIP-11: Administrative nostr pubkey, for contact purposes
         pubkey = ""
 
         # NIP-11: Alternative administrative contact (email, website, etc)
-        contact = ""
+        contact = "example@example.com"
       }
 
       # Maximum accepted incoming websocket frame size (should be larger than max event) (restart required)
@@ -142,4 +142,3 @@ data:
         maxSyncEvents = 1000000
       }
     }
-
