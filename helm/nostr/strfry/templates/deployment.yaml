@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "strfry.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strfry
+  template:
+    metadata:
+      labels:
+        app: strfry
+    spec:
+      containers:
+        - name: strfry
+          image: dockurr/strfry
+          ports:
+            - containerPort: 7777
+          volumeMounts:
+            - name: strfry-db
+              mountPath: /app/strfry-db
+            - name: strfry-conf
+              mountPath: /etc/strfry.conf
+              subPath: strfry.conf
+      volumes:
+        - name: strfry-db
+          persistentVolumeClaim:
+            claimName: {{ include "strfry.fullname" . }}-db-pvc
+        - name: strfry-conf
+          configMap:
+            name: {{ include "strfry.fullname" . }}-configmap
