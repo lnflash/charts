@@ -1,0 +1,44 @@
+### Values to deploy the bitnami-concourse Helm chart for Flash
+###
+web:
+  tls: 
+    enabled: true
+  auth:
+    mainTeam:
+      localUser: "admin"
+      config: |
+        roles:
+        - name: owner
+          local:
+            users: ["admin"]
+        - name: member
+          github:
+            teams: ["lnflash:Development"]
+  extraEnvVarsSecret: "github-concourse-oauth"
+  extraVolumeMounts:
+    ### The ConfigMap created with web.auth.mainTeam.config is not mounted. So we do it manually here
+  - mountPath: /bitnami/concourse/conf
+    name: concourse-configuration
+    readOnly: true
+
+worker:
+  mode: deployment #  TODO: statefulset
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 2
+      memory: 4Gi
+      ephemeral-storage: 16Gi
+    limits:
+      cpu: 4
+      memory: 8Gi
+      ephemeral-storage: 32Gi
+    # persistence: 
+    # storageClass: do-block-storage 
+
+ingress:
+  enabled: true
+  hostname: concourse.staging.flashapp.me
+  annotations: 
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+  tls: true
