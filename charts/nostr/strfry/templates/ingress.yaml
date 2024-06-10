@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-issuer"
+spec:
+  rules:
+  - host: relay.staging.flashapp.me
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: {{ .Release.Name }}-{{ .Chart.Name }}
+            port:
+              number: {{ .Values.service.port }}
+  tls:
+  - hosts:
+    - relay.staging.flashapp.me
+    secretName: {{ .Release.Name }}-{{ .Chart.Name }}-tls

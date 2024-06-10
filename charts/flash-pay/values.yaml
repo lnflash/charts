@@ -1,0 +1,25 @@
+image:
+  repository: brh28/flash-pay:latest
+  digest: "sha256:d5620fe35398afd0e8079b1ae71ee0632ea4327b0129aa2258ac8735509842f2"
+  git_ref: "cf1ff28" # Not used by helm
+ingress:
+  enabled: false
+service:
+  port: 80
+  type: ClusterIP
+graphqlUrl: 
+graphqlHost: 
+graphqlWebsocketUrl: 
+nostrPubkey: "npub1qqqqqqrm4aehwh4t0mknaxvaqvhxdrvrnquz7a7npdgll3lezkpqq3j5a5"
+galoy-nostr:
+  enabled: true
+  fullnameOverride: galoy-nostr
+redis:
+  redis0Dns: "galoy-redis-node-0.galoy-redis-headless"
+  redis1Dns: "galoy-redis-node-1.galoy-redis-headless"
+  redis2Dns: "galoy-redis-node-2.galoy-redis-headless"
+  auth:
+    existingSecret: galoy-redis-pw
+    existingSecretPasswordKey: redis-password
+resources: {}
+
