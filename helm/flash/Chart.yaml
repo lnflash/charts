@@ -2,8 +2,8 @@ apiVersion: v2 # https://helm.sh/docs/topics/charts/#the-apiversion-field
 name: flash
 description: A Helm chart for the Flash application backend
 type: application
-version: 0.0.22-staging
-appVersion: 0.0.3-dev # perhaps git commit set by CI/CD? ""
+version: 0.0.25-staging
+appVersion: 0.0.4-dev # perhaps git commit set by CI/CD? ""
 dependencies:
   - name: redis
     repository: https://charts.bitnami.com/bitnami
