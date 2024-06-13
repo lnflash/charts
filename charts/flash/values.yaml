@@ -21,8 +21,8 @@ galoy:
       repository: brh28/flash-dev:latest
       imagePullPolicy: Always
       ## TODO: remove digest and commit hash
-      digest: sha256:51de074daf3a7ac9b9e6e4d8e2c78317393a728e55b7ac8287763fbab088bacd
-      git_ref: "d2a438"
+      digest: sha256:5f8d01a7a12484a2782a9516da840eea03dd355fa22dc6bea83092b3f32457ee
+      git_ref: "9f3e6f7abea8a8cefa4e95a4eb9d8f90a47555e7"
     websocket:
       repository: us.gcr.io/galoy-org/galoy-app-websocket
       ## TODO: remove digest
