@@ -3,7 +3,7 @@ name: flash
 description: A Helm chart for the Flash application backend
 type: application
 version: 0.0.26-staging
-appVersion: 0.0.5-dev # perhaps git commit set by CI/CD? ""
+appVersion: 0.0.5-dev 
 dependencies:
   - name: redis
     repository: https://charts.bitnami.com/bitnami

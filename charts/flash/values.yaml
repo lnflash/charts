@@ -18,22 +18,22 @@ galoy:
         hotToColdRebalanceQueueName: dev
   images:
     app:
-      repository: brh28/flash-dev:latest
+      repository: lnflash/flash-app:edge
       imagePullPolicy: Always
-      ## TODO: remove digest and commit hash
+      # digests managed by flash-app pipeline in concourse
       digest: sha256:5f8d01a7a12484a2782a9516da840eea03dd355fa22dc6bea83092b3f32457ee
       git_ref: "9f3e6f7abea8a8cefa4e95a4eb9d8f90a47555e7"
     websocket:
       repository: us.gcr.io/galoy-org/galoy-app-websocket
-      ## TODO: remove digest
+      # digests managed by flash-app pipeline in concourse
       digest: "sha256:6383819eeb5eb01f06507cd078724994d56e4951e5abcab9d7b3e1ae3085d28f"
     mongodbMigrate:
       repository: us.gcr.io/galoy-org/galoy-app-migrate
-      ## TODO: remove digest
+      # digests managed by flash-app pipeline in concourse
       digest: "sha256:997ada867d689d089c0c8f62c5520e19fade7fe95b0e84a963208348bc4e51e0"
     mongoBackup:
       repository: us.gcr.io/galoy-org/mongo-backup
-      ## TODO: remove digest and commit hash
+      # Currently using Galoy's images. To make changes, see /images & /ci in this repo
       digest: "sha256:66d22e50f472f8fb43a93edec095cd724df2393130d6fa3f17e98906eaedb269"
       git_ref: "ce9792c"
   api:
