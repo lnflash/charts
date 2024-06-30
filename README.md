@@ -1,4 +1,4 @@
-# Flash DevOps
+# Flash Charts
 
 The Flash backend is run on Kubernetes using [Helm](https://github.com/helm/helm) and  [Terraform](https://www.terraform.io/). This is a fork of the [Galoy Charts](https://github.com/GaloyMoney/charts), but heavily modified as we do not run the bitcoin/lightning infrastructure ourselves.
 
@@ -6,7 +6,7 @@ The Flash backend is run on Kubernetes using [Helm](https://github.com/helm/helm
 
 ### Setup Infrastructure
 
-This setup has been tested on DigitalOcean. See ([`galoy-infra`](https://github.com/GaloyMoney/galoy-infra)) as a IaaS-based reference for Google Cloud Platform (GCP).
+These charts have been tested on a custom DigitalOcean deployment. See ([`galoy-infra`](https://github.com/GaloyMoney/galoy-infra)) as a IaaS-based reference for Google Cloud Platform (GCP).
 
 ### Install Kubernetes
 
