@@ -3,7 +3,7 @@ nameOverride:
 ## Provide a name to substitute for the full names of resources
 fullnameOverride:
 galoy:
-  network: mainnet 
+  network: mainnet
   router:
     port: 80
   ### TODO: REMOVE lnd and bria config
@@ -21,23 +21,23 @@ galoy:
       repository: lnflash/flash-app:edge
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
-      digest: sha256:5f8d01a7a12484a2782a9516da840eea03dd355fa22dc6bea83092b3f32457ee
-      git_ref: "9f3e6f7abea8a8cefa4e95a4eb9d8f90a47555e7"
+      digest: sha256:c6dc31027ebfc6eeec27e5e7979259d5dd0b278163045a275a3fc824339b0e4a
+      git_ref: "e9794ae"
     websocket:
       repository: us.gcr.io/galoy-org/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:6383819eeb5eb01f06507cd078724994d56e4951e5abcab9d7b3e1ae3085d28f"
+      digest: "sha256:4b4575032e589fea4ee3dc2e8603491c90df591e785383d59f6fe361dfaf97e7"
     mongodbMigrate:
       repository: us.gcr.io/galoy-org/galoy-app-migrate
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:997ada867d689d089c0c8f62c5520e19fade7fe95b0e84a963208348bc4e51e0"
+      digest: "sha256:1e126cd86574d23e77fec3a9002ee6ad6fb7d035e2ba5ea86d7bf0232f071c4e"
     mongoBackup:
       repository: us.gcr.io/galoy-org/mongo-backup
       # Currently using Galoy's images. To make changes, see /images & /ci in this repo
       digest: "sha256:66d22e50f472f8fb43a93edec095cd724df2393130d6fa3f17e98906eaedb269"
       git_ref: "ce9792c"
   api:
-    nameOverride: 
+    nameOverride:
     replicas: 2
     logLevel: debug
     port: 4002
@@ -66,15 +66,15 @@ galoy:
         timeoutSeconds: 1
   ibex:
     url:
-    email: 
-    secrets: 
-      name: ibex-auth 
+    email:
+    secrets:
+      name: ibex-auth
       password:
         key: api-password
       webhook:
         key: webhook-secret
     webhook:
-      nameOverride: 
+      nameOverride:
       replicas: 1
       logLevel: debug
       port: 4008
@@ -82,9 +82,9 @@ galoy:
       resources: {}
       externalUri:
       ingress:
-        enabled: 
-        hosts: 
-        clusterIssuer: 
+        enabled:
+        hosts:
+        clusterIssuer:
       probes:
         enabled: false
         liveness:
@@ -133,14 +133,12 @@ galoy:
         serviceAccountExistingSecret:
           name: gcs-sa-key
           key: gcs-sa-key.json
-      
       ## Backup data to Dropbox requires an eaccess token
       dropbox:
         enabled: false
         accessTokenExistingSecret:
           name: dropbox-access-token
           key: token
-  
   admin:
     nameOverride:
     replicas: 1
@@ -168,7 +166,6 @@ galoy:
         failureThreshold: 5
         successThreshold: 2
         timeoutSeconds: 1
-  
   ## Exporter records metrics, primarly for Bitcoin & Lightning services.
   ## Turning off for now as most (if not all) of these metrics are irrelevant to Flash
   exporter:
@@ -323,7 +320,6 @@ galoy:
     name: proxy-check-api-key
     key: api-key
   mattermostWebhookUrl: "mattermostwebhookurl"
-
 # Ref: https://artifacthub.io/packages/helm/bitnami/mongodb/
 mongodb:
   auth:
@@ -452,7 +448,6 @@ tracing:
   ## Prefix for tracing
   ##
   prefix: galoy-dev
-
 price:
   realtime:
     host: flash-price-realtime
@@ -462,19 +457,16 @@ price:
     # postgresqlDatabase: price-history
     host: flash-price-history
     port: 50052
-
 # postgresql:
 #   enabled: true
 #   primary:
 #   auth:
 #     enablePostgresUser: false
-    # username: price-history
-    # database: price-history
-    # existingSecret: price-history-postgres-creds
-
+# username: price-history
+# database: price-history
+# existingSecret: price-history-postgres-creds
 loop:
   enabled: true
-
 oathkeeper:
   replicaCount: 2
   oathkeeper:
@@ -1023,7 +1015,6 @@ router:
           otlp:
             endpoint: http://opentelemetry-collector.otel.svc.cluster.local:4318
             protocol: http
-
 ingress-nginx:
   enabled: false
   controller:
