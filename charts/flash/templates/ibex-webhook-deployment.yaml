@@ -64,7 +64,7 @@ spec:
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: {{ .Values.tracing.otelExporterOtlpEndpoint | quote }}
         - name: TRACING_SERVICE_NAME
-          value: "{{ .Values.tracing.prefix }}-{{ template "galoy.websocket.fullname" . }}"
+          value: "{{ .Values.tracing.prefix }}-{{ template "galoy.ibex.webhook.fullname" . }}"
 {{/* Databases */}}
 {{ include "galoy.mongodb.env" . | indent 8 }}
 {{ include "galoy.redis.env" . | indent 8 }}
