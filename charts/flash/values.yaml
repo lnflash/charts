@@ -24,11 +24,11 @@ galoy:
       digest: sha256:29be7085d77ac64704d1881fce052f20e5d3b8613ce6e9e71f3a4ae37dadfe22
       git_ref: "4113860"
     websocket:
-      repository: us.gcr.io/galoy-org/galoy-app-websocket
+      repository: docker.io/lnflash/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
       digest: "sha256:487d4c442aac167a7f6d4541d97668b3338288055d324ceed3f5c36b89618b82"
     mongodbMigrate:
-      repository: us.gcr.io/galoy-org/galoy-app-migrate
+      repository: docker.io/lnflash/galoy-app-migrate
       # digests managed by flash-app pipeline in concourse
       digest: "sha256:4481c47e6bb15f5e5880abbe8fb927c918d7a63e762078d3ae75ffbc655f5f85"
     mongoBackup:

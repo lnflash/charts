@@ -8,6 +8,7 @@ service:
   port: 3000
   type: ClusterIP
 adminPanel:
+  ### What are the correct values here?
   graphqlUrl: http://api.staging.flashapp.me:4002/graphql
   galoyAuthEndpoint: http://api.staging.flashapp.me:4002/auth
 resources: {}
