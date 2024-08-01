@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nostr-multiplexer.fullname" . }}
+  labels:
+    {{- include "nostr-multiplexer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "nostr-multiplexer.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "nostr-multiplexer.name" . }}
+    spec:
+      containers:
+        - name: {{ include "nostr-multiplexer.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 4000
+          volumeMounts:
+            - name: sqlite-storage
+              mountPath: /app/data  # Path where SQLite DB will be mounted
+      volumes:
+        - name: sqlite-storage
+          persistentVolumeClaim:
+            claimName: {{ include "nostr-multiplexer.fullname" . }}-pvc

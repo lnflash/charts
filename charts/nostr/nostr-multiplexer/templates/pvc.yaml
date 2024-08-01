@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "nostr-multiplexer.fullname" . }}-pvc
+  labels:
+    {{- include "nostr-multiplexer.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.persistentVolume.accessModes | first }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.size }}
