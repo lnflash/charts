@@ -19,22 +19,23 @@ spec:
       {{- range .Values.ingress.hosts }}
       - host: {{ .host }}
         http:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType }}
-            backend:
-              service:
-                name: {{ include "galoyPay.fullname" $ }}
-                port:
-                  number: {{ $.Values.service.port }}
-          {{- end -}}
+          paths:
+            {{- range .paths }}
+            - path: {{ .path }}
+              pathType: {{ .pathType }}
+              backend:
+                service:
+                  name: {{ include "galoyPay.fullname" $ }}
+                  port:
+                    number: {{ $.Values.service.port }}
+            {{- end -}}
       {{- end -}}
-    {{- end -}}
+    {{- end }}
   tls:
     {{- range .Values.ingress.hosts }}
     - hosts:
       - {{ .host }}
-      secretName: {{ printf "%s-tls" . }}
+      secretName: {{ printf "%s-tls" .host }}
     {{- end }}
     {{- if .Values.ingress.extraTls }}
     {{- toYaml .Values.ingress.extraTls | nindent 4 }}
