@@ -27,7 +27,7 @@ spec:
                 name: {{ include "galoyPay.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
-          {{- end }}
+          {{- end -}}
       {{- end -}}
     {{- end -}}
   tls:
