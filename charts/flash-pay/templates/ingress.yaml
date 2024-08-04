@@ -14,41 +14,29 @@ spec:
   ingressClassName: nginx
   rules:
     {{- if .Values.ingress.rulesOverride }}
-    {{- toYaml .Values.ingress.rulesOverride | nindent 4 }}
+      {{- toYaml .Values.ingress.rulesOverride | nindent 4 }}
     {{- else }}
-    {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
-      http:
-        paths:
-          - pathType: Prefix
-            path: "/"
+      {{- range .Values.ingress.hosts }}
+      - host: {{ .host }}
+        http:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
             backend:
               service:
                 name: {{ include "galoyPay.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
+          {{- end }}
+      {{- end -}}
     {{- end -}}
-    {{- end }}
-    - host: staging.flashapp.me
-      http:
-        paths:
-        - backend:
-            service:
-              name: flash-pay
-              port:
-                number: 80
-          path: /.well-known/lnurlp
-          pathType: Prefix
   tls:
     {{- range .Values.ingress.hosts }}
     - hosts:
-      - {{ . }}
+      - {{ .host }}
       secretName: {{ printf "%s-tls" . }}
     {{- end }}
     {{- if .Values.ingress.extraTls }}
     {{- toYaml .Values.ingress.extraTls | nindent 4 }}
     {{- end }}
-    - hosts:
-      - staging.flashapp.me
-      secretName: staging.flashapp.me-tls
 {{- end }}

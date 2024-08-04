@@ -19,7 +19,7 @@ metadata:
     nginx.ingress.kubernetes.io/limit-burst-multiplier: "40"
     nginx.ingress.kubernetes.io/limit-connections: "80"
     nginx.ingress.kubernetes.io/cors-allow-methods: POST
-    nginx.ingress.kubernetes.io/cors-allow-origin: https://pay.staging.flashapp.me
+    nginx.ingress.kubernetes.io/cors-allow-origin: {{ .Values.galoy.api.flashPay.hostname }}
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/auth-url: "http://flash-oathkeeper-api.{{ .Release.Namespace }}.svc.cluster.local:4456/decisions"
     nginx.ingress.kubernetes.io/auth-method: GET

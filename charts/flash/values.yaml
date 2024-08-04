@@ -45,8 +45,11 @@ galoy:
     resources: {}
     ingress:
       enabled: true
-      hosts: ["api.staging.flashapp.me"]
-      clusterIssuer: letsencrypt-issuer # name references k8s 'Issuer' defined in terraform
+      hosts: []
+      clusterIssuer: 
+    ## galoy.api.flashPay.hostname used for cors-allow-origin
+    flashPay: 
+      hostname: 
     firebaseNotifications:
       enabled: false
       existingSecret:
@@ -147,10 +150,10 @@ galoy:
     serviceType: ClusterIP
     ingress:
       enabled: true
-      hosts: ["admin.staging.flashapp.me", "localhost"]
+      hosts: []
       ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
       ## Read More: https://cert-manager.io/docs/usage/ingress/
-      clusterIssuer: letsencrypt-issuer
+      clusterIssuer: 
       ## TLS Secret Name
       tlsSecretName: graphql-admin-tls
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -227,10 +230,10 @@ galoy:
     ## Ref: https://kubernetes.io/docs/user-guide/ingress/
     ##
     ingress:
-      enabled: true
-      hosts: ["ws.staging.flashapp.me"]
-      clusterIssuer: letsencrypt-issuer
-      tlsSecretName: websocket-tls
+      enabled: false
+      hosts: []
+      clusterIssuer: 
+      tlsSecretName: 
     ## Liveness/Readiness Probes Configuration
     ## Determines if pod is healthy or if it should be killed.
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
