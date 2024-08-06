@@ -8,11 +8,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "nostr-multiplexer.name" . }}
+      app: nostr-multiplexer
   template:
     metadata:
       labels:
-        app: {{ include "nostr-multiplexer.name" . }}
+        app: nostr-multiplexer
     spec:
       containers:
         - name: {{ include "nostr-multiplexer.name" . }}
@@ -20,9 +20,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 4000
+              name: http
           volumeMounts:
             - name: sqlite-storage
-              mountPath: /app/data  # Path where SQLite DB will be mounted
+              mountPath: /app/data  # Mount PVC directly at /app
       volumes:
         - name: sqlite-storage
           persistentVolumeClaim:

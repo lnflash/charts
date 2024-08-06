@@ -12,4 +12,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "nostr-multiplexer.selectorLabels" . | nindent 4 }}
+    app: nostr-multiplexer
+
