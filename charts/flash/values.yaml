@@ -21,16 +21,16 @@ galoy:
       repository: lnflash/flash-app:edge
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
-      digest: sha256:29be7085d77ac64704d1881fce052f20e5d3b8613ce6e9e71f3a4ae37dadfe22
-      git_ref: "4113860"
+      digest: sha256:3bb38e4c34130cedfbd211cc6deb225972fb05b98c1700b0dedba167df1151c7
+      git_ref: "5dcd7ce"
     websocket:
       repository: docker.io/lnflash/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:487d4c442aac167a7f6d4541d97668b3338288055d324ceed3f5c36b89618b82"
+      digest: "sha256:4ad56775b7c78642171c45eb97ef3945355d3c4941d93a887d11e7b4e4bdcb9b"
     mongodbMigrate:
       repository: docker.io/lnflash/galoy-app-migrate
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:4481c47e6bb15f5e5880abbe8fb927c918d7a63e762078d3ae75ffbc655f5f85"
+      digest: "sha256:820697b6d17c2556fc11374878b5f92362844421e74df0cc0eea1d35914fcb2b"
     mongoBackup:
       repository: us.gcr.io/galoy-org/mongo-backup
       # Currently using Galoy's images. To make changes, see /images & /ci in this repo
@@ -46,10 +46,10 @@ galoy:
     ingress:
       enabled: true
       hosts: []
-      clusterIssuer: 
+      clusterIssuer:
     ## galoy.api.flashPay.hostname used for cors-allow-origin
-    flashPay: 
-      hostname: 
+    flashPay:
+      hostname:
     firebaseNotifications:
       enabled: false
       existingSecret:
@@ -153,7 +153,7 @@ galoy:
       hosts: []
       ## Cluster Issuer (Default: LetsEncrypt Certificate Isser defined at galoy-infra)
       ## Read More: https://cert-manager.io/docs/usage/ingress/
-      clusterIssuer: 
+      clusterIssuer:
       ## TLS Secret Name
       tlsSecretName: graphql-admin-tls
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -232,8 +232,8 @@ galoy:
     ingress:
       enabled: false
       hosts: []
-      clusterIssuer: 
-      tlsSecretName: 
+      clusterIssuer:
+      tlsSecretName:
     ## Liveness/Readiness Probes Configuration
     ## Determines if pod is healthy or if it should be killed.
     ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
