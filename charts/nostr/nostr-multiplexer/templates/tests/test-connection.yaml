@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "nostr-multiplexer.fullname" . }}-test-connection"
+  labels:
+    {{- include "nostr-multiplexer.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "nostr-multiplexer.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

@@ -1,0 +1,75 @@
+# Default values for nostr-multiplexer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: abhsag24/nostr-multiplexer
+  tag: amd64
+
+serviceAccount:
+  create: true
+  automount: true
+
+service:
+  name: nostr-multiplexer-release
+  type: ClusterIP
+  port: 4000
+  targetPort: 4000
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-issuer"  # Cert-manager annotation for TLS
+  hosts:
+    - host: staging.flashapp.me
+      paths:
+        - path: /(.well-known/nostr.json)
+          pathType: ImplementationSpecific
+          backend:
+            serviceName: multiplexer-release-nostr-multiplexer
+            servicePort: 4000
+    - host: nostr.staging.flashapp.me
+      paths:
+        - path: /(.+)
+          pathType: ImplementationSpecific
+          backend:
+            serviceName: multiplexer-release-nostr-multiplexer
+            servicePort: 4000
+  tls:
+    - hosts:
+      - staging.flashapp.me
+      - nostr.staging.flashapp.me
+      secretName: sh.helm.release.v1.multiplexer-release.v1 
+
+resources: {}
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+persistentVolume:
+  enabled: true
+  size: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath: /mnt/data/sqlite
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
