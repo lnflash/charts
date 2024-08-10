@@ -1,6 +1,6 @@
 image:
-  repository: brh28/flash-pay:latest
-  digest: "sha256:d5620fe35398afd0e8079b1ae71ee0632ea4327b0129aa2258ac8735509842f2"
+  repository: lnflash/flash-pay:latest
+  digest: "sha256:63db935d7057abb10363420a9d1c6fa299a58534785eb716ccb9340345ea83ad"
   git_ref: "cf1ff28" # Not used by helm
 ingress:
   enabled: false
