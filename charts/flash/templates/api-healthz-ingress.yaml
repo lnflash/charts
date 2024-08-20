@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ template "galoy.api.fullname" . }}
+  name: {{ template "galoy.api.fullname" . }}-healthz
   labels:
     app: {{ template "galoy.api.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -21,16 +21,6 @@ metadata:
     nginx.ingress.kubernetes.io/cors-allow-methods: POST
     nginx.ingress.kubernetes.io/cors-allow-origin: {{ .Values.galoy.api.flashPay.hostname }}
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/auth-url: "http://flash-oathkeeper-api.{{ .Release.Namespace }}.svc.cluster.local:4456/decisions"
-    nginx.ingress.kubernetes.io/auth-method: GET
-    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, Set-Cookie"
-    nginx.ingress.kubernetes.io/auth-forward-cookie: "*"
-    nginx.ingress.kubernetes.io/auth-snippet: |
-      proxy_set_header X-Original-URL $request_uri;
-      proxy_set_header X-Forwarded-Method $request_method;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-Host $host;
-      proxy_set_header X-Forwarded-Uri $request_uri;
     {{- with .Values.galoy.api.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -47,22 +37,12 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          {{- if $.Values.galoy.api.ingress.extraPaths }}
-          {{- toYaml $.Values.galoy.api.ingress.extraPaths | nindent 10 }}
-          {{- end }}
-          - pathType: ImplementationSpecific
-            path: /graphql
-            backend:
-              service:
-                name: "{{ $.Release.Name }}-router"
-                port:
-                  number: {{ $.Values.galoy.router.port }}
-          - pathType: ImplementationSpecific
-            path: /
-            backend:
-              service:
-                name: {{ template "galoy.api.fullname" $ }}
-                port:
-                  number: {{ $.Values.galoy.api.port }}
+        - pathType: ImplementationSpecific
+          path: /healthz
+          backend:
+            service:
+              name: {{ template "galoy.api.fullname" $ }}
+              port:
+                number: {{ $.Values.galoy.api.port }}
   {{- end -}}
 {{- end -}}
