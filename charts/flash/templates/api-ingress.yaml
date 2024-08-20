@@ -65,7 +65,9 @@ spec:
                 port:
                   number: {{ $.Values.galoy.api.port }}
   {{- end -}}
+{{- end -}}
 ---
+{{- if .Values.galoy.api.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
