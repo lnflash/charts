@@ -21,10 +21,3 @@ spec:
           ports:
             - containerPort: 4000
               name: http
-          volumeMounts:
-            - name: sqlite-storage
-              mountPath: /app/data  # Mount PVC directly at /app
-      volumes:
-        - name: sqlite-storage
-          persistentVolumeClaim:
-            claimName: {{ include "nostr-multiplexer.fullname" . }}-pvc

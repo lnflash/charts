@@ -6,7 +6,8 @@ replicaCount: 1
 
 image:
   repository: abhsag24/nostr-multiplexer
-  tag: amd64
+  tag: latest
+  pullPolicy: Always
 
 serviceAccount:
   create: true
@@ -23,27 +24,8 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-issuer"  # Cert-manager annotation for TLS
-  hosts:
-    - host: staging.flashapp.me
-      paths:
-        - path: /(.well-known/nostr.json)
-          pathType: ImplementationSpecific
-          backend:
-            serviceName: multiplexer-release-nostr-multiplexer
-            servicePort: 4000
-    - host: nostr.staging.flashapp.me
-      paths:
-        - path: /(.+)
-          pathType: ImplementationSpecific
-          backend:
-            serviceName: multiplexer-release-nostr-multiplexer
-            servicePort: 4000
-  tls:
-    - hosts:
-      - staging.flashapp.me
-      - nostr.staging.flashapp.me
-      secretName: sh.helm.release.v1.multiplexer-release.v1 
+    cert-manager.io/cluster-issuer: "letsencrypt-issuer" # Cert-manager annotation for TLS
+  hosts: []
 
 resources: {}
 livenessProbe:

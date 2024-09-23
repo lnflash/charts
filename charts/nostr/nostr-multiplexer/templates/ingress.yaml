@@ -22,11 +22,11 @@ spec:
       {{- end }}
   {{- end }}
   {{- end }}
-  {{- with .Values.ingress.tls }}
+  {{- if .Values.ingress.tlsSecretName }}
   tls:
-  {{- range . }}
-  - hosts:
-    - {{ .hosts | join "\n    - " }}
-    secretName: {{ .secretName }}
-  {{- end }}
+    - hosts:
+        {{- range .Values.ingress.hosts }}
+        - {{ .host }}
+        {{- end }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
   {{- end }}
