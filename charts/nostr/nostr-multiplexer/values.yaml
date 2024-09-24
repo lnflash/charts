@@ -9,10 +9,6 @@ image:
   tag: latest
   pullPolicy: Always
 
-serviceAccount:
-  create: true
-  automount: true
-
 service:
   name: nostr-multiplexer-release
   type: ClusterIP
