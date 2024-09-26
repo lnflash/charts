@@ -4,6 +4,8 @@ metadata:
   name: {{ include "nostr-multiplexer.fullname" . }}-ingress
   annotations:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   {{- if .Values.ingress.enabled }}
   rules:

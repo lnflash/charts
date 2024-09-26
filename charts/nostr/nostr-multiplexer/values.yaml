@@ -20,7 +20,7 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-issuer" # Cert-manager annotation for TLS
+    cert-manager.io/cluster-issuer: "letsencrypt-issuer"
   hosts: []
 
 resources: {}
@@ -38,13 +38,6 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-
-persistentVolume:
-  enabled: true
-  size: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath: /mnt/data/sqlite
 
 nodeSelector: {}
 
