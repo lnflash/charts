@@ -7,6 +7,7 @@ replicaCount: 1
 image:
   repository: abhsag24/nostr-multiplexer
   tag: latest
+  digest: 88f290cce998c77b7701514b94e95fb58ed3c4b4742fb5197fa992b0ac329b46
   pullPolicy: Always
 
 service:
