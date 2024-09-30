@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nostr-multiplexer.fullname" . }}
+  labels:
+    {{- include "nostr-multiplexer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nostr-multiplexer
+  template:
+    metadata:
+      labels:
+        app: nostr-multiplexer
+    spec:
+      containers:
+        - name: {{ include "nostr-multiplexer.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 4000
+              name: http
