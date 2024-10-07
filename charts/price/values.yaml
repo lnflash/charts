@@ -46,9 +46,55 @@ realtime:
       - { code: "CUP", symbol: "$", name: "Cuban Peso", flag: "🇨🇺" }
       - { code: "DOP", symbol: "RD$", name: "Dominican Peso", flag: "🇩🇴" }
       - { code: "TTD", symbol: "TT$", name: "Trinidad and Tobago Dollar", flag: "🇹🇹" }
+    exchanges:
+    - name: "Ibex"
+      enabled: true
+      quoteAlias: "USD"
+      base: "BTC"
+      quote: "USD"
+      provider: "ibex"
+      cron: "*/15 * * * * *"
+      config:
+        cacheSeconds: 180
+    - name: "bitfinex2"
+      enabled: true
+      quoteAlias: "USD"
+      base: "BTC"
+      quote: "USD"
+      excludedQuotes: ["USD"]
+      provider: "ccxt"
+      cron: "*/15 * * * * *"
+    - name: "kraken"
+      enabled: true
+      quoteAlias: "USD"
+      base: "BTC"
+      quote: "USD"
+      excludedQuotes: ["USD"]
+      provider: "ccxt"
+      cron: "*/20 * * * * *"
+    - name: "bitstamp"
+      enabled: true
+      quoteAlias: "USD"
+      base: "BTC"
+      quote: "USD"
+      excludedQuotes: ["USD"]
+      provider: "ccxt"
+      cron: "*/15 * * * * *"
+    - name: "free-currency-rates-usd"
+      enabled: true
+      quoteAlias: "*"
+      base: "USD"
+      quote: "*"
+      excludedQuotes: ["USD"]
+      provider: "free-currency-rates"
+      cron: "*/5 * * * * *"
+      config:
+        baseUrl: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies"
+        fallbackUrl: "https://currency-api.pages.dev/v1/currencies"
+        cacheSeconds: 1800
   image:
-    repository: us.gcr.io/galoy-org/price
-    digest: "sha256:6e0fb096efb7ef5aa80e7dd8e9ffa3a97a5d3185d714f7a39d3ffc3c740e8a99"
+    repository: docker.io/brh28/flash-price 
+    digest: "sha256:c80eba03a2d4f9d2156c6a8719eb336aa647b25f94bfef1823f069502e123aa5"
     git_ref: "82341ad"
   service:
     type: ClusterIP
