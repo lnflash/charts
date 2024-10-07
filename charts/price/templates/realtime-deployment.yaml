@@ -37,6 +37,16 @@ spec:
             - name: prometheus
               containerPort: {{ .Values.realtime.service.prometheus }}
               protocol: TCP
+          env:
+          - name: IBEX_URL
+            value: {{ .Values.ibex.url | quote }}
+          - name: IBEX_EMAIL
+            value: {{ .Values.ibex.email | quote }}
+          - name: IBEX_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.ibex.secrets.name | quote }}
+                key: {{ .Values.ibex.secrets.password.key | quote }}
           volumeMounts:
             - name: custom-yaml
               mountPath: "/var/yaml/"

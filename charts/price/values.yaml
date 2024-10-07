@@ -134,3 +134,13 @@ postgresql:
     username: price-history
     database: price-history
     password: price-history
+
+ibex:
+  url:
+  email:
+  secrets:
+    name: ibex-auth
+    password:
+      key: api-password
+    webhook:
+      key: webhook-secret
