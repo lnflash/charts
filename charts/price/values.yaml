@@ -58,40 +58,40 @@ realtime:
         cacheSeconds: 180
     - name: "bitfinex2"
       enabled: true
-      quoteAlias: "USD"
+      quoteAlias: "*"
       base: "BTC"
-      quote: "USD"
+      quote: "*"
       excludedQuotes: ["USD"]
       provider: "ccxt"
       cron: "*/15 * * * * *"
     - name: "kraken"
       enabled: true
-      quoteAlias: "USD"
+      quoteAlias: "*"
       base: "BTC"
-      quote: "USD"
+      quote: "*"
       excludedQuotes: ["USD"]
       provider: "ccxt"
       cron: "*/20 * * * * *"
     - name: "bitstamp"
       enabled: true
-      quoteAlias: "USD"
+      quoteAlias: "*"
       base: "BTC"
-      quote: "USD"
+      quote: "*"
       excludedQuotes: ["USD"]
       provider: "ccxt"
       cron: "*/15 * * * * *"
-    - name: "free-currency-rates-usd"
-      enabled: true
-      quoteAlias: "*"
-      base: "USD"
-      quote: "*"
-      excludedQuotes: ["USD"]
-      provider: "free-currency-rates"
-      cron: "*/5 * * * * *"
-      config:
-        baseUrl: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies"
-        fallbackUrl: "https://currency-api.pages.dev/v1/currencies"
-        cacheSeconds: 1800
+    # - name: "free-currency-rates-usd"
+    #   enabled: true
+    #   quoteAlias: "*"
+    #   base: "*"
+    #   quote: "*"
+    #   excludedQuotes: ["USD"]
+    #   provider: "free-currency-rates"
+    #   cron: "*/5 * * * * *"
+    #   config:
+    #     baseUrl: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies"
+    #     fallbackUrl: "https://currency-api.pages.dev/v1/currencies"
+    #     cacheSeconds: 1800
   image:
     repository: docker.io/brh28/flash-price 
     digest: "sha256:c80eba03a2d4f9d2156c6a8719eb336aa647b25f94bfef1823f069502e123aa5"
