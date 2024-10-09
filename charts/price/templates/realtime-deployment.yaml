@@ -51,13 +51,15 @@ spec:
             - name: custom-yaml
               mountPath: "/var/yaml/"
           livenessProbe:
-            exec:
-              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            grpc:
+              port: 50051
+              service: ""
             initialDelaySeconds: 45
             timeoutSeconds: 2
           readinessProbe:
-            exec:
-              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            grpc:
+              port: 50051
+              service: ""
             timeoutSeconds: 2
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

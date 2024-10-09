@@ -16,6 +16,6 @@ dependencies:
   version: 1.25.0
 - name: price
   repository: file://../price
-  version: 0.3.10
-digest: sha256:bb4427db65b382dcee69d1988ffcdf5535dbdd1c8b6ac4cb0c1cf55ebc911211
-generated: "2024-04-18T16:35:39.728588617-06:00"
+  version: 0.5.5
+digest: sha256:5bdf9d661dfade363fe2699077a7c6342351a38ce1fcacd4c7d05810af6966d8
+generated: "2024-10-09T14:41:53.834507394Z"
