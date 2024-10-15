@@ -5,8 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: dockurr/strfry
+  repository: abhsag24/strfry-custom
   tag: latest
+  digest: a30c780ccd7026ef1aa546d6701bac6d1e63db36cf8ae144bef11d8257f2fa58
   pullPolicy: IfNotPresent
 
 persistence:
