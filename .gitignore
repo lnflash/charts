@@ -1,2 +1,3 @@
 *.tgz
 .direnv
+*DS_Store

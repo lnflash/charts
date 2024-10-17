@@ -92,7 +92,7 @@ data:
 
     writePolicy {
         # If non-empty, path to an executable script that implements the writePolicy plugin logic
-        plugin = ""
+        plugin = "/app/whitelist.js"
      }
 
       compression {
