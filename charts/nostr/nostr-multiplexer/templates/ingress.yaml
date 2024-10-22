@@ -10,7 +10,7 @@ spec:
   {{- if .Values.ingress.enabled }}
   rules:
   {{- range .Values.ingress.hosts }}
-  - host: {{ .host }}
+  - host: {{ . }}
     http:
       paths:
       - path: /(.well-known/nostr.json)
