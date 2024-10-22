@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: abhsag24/strfry-custom
   tag: latest
-  digest: a30c780ccd7026ef1aa546d6701bac6d1e63db36cf8ae144bef11d8257f2fa58
+  digest: 6acd401e8635aafc95d81b85ef75f3bd743e8b215aca2ecacff03d56ac5f3d9e
   pullPolicy: IfNotPresent
 
 persistence:
