@@ -10,18 +10,16 @@ spec:
   {{- if .Values.ingress.enabled }}
   rules:
   {{- range .Values.ingress.hosts }}
-  - host: {{ .host }}
+  - host: {{ . }}
     http:
       paths:
-      {{- range .paths }}
-      - path: {{ .path }}
-        pathType: {{ .pathType }}
+      - path: /(.well-known/nostr.json)
+        pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ .backend.serviceName }}
+            name:  multiplexer-release-nostr-multiplexer
             port:
-              number: {{ .backend.servicePort }}
-      {{- end }}
+              number: 4000
   {{- end }}
   {{- end }}
   {{- if .Values.ingress.tlsSecretName }}

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: strfry
-          image: dockurr/strfry
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}
           ports:
             - containerPort: 7777
           volumeMounts:
