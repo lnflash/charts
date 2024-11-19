@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: abhsag24/strfry-custom
   tag: latest
-  digest: 6acd401e8635aafc95d81b85ef75f3bd743e8b215aca2ecacff03d56ac5f3d9e
+  digest: ec29a9aff213519c1fe23744b9e94baa1789ef1459885ec7943ed5beb15198cb
   pullPolicy: IfNotPresent
 
 persistence:
@@ -60,11 +60,7 @@ ingress:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  hosts: []
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
