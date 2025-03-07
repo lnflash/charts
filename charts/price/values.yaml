@@ -86,7 +86,7 @@ realtime:
         cron: "*/15 * * * * *"
   image:
     repository: docker.io/lnflash/price
-    digest: "sha256:ac7bfec81d349da83dcaea05cfd1f3ed3d3722d01df84554857da7cec91989c7"
+    digest: "sha256:3c8aabf3ca33dfaefe5423eca23695cc4e4ac02e0843ab463306f567481aaba1"
     git_ref: "b351c93"
   service:
     type: ClusterIP
@@ -100,14 +100,14 @@ history:
   valuesOverride: {}
   image:
     repository: docker.io/lnflash/price-history
-    digest: "sha256:ea7fec241586d1217089dadaac9072e6380b3fa2cede2e84778a849e006f7432"
+    digest: "sha256:de74892fbbb5b7d60f4d5a06ada1ef7472fb5635c5dd970eda4b9cc46f0a0daa"
   service:
     type: ClusterIP
     prometheus: 9464
     grpc: 50052
   migrateImage:
     repository: docker.io/lnflash/price-history-migrate
-    digest: sha256:8d4a7c74a48090d6b9f31eae576127a3f59049f52317daef23feb89d24ba4694
+    digest: sha256:72549c2468553b78f1b5a12c535f72de970323c762959fece541249f64f106f7
   cron:
     resources: {}
   migrationJob:
