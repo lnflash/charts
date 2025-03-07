@@ -85,7 +85,7 @@ realtime:
         provider: "ccxt"
         cron: "*/15 * * * * *"
   image:
-    repository: docker.io/brh28/flash-price
+    repository: docker.io/lnflash/price
     digest: "sha256:ac7bfec81d349da83dcaea05cfd1f3ed3d3722d01df84554857da7cec91989c7"
     git_ref: "b351c93"
   service:
