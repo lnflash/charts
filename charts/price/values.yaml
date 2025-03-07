@@ -30,64 +30,64 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 realtime:
-  config: 
+  config:
     quotes:
-      - { code: "USD", symbol: "$", name: "US Dollar", flag: "🇺🇸" }
-      - { code: "JMD", symbol: "J$", name: "Jamaican Dollar", flag: "🇯🇲" }
-      - { code: "EUR", symbol: "€", name: "Euro", flag: "🇪🇺" }
-      - { code: "GBP", symbol: "£", name: "British Pound", flag: "🇬🇧" }
-      - { code: "XCD", symbol: "$", name: "East Caribbean Dollar", flag: "🇦🇬" }
-      - { code: "ANG", symbol: "ƒ", name: "Netherlands Antillean Guilder", flag: "🇨🇼" }
-      - { code: "HTG", symbol: "G", name: "Haitian Gourde", flag: "🇭🇹" }
-      - { code: "BSD", symbol: "$", name: "Bahamian Dollar", flag: "🇧🇸" }
-      - { code: "BBD", symbol: "$", name: "Barbadian Dollar", flag: "🇧🇧" }
-      - { code: "BZD", symbol: "BZ$", name: "Belize Dollar", flag: "🇧🇿" }
-      - { code: "KYD", symbol: "$", name: "Cayman Islands Dollar", flag: "🇰🇾" }
-      - { code: "CUP", symbol: "$", name: "Cuban Peso", flag: "🇨🇺" }
-      - { code: "DOP", symbol: "RD$", name: "Dominican Peso", flag: "🇩🇴" }
-      - { code: "TTD", symbol: "TT$", name: "Trinidad and Tobago Dollar", flag: "🇹🇹" }
+      - {code: "USD", symbol: "$", name: "US Dollar", flag: "\U0001F1FA\U0001F1F8"}
+      - {code: "JMD", symbol: "J$", name: "Jamaican Dollar", flag: "\U0001F1EF\U0001F1F2"}
+      - {code: "EUR", symbol: "€", name: "Euro", flag: "\U0001F1EA\U0001F1FA"}
+      - {code: "GBP", symbol: "£", name: "British Pound", flag: "\U0001F1EC\U0001F1E7"}
+      - {code: "XCD", symbol: "$", name: "East Caribbean Dollar", flag: "\U0001F1E6\U0001F1EC"}
+      - {code: "ANG", symbol: "ƒ", name: "Netherlands Antillean Guilder", flag: "\U0001F1E8\U0001F1FC"}
+      - {code: "HTG", symbol: "G", name: "Haitian Gourde", flag: "\U0001F1ED\U0001F1F9"}
+      - {code: "BSD", symbol: "$", name: "Bahamian Dollar", flag: "\U0001F1E7\U0001F1F8"}
+      - {code: "BBD", symbol: "$", name: "Barbadian Dollar", flag: "\U0001F1E7\U0001F1E7"}
+      - {code: "BZD", symbol: "BZ$", name: "Belize Dollar", flag: "\U0001F1E7\U0001F1FF"}
+      - {code: "KYD", symbol: "$", name: "Cayman Islands Dollar", flag: "\U0001F1F0\U0001F1FE"}
+      - {code: "CUP", symbol: "$", name: "Cuban Peso", flag: "\U0001F1E8\U0001F1FA"}
+      - {code: "DOP", symbol: "RD$", name: "Dominican Peso", flag: "\U0001F1E9\U0001F1F4"}
+      - {code: "TTD", symbol: "TT$", name: "Trinidad and Tobago Dollar", flag: "\U0001F1F9\U0001F1F9"}
     exchanges:
-    - name: "Ibex"
-      enabled: true
-      quoteAlias: "*"
-      base: "BTC"
-      quote: "USD"
-      provider: "ibex"
-      cron: "*/15 * * * * *"
-      config:
-        cacheSeconds: 180
-    - name: "free-currency-rates-usd"
-      enabled: true
-      quoteAlias: "*"
-      base: "BTC"
-      quote: "*"
-      excludedQuotes: ["USD"]
-      provider: "free-currency-rates"
-      cron: "*/5 * * * * *"
-      config:
-        baseUrl: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies"
-        fallbackUrl: "https://currency-api.pages.dev/v1/currencies"
-        cacheSeconds: 1800
-    - name: "kraken"
-      enabled: true
-      quoteAlias: "*"
-      base: "BTC"
-      quote: "*"
-      excludedQuotes: ["USD"]
-      provider: "ccxt"
-      cron: "*/20 * * * * *"
-    - name: "bitstamp"
-      enabled: true
-      quoteAlias: "*"
-      base: "BTC"
-      quote: "*"
-      excludedQuotes: ["USD"]
-      provider: "ccxt"
-      cron: "*/15 * * * * *"
+      - name: "Ibex"
+        enabled: true
+        quoteAlias: "*"
+        base: "BTC"
+        quote: "USD"
+        provider: "ibex"
+        cron: "*/15 * * * * *"
+        config:
+          cacheSeconds: 180
+      - name: "free-currency-rates-usd"
+        enabled: true
+        quoteAlias: "*"
+        base: "BTC"
+        quote: "*"
+        excludedQuotes: ["USD"]
+        provider: "free-currency-rates"
+        cron: "*/5 * * * * *"
+        config:
+          baseUrl: "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies"
+          fallbackUrl: "https://currency-api.pages.dev/v1/currencies"
+          cacheSeconds: 1800
+      - name: "kraken"
+        enabled: true
+        quoteAlias: "*"
+        base: "BTC"
+        quote: "*"
+        excludedQuotes: ["USD"]
+        provider: "ccxt"
+        cron: "*/20 * * * * *"
+      - name: "bitstamp"
+        enabled: true
+        quoteAlias: "*"
+        base: "BTC"
+        quote: "*"
+        excludedQuotes: ["USD"]
+        provider: "ccxt"
+        cron: "*/15 * * * * *"
   image:
-    repository: docker.io/brh28/flash-price 
-    digest: "sha256:c80eba03a2d4f9d2156c6a8719eb336aa647b25f94bfef1823f069502e123aa5"
-    git_ref: "82341ad"
+    repository: docker.io/brh28/flash-price
+    digest: "sha256:ac7bfec81d349da83dcaea05cfd1f3ed3d3722d01df84554857da7cec91989c7"
+    git_ref: "b351c93"
   service:
     type: ClusterIP
     prometheus: 9464
@@ -100,19 +100,18 @@ history:
   valuesOverride: {}
   image:
     repository: us.gcr.io/galoy-org/price-history
-    digest: "sha256:14ba8a6ab92f5c5c7d7682bbf93d0db5a3ad980b29c53432d4b888d223c25f3a"
+    digest: "sha256:ea7fec241586d1217089dadaac9072e6380b3fa2cede2e84778a849e006f7432"
   service:
     type: ClusterIP
     prometheus: 9464
     grpc: 50052
   migrateImage:
     repository: us.gcr.io/galoy-org/price-history-migrate
-    digest: sha256:84c48c442ac15903f8ed3ff373ea0cccb64fe6a1d48d3fc456780217fccf85ae
+    digest: sha256:8d4a7c74a48090d6b9f31eae576127a3f59049f52317daef23feb89d24ba4694
   cron:
     resources: {}
   migrationJob:
     resources: {}
-
 postgresql:
   enabled: true
   nameOverride: price-history-db
@@ -126,7 +125,6 @@ postgresql:
     username: price-history
     database: price-history
     password: price-history
-
 ibex:
   url:
   email:
