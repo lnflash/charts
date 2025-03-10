@@ -238,7 +238,10 @@ Define kratos env vars
 - name: IBEX_URL
   value: {{ .Values.galoy.ibex.url | quote }}
 - name: IBEX_EMAIL
-  value: {{ .Values.galoy.ibex.email | quote }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.galoy.ibex.secrets.name | quote }}
+      key: {{ .Values.galoy.ibex.secrets.email.key | quote }}
 - name: IBEX_PASSWORD
   valueFrom:
     secretKeyRef:

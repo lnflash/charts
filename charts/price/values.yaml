@@ -127,9 +127,10 @@ postgresql:
     password: price-history
 ibex:
   url:
-  email:
   secrets:
     name: ibex-auth
+    email:
+      key: email
     password:
       key: api-password
     webhook:
