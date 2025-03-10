@@ -69,9 +69,10 @@ galoy:
         timeoutSeconds: 1
   ibex:
     url:
-    email:
     secrets:
       name: ibex-auth
+      email:
+        key: email
       password:
         key: api-password
       webhook:
@@ -440,6 +441,7 @@ secrets:
   ## Api key for proxy check
   proxyCheckApiKey:
   ## secret for Ibex webhook authentication
+  ibexEmail:
   ibexPassword:
   ibexWebhookKey:
 ## Tracing details
