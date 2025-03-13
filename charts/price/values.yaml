@@ -135,3 +135,14 @@ ibex:
       key: api-password
     webhook:
       key: webhook-secret
+
+redis:
+  auth:
+    existingSecret: galoy-redis-pw
+    existingSecretPasswordKey: redis-password
+  sentinel:
+    enabled: true
+    masterSet: mymaster
+  replica:
+    # only reading from 1 replica
+    replicaCount: 1 
