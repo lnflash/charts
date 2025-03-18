@@ -3,7 +3,7 @@ name: flash
 description: A Helm chart for the Flash application backend
 type: application
 version: 0.0.55
-appVersion: 0.6.29
+appVersion: 0.6.30
 dependencies:
   - name: redis
     repository: https://charts.bitnami.com/bitnami
