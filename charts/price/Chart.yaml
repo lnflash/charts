@@ -2,7 +2,7 @@ apiVersion: v2
 name: price
 description: A helm chart for real-time and historical BTC price data
 type: application
-version: 0.5.7
+version: 0.5.8
 appVersion: 0.2.1
 
 dependencies:
