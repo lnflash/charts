@@ -33,7 +33,7 @@ spec:
 
           containers:
           - name: {{ template "galoy.balanceNotificationCron.jobname" . }}
-            image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
+            image: "{{ .Values.galoy.images.app.repository }}:{{ .Values.galoy.images.app.tag }}"
             args:
             - "-r"
             - "/app/lib/services/tracing.js"

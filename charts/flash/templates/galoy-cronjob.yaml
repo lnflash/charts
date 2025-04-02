@@ -32,11 +32,13 @@ spec:
 
           containers:
           - name: {{ template "galoy.cron.jobname" . }}
-            image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
+            image: "{{ .Values.galoy.images.app.repository }}:{{ .Values.galoy.images.app.tag }}"
             args:
             - "-r"
             - "/app/lib/services/tracing.js"
             - "lib/servers/cron.js"
+            - "--configPath"
+            - "/var/yaml/custom.yaml"
             resources:
               {{ toYaml .Values.galoy.galoyCron.resources | nindent 14 }}
             env:
@@ -85,7 +87,6 @@ spec:
 
 {{ include "galoy.kratos.env" . | indent 12 }}
 {{ include "galoy.twilio.env" . | indent 12 }}
-{{ include "galoy.ibex.env" . | indent 12 }}
 
             - name: OATHKEEPER_DECISION_ENDPOINT
               value: http://flash-oathkeeper-api:4456
