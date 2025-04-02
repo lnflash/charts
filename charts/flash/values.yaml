@@ -16,13 +16,31 @@ galoy:
       coldStorage:
         walletName: cold
         hotToColdRebalanceQueueName: dev
+  exchangeRates:
+    USD:
+      JMD:
+        bid: 
+        ask: 
+  cashout:
+    minimum: 
+      amount: 
+      currency: USD
+    maximum: 
+      amount: 
+      currency: USD
+    accountLevel: 2
+    fee: 200 # basis points
+    duration: 600 # seconds
+    email:
+      to: 
+      from: 
+      subject: "New Cashout"
   images:
     app:
-      repository: lnflash/flash-app:edge
+      repository: lnflash/flash-app:feature
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
-      digest: sha256:65743ef3a81b52a5adf117c1fd6be29eb8498a089cc4bc6ca05f66625dfc9b5a
-      git_ref: "bb5abdc"
+      digest: sha256:522296b17d977c94c9ce281b6e1e9780de12869d420896930a12a3941e21eb68
     websocket:
       repository: docker.io/lnflash/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
