@@ -43,11 +43,13 @@ spec:
 
       containers:
       - name: api
-        image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
+        image: "{{ .Values.galoy.images.app.repository }}:{{ .Values.galoy.images.app.tag }}"
         args:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/graphql-main-server.js"
+        - "--configPath"
+        - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.api.resources | nindent 10 }}
         ports:
@@ -107,7 +109,6 @@ spec:
 {{ include "galoy.geetest.env" . | indent 8 }}
 
 {{ include "galoy.kratos.env" . | indent 8 }}
-{{ include "galoy.ibex.env" . | indent 8 }}
 
         - name: OATHKEEPER_DECISION_ENDPOINT
           value: http://flash-oathkeeper-api:4456
