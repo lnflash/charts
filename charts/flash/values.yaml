@@ -16,25 +16,26 @@ galoy:
       coldStorage:
         walletName: cold
         hotToColdRebalanceQueueName: dev
-  exchangeRates:
-    USD:
-      JMD:
-        bid: 
-        ask: 
-  cashout:
-    minimum: 
-      amount: 
-      currency: USD
-    maximum: 
-      amount: 
-      currency: USD
-    accountLevel: 2
-    fee: 200 # basis points
-    duration: 600 # seconds
-    email:
-      to: 
-      from: 
-      subject: "New Cashout"
+
+    exchangeRates:
+      USD:
+        JMD:
+          bid: 
+          ask: 
+    cashout:
+      minimum: 
+        amount: 
+        currency: USD
+      maximum: 
+        amount: 
+        currency: USD
+      accountLevel: 2
+      fee: 200 # basis points
+      duration: 600 # seconds
+      email:
+        to: 
+        from: 
+        subject: "New Cashout"
   images:
     app:
       repository: lnflash/flash-app:feature
