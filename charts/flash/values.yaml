@@ -36,6 +36,16 @@ galoy:
         to: 
         from: 
         subject: "New Cashout"
+
+    ibex:
+      url:
+      email:
+      password:
+      webhook:
+        uri:
+        port: 4008
+        secret: "not-so-secret"
+
   images:
     app:
       repository: lnflash/flash-app:feature
@@ -87,15 +97,6 @@ galoy:
         successThreshold: 2
         timeoutSeconds: 1
   ibex:
-    url:
-    secrets:
-      name: ibex-auth
-      email:
-        key: email
-      password:
-        key: api-password
-      webhook:
-        key: webhook-secret
     webhook:
       nameOverride:
       replicas: 1
