@@ -48,10 +48,10 @@ galoy:
 
   images:
     app:
-      repository: lnflash/flash-app:feature
+      repository: lnflash/flash-app:edge
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
-      digest: sha256:ec1ef81e2daf19a10117adf4652effcb2aa2583f82fb6bc27b1b212b1920f5cd
+      digest: sha256:942a28b3138d55c40ce897c78925c1ab8fe228e90c873921d8f9f5f08e23b00f
     websocket:
       repository: docker.io/lnflash/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
