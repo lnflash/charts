@@ -48,6 +48,8 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/trigger.js"
+        - "--configPath"
+        - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.trigger.resources | nindent 10 }}
         ports:

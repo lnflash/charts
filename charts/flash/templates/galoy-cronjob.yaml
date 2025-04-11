@@ -37,6 +37,8 @@ spec:
             - "-r"
             - "/app/lib/services/tracing.js"
             - "lib/servers/cron.js"
+            - "--configPath"
+            - "/var/yaml/custom.yaml"
             resources:
               {{ toYaml .Values.galoy.galoyCron.resources | nindent 14 }}
             env:

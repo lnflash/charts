@@ -40,6 +40,8 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/ibex-webhook-server.js"
+        - "--configPath"
+        - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.ibex.webhook.resources | nindent 10 }}
         ports:
