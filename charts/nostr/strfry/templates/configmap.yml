@@ -136,7 +136,7 @@ data:
 
       negentropy {
         # Support negentropy protocol messages
-        enabled = true
+        enabled = false
 
         # Maximum records that sync will process before returning an error
         maxSyncEvents = 1000000
