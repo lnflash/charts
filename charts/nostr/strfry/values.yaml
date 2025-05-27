@@ -5,9 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: abhsag24/strfry-custom
+  repository: lnflash/strfry-custom
   tag: latest
-  digest: bb9b39c518d3c4fa56edc2ca2c329f1218dcd2e08944bcdf596dcdffbc7ddd88
+  digest: e433d1ac4cc23a4e9a40ef97bcb2d5477b42bea99694d0ef5f08b2f6f4facfcd
   pullPolicy: IfNotPresent
 
 persistence:
