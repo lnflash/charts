@@ -23,6 +23,25 @@ spec:
             - name: strfry-conf
               mountPath: /etc/strfry.conf
               subPath: strfry.conf
+            - name: strfry-logs
+              mountPath: /app/logs
+
+        - name: vector
+          image: timberio/vector:0.34.X-debian
+          env:
+            - name: VECTOR_CONFIG
+              value: /etc/vector/vector.toml
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 100m
+          volumeMounts:
+            - name: strfry-logs
+              mountPath: /app/logs   # changed from /logs to /app/logs
+            - name: vector-config
+              mountPath: /etc/vector
+              readOnly: true
+
       volumes:
         - name: strfry-db
           persistentVolumeClaim:
@@ -30,3 +49,8 @@ spec:
         - name: strfry-conf
           configMap:
             name: {{ include "strfry.fullname" . }}-configmap
+        - name: strfry-logs
+          emptyDir: {}
+        - name: vector-config
+          configMap:
+            name: vector-config
