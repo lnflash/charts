@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-config
+data:
+  vector.toml: |
+    [sources.strfry_log]
+    type = "file"
+    include = ["/app/logs/strfry.log"]
+    read_from = "beginning"
+
+    [transforms.format_event]
+    type = "remap"
+    inputs = ["strfry_log"]
+    source = '''
+    # Create the event and then encode it as a JSON string
+    event = {
+      "level": "info",
+      "message": .message,
+      "service": "strfry",
+      "timestamp": to_string(now())
+    }
+
+    # Convert to JSON string manually to avoid array wrapping
+    . = encode_json(event)
+    '''
+
+    [sinks.console]
+    type = "console"
+    inputs = ["format_event"]
+    encoding.codec = "text"
+
+    # Send as raw text (which is already JSON)
+    [sinks.honeycomb_raw]
+    type = "http"
+    inputs = ["format_event"]
+    uri = "https://api.honeycomb.io/1/events/strfry-relay-logs"
+    method = "post"
+    compression = "none"
+
+    # Send as text since we pre-encoded the JSON
+    encoding.codec = "text"
+
+    batch.max_events = 1
+    batch.timeout_secs = 1
+
+    [sinks.honeycomb_raw.request]
+    headers.X-Honeycomb-Team = ""
+    headers.Content-Type = "application/json"
+    timeout_secs = 30
