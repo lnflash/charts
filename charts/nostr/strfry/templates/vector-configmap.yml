@@ -45,6 +45,6 @@ data:
     batch.timeout_secs = 1
 
     [sinks.honeycomb_raw.request]
-    headers.X-Honeycomb-Team = ""
+    headers.X-Honeycomb-Team = "{{ .Values.honeycomb.apiKey }}"
     headers.Content-Type = "application/json"
     timeout_secs = 30
