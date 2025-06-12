@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: lnflash/strfry-custom
   tag: latest
-  digest: ddeaccd4034f7888b68245f143f5333376c643b342e5a08284a7a990b90093f4
+  digest: e433d1ac4cc23a4e9a40ef97bcb2d5477b42bea99694d0ef5f08b2f6f4facfcd
   pullPolicy: IfNotPresent
 
 persistence:
@@ -60,7 +60,8 @@ ingress:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  hosts: []
+  hosts:
+    - strfry.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
