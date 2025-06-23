@@ -49,7 +49,7 @@ galoy:
   images:
     app:
       repository: lnflash/flash-app
-      tag: 0.6.34
+      tag: 0.7.0
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
       digest: sha256:bd9004fa0042c15770f38958cb342fd91c0859473b9da5fc89f35b5f60841cdd
