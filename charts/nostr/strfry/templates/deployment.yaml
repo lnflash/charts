@@ -12,6 +12,28 @@ spec:
       labels:
         app: strfry
     spec:
+      initContainers:
+        - name: npm-install
+          image: node:alpine
+          command: ["sh", "-c"]
+          args:
+            - |
+              cd /app
+              npm install
+              echo "Dependencies installed successfully"
+          volumeMounts:
+            - name: app-deps
+              mountPath: /app
+            - name: package-json
+              mountPath: /app/package.json
+              subPath: package.json
+          resources:
+            limits:
+              memory: 128Mi
+              cpu: 200m
+            requests:
+              memory: 64Mi
+              cpu: 50m
       containers:
         - name: strfry
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}
@@ -27,6 +49,10 @@ spec:
               mountPath: /app/logs
             - name: strfry-plugin
               mountPath: /app/whitelist.js
+              subPath: whitelist.js
+            - name: app-deps
+              mountPath: /app/node_modules
+              subPath: node_modules
 
         - name: vector
           image: timberio/vector:0.34.X-debian
@@ -39,7 +65,7 @@ spec:
               cpu: 100m
           volumeMounts:
             - name: strfry-logs
-              mountPath: /app/logs   # changed from /logs to /app/logs
+              mountPath: /app/logs
             - name: vector-config
               mountPath: /etc/vector
               readOnly: true
@@ -53,7 +79,13 @@ spec:
             name: {{ include "strfry.fullname" . }}-configmap
         - name: strfry-plugin
           configMap:
-            name: {{ include "strfry.fullname"}}-plugin-configmap
+            name: {{ include "strfry.fullname" . }}-plugin-configmap
+            defaultMode: 0755
+        - name: package-json
+          configMap:
+            name: {{ include "strfry.fullname" . }}-package-json-configmap
+        - name: app-deps
+          emptyDir: {}
         - name: strfry-logs
           emptyDir: {}
         - name: vector-config

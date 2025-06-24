@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "strfry.fullname" . }}-package-json-configmap
+data:
+  package.json: |
+    {
+      "name": "strfry-custom",
+      "version": "1.0.0",
+      "dependencies": {
+        "axios": "^1.7.7",
+        "nostr-tools": "^2.8.1"
+      }
+    }

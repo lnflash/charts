@@ -5,9 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: lnflash/strfry-custom
+  repository: dockurr/strfry
   tag: latest
-  digest: e433d1ac4cc23a4e9a40ef97bcb2d5477b42bea99694d0ef5f08b2f6f4facfcd
+  digest: df140472554e5a0b5bbe08ec417805d283098621833e44827d8018c98b74243d
   pullPolicy: IfNotPresent
 
 persistence:
