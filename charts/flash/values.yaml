@@ -16,9 +16,40 @@ galoy:
       coldStorage:
         walletName: cold
         hotToColdRebalanceQueueName: dev
+
+    exchangeRates:
+      USD:
+        JMD:
+          bid: 
+          ask: 
+    cashout:
+      minimum: 
+        amount: 
+        currency: USD
+      maximum: 
+        amount: 
+        currency: USD
+      accountLevel: 2
+      fee: 200 # basis points
+      duration: 600 # seconds
+      email:
+        to: 
+        from: 
+        subject: "New Cashout"
+
+    ibex:
+      url:
+      email:
+      password:
+      webhook:
+        uri:
+        port: 4008
+        secret: "not-so-secret"
+
   images:
     app:
-      repository: lnflash/flash-app:edge
+      repository: lnflash/flash-app
+      tag: 0.7.0
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
       digest: sha256:bd9004fa0042c15770f38958cb342fd91c0859473b9da5fc89f35b5f60841cdd
@@ -68,15 +99,6 @@ galoy:
         successThreshold: 2
         timeoutSeconds: 1
   ibex:
-    url:
-    secrets:
-      name: ibex-auth
-      email:
-        key: email
-      password:
-        key: api-password
-      webhook:
-        key: webhook-secret
     webhook:
       nameOverride:
       replicas: 1

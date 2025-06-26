@@ -77,7 +77,6 @@ spec:
 {{ include "galoy.geetest.env" . | indent 8 }}
 
 {{ include "galoy.kratos.env" . | indent 8 }}
-{{ include "galoy.ibex.env" . | indent 8 }}
 
         - name: OATHKEEPER_DECISION_ENDPOINT
           value: http://flash-oathkeeper-api:4456
