@@ -5,9 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: abhsag24/nostr-multiplexer
+  repository: lnflash/nostr-multiplexer
   tag: latest
-  digest: 88f290cce998c77b7701514b94e95fb58ed3c4b4742fb5197fa992b0ac329b46
+  digest: 436e0bf0fedac4725a91002ba30122a19939c28b8d0a5dc1632a7085a7c49646
   pullPolicy: Always
 
 service:
