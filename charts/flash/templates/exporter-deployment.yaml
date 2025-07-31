@@ -50,7 +50,7 @@ spec:
 
       containers:
       - name: exporter
-        image: "{{ .Values.galoy.images.app.repository }}:{{ .Values.galoy.images.app.tag }}"
+        image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
         args:
         - "-r"
         - "/app/lib/services/tracing.js"
