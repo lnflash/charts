@@ -13,8 +13,7 @@ data:
     type = "remap"
     inputs = ["strfry_log"]
     source = '''
-    # Try to parse the log line as JSON if it's structured
-    parsed, err = parse_json!(.message)
+    parsed, err = parse_json(.message)
     if err == null {
       . = parsed
     }
@@ -24,7 +23,7 @@ data:
     type = "filter"
     inputs = ["parse_log"]
     condition = '''
-    .exists(.level) && .level == "error"
+    exists(.level) && .level == "error"
     '''
 
     [transforms.format_event]
