@@ -9,19 +9,33 @@ data:
     include = ["/app/logs/strfry.log"]
     read_from = "beginning"
 
-    [transforms.format_event]
+    [transforms.parse_log]
     type = "remap"
     inputs = ["strfry_log"]
     source = '''
-    # Create the event and then encode it as a JSON string
+    parsed, err = parse_json(.message)
+    if err == null {
+      . = parsed
+    }
+    '''
+
+    [transforms.filter_errors]
+    type = "filter"
+    inputs = ["parse_log"]
+    condition = '''
+    exists(.level) && .level == "error"
+    '''
+
+    [transforms.format_event]
+    type = "remap"
+    inputs = ["filter_errors"]
+    source = '''
     event = {
-      "level": "info",
+      "level": .level,
       "message": .message,
       "service": "strfry",
       "timestamp": to_string(now())
     }
-
-    # Convert to JSON string manually to avoid array wrapping
     . = encode_json(event)
     '''
 
@@ -30,7 +44,6 @@ data:
     inputs = ["format_event"]
     encoding.codec = "text"
 
-    # Send as raw text (which is already JSON)
     [sinks.honeycomb_raw]
     type = "http"
     inputs = ["format_event"]
@@ -38,9 +51,7 @@ data:
     method = "post"
     compression = "none"
 
-    # Send as text since we pre-encoded the JSON
     encoding.codec = "text"
-
     batch.max_events = 1
     batch.timeout_secs = 1
 
