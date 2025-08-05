@@ -4,6 +4,8 @@ metadata:
   name: {{ include "strfry.name" . }}
 spec:
   replicas: 1
+  strategy:
+    type: Recreate # Deletes existing pods (& their PVCs) before creating new ones
   selector:
     matchLabels:
       app: strfry
