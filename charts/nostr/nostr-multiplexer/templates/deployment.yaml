@@ -21,3 +21,6 @@ spec:
           ports:
             - containerPort: 4000
               name: http
+          envFrom:
+            - configMapRef:
+                name: nostr-multiplexor
