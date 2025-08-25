@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nostr-multiplexor
+data:
+  GRAPHQL_URL: {{ .Values.graphqlUrl }} 
+  NODE_ENV: {{ .Values.environment }}
