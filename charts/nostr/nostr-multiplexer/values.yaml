@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: lnflash/nostr-multiplexer
   tag: latest
-  digest: 436e0bf0fedac4725a91002ba30122a19939c28b8d0a5dc1632a7085a7c49646
+  digest: 60b74f7138051792d395e6e340b8b3487e2dd3809bc27f38dd911a1b63669e1b
   pullPolicy: Always
 
 service:
