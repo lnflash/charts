@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: nostr-multiplexor
 data:
-  GRAPHQL_URL: "flash-oathkeeper-api.flash.svc.cluster.local"
+  GRAPHQL_URL: {{ .Values.graphqlUrl }} 
+  NODE_ENV: {{ .Values.environment }}
