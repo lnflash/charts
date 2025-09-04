@@ -32,7 +32,7 @@ spec:
         - name: NEXT_PUBLIC_GRAPHQL_WEBSOCKET_URL
           value: "{{ .Values.graphqlWebsocketUrl }}"
         - name: GRAPHQL_HOSTNAME_INTERNAL
-          value: "{{ .Values.graphqlHost }}"
+          value: "{{ .Values.oathkeeper.service.host }}:{{ .Values.oathkeeper.service.port }}"
         - name: NOSTR_PUBKEY
           value: "{{ .Values.nostrPubkey }}"
         - name: REDIS_MASTER_NAME

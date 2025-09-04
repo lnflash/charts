@@ -8,7 +8,10 @@ service:
   port: 80
   type: ClusterIP
 graphqlUrl: 
-graphqlHost: 
+oathkeeper:
+  service:
+    host: flash-oathkeeper-proxy.flash.svc.cluster.local
+    port: 4455
 graphqlWebsocketUrl: 
 nostrPubkey: "npub1qqqqqqrm4aehwh4t0mknaxvaqvhxdrvrnquz7a7npdgll3lezkpqq3j5a5"
 galoy-nostr:
