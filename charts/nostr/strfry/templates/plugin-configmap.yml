@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "strfry.fullname" . }}-plugin-configmap
+data:
+  whitelist.js: |
+{{ .Files.Get "files/whitelist.js" | indent 4 }}
