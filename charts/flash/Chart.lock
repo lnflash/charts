@@ -4,7 +4,7 @@ dependencies:
   version: 18.0.4
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
-  version: 13.18.4
+  version: 15.6.0
 - name: oathkeeper
   repository: https://k8s.ory.sh/helm/charts
   version: 0.36.0
@@ -17,5 +17,5 @@ dependencies:
 - name: price
   repository: file://../price
   version: 0.5.8
-digest: sha256:f44ab849640829e9b4e003ed7fc470c2d64b760506ae63b875cb4587b482c75b
-generated: "2025-03-13T19:59:57.696974195Z"
+digest: sha256:f29c4d95c61c9362729c3192b8c20470b848ebad026571aa7929cb5362f191d9
+generated: "2025-11-20T16:17:04.676496573-06:00"
