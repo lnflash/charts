@@ -342,6 +342,11 @@ galoy:
     name: proxy-check-api-key
     key: api-key
   mattermostWebhookUrl: "mattermostwebhookurl"
+  nostr:
+    zapReceiptsExistingSecret:
+      name: "flash-nostr-keys"
+      key: "zapReceipts"
+
 # Ref: https://artifacthub.io/packages/helm/bitnami/mongodb/
 mongodb:
   image:
