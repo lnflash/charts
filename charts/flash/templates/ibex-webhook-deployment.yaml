@@ -67,6 +67,12 @@ spec:
           value: {{ .Values.tracing.otelExporterOtlpEndpoint | quote }}
         - name: TRACING_SERVICE_NAME
           value: "{{ .Values.tracing.prefix }}-{{ template "galoy.ibex.webhook.fullname" . }}"
+        - name: NOSTR_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.nostr.zapReceiptsExistingSecret.name }}
+              key: {{ .Values.galoy.nostr.zapReceiptsExistingSecret.key }}
+
 {{/* Databases */}}
 {{ include "galoy.mongodb.env" . | indent 8 }}
 {{ include "galoy.redis.env" . | indent 8 }}
