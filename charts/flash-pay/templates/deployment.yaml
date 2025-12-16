@@ -34,7 +34,9 @@ spec:
         - name: GRAPHQL_HOSTNAME_INTERNAL
           value: "{{ .Values.oathkeeper.service.host }}:{{ .Values.oathkeeper.service.port }}"
         - name: NOSTR_PUBKEY
-          value: "{{ .Values.nostrPubkey }}"
+          value: "{{ .Values.nostrPubkeyHex }}"
+        - name: FLASH_WEBHOOK_HOSTNAME
+          value: "{{ .Values.ibexWebhookUrl}}"
         - name: REDIS_MASTER_NAME
           value: "mymaster"
         - name: REDIS_PASSWORD
