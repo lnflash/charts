@@ -48,16 +48,16 @@ galoy:
       repository: lnflash/flash-app
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
-      digest: sha256:27ce9f16a876376177d11655c766aedf480a93d047666fa150cb07bc108541a5
-      git_ref: "e37de07"
+      digest: sha256:67b67254cb7f6fd8fe5a3348d203e77d439581cba1ea21242a6498098bcc9158
+      git_ref: "cdcc4ac"
     websocket:
       repository: docker.io/lnflash/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:53eea67f74eae4fa29fd8f6473d976716d7da5ed97e11ec4f9851d119fc7937b"
+      digest: "sha256:4872df408d555ef130776b7aab9ecd61de05d70bfd5573b92f8a7e251bf13653"
     mongodbMigrate:
       repository: docker.io/lnflash/galoy-app-migrate
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:1a9e496d1c111567c8c8c6227cdcce1cc1277de2054833670184240021be8908"
+      digest: "sha256:9b98c5d47b8cd4c60b1e470994363b997c684f8f339dcbc9a43767bc91eff2e7"
     mongoBackup:
       repository: us.gcr.io/galoy-org/mongo-backup
       # Currently using Galoy's images. To make changes, see /images & /ci in this repo
@@ -346,7 +346,6 @@ galoy:
     zapReceiptsExistingSecret:
       name: "flash-nostr-keys"
       key: "zapReceipts"
-
 # Ref: https://artifacthub.io/packages/helm/bitnami/mongodb/
 mongodb:
   image:
