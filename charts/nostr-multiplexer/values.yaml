@@ -4,7 +4,7 @@ graphqlUrl: flash-oathkeeper-proxy.flash.svc.cluster.local:4455
 image:
   repository: lnflash/nostr-multiplexer
   tag: latest
-  digest: 3c64c2499a5f46df4e6e21e2ee70243eac950e409f4c77035afbc622a0902319
+  digest: 1b7baadaef4b78fc0d2d79b297f6f725fe47130fad590222a1c19b7be96a5c8b
   pullPolicy: Always
 
 deploy:
