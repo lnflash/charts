@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: lnflash/strfry-custom
   tag: latest
-  digest: e433d1ac4cc23a4e9a40ef97bcb2d5477b42bea99694d0ef5f08b2f6f4facfcd
+  digest: sha256:aa4c99a5d367309eddcb1297ec95f2b52df06a1fe416f5ea9c14bc9e775a01f6
   pullPolicy: IfNotPresent
 
 persistence:
@@ -36,12 +36,10 @@ serviceAccount:
 podAnnotations: {}
 podLabels: {}
 
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -56,8 +54,7 @@ service:
 ingress:
   enabled: false
   className: ""
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -67,8 +64,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
