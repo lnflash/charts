@@ -48,16 +48,16 @@ galoy:
       repository: lnflash/flash-app
       imagePullPolicy: Always
       # digests managed by flash-app pipeline in concourse
-      digest: sha256:95d1800337b5859a6f287fe9343db4f4b646a0bcdc84c191611f663084418dcc
-      git_ref: "8b6dfe7"
+      digest: sha256:5823e6e05300cb0dcca1c5fe983833cc481407ea94e1756708d36d5038536e0e
+      git_ref: "f9b8cb5"
     websocket:
       repository: docker.io/lnflash/galoy-app-websocket
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:fe27834bf208fb6d2b40ff0dbaeec107f2abcdc040ecacf2d934fc48f03d1d3d"
+      digest: "sha256:d765a7bf236150274b5065bde91a2f0c730b12c4e0ca443feeb9f5e3fd54826d"
     mongodbMigrate:
       repository: docker.io/lnflash/galoy-app-migrate
       # digests managed by flash-app pipeline in concourse
-      digest: "sha256:41c7f44fee0b5b25f5f182f35a0af73844295ae35408329c12c2556b196c7e91"
+      digest: "sha256:3b291617dcfb5ee4f793e5abab2ee070b9f239c0d0ae22f2ff8f18b8321595a4"
     mongoBackup:
       repository: us.gcr.io/galoy-org/mongo-backup
       # Currently using Galoy's images. To make changes, see /images & /ci in this repo
