@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: lnflash/strfry-custom
   tag: latest
-  digest: sha256:aa4c99a5d367309eddcb1297ec95f2b52df06a1fe416f5ea9c14bc9e775a01f6
+  digest: sha256:86e4303927c846b5c224c97ab36d41f18fb0478cedecef935af4ed9dd85d1e74
   pullPolicy: IfNotPresent
 
 persistence:
