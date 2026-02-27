@@ -1,3 +1,4 @@
+{{- if .Values.vector.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -39,11 +40,14 @@ data:
     . = encode_json(event)
     '''
 
+    {{- if .Values.vector.sinks.console.enabled }}
     [sinks.console]
     type = "console"
     inputs = ["format_event"]
     encoding.codec = "text"
+    {{- end }}
 
+    {{- if .Values.vector.sinks.honeycomb.apiKey }}
     [sinks.honeycomb_raw]
     type = "http"
     inputs = ["format_event"]
@@ -56,6 +60,8 @@ data:
     batch.timeout_secs = 1
 
     [sinks.honeycomb_raw.request]
-    headers.X-Honeycomb-Team = "{{ .Values.honeycomb.apiKey }}"
+    headers.X-Honeycomb-Team = "${HONEYCOMB_API_KEY}"
     headers.Content-Type = "application/json"
     timeout_secs = 30
+    {{- end }}
+{{- end }}

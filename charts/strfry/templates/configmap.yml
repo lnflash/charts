@@ -60,16 +60,16 @@ data:
 
       info {
         # NIP-11: Name of this server. Short/descriptive (< 30 characters)
-        name = "Flash Relay"
+        name = {{ .Values.strfry.nip11.name | quote }}
 
         # NIP-11: Detailed information about relay, free-form
-        description = "For enhancing the payment experience for Flash users with other Lightning users.This relay is meant to serve the Flash application and it's users. Unrelated notes may not be persisted or relayed."
+        description = {{ .Values.strfry.nip11.description | quote }}
 
         # NIP-11: Administrative nostr pubkey, for contact purposes
-        pubkey = ""
+        pubkey = {{ .Values.strfry.nip11.pubkey | quote }}
 
         # NIP-11: Alternative administrative contact (email, website, etc)
-        contact = ""
+        contact = {{ .Values.strfry.nip11.contact | quote }}
       }
 
       # Maximum accepted incoming websocket frame size (should be larger than max event) (restart required)
@@ -92,7 +92,7 @@ data:
 
     writePolicy {
         # If non-empty, path to an executable script that implements the writePolicy plugin logic
-        plugin = "/app/whitelist.js"
+        plugin = {{ .Values.strfry.writePolicy.plugin | quote }}
      }
 
       compression {

@@ -1,14 +1,10 @@
-# Default values for strfry-chart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+image:
+  repository: dockurr/strfry
+  tag: 1.0.4
+  digest: df140472554e5a0b5bbe08ec417805d283098621833e44827d8018c98b74243d
+  pullPolicy: IfNotPresent
 
 replicaCount: 1
-
-image:
-  repository: lnflash/strfry-custom
-  tag: latest
-  digest: e433d1ac4cc23a4e9a40ef97bcb2d5477b42bea99694d0ef5f08b2f6f4facfcd
-  pullPolicy: IfNotPresent
 
 persistence:
   enabled: true
@@ -21,6 +17,22 @@ fullnameOverride: ""
 strfry:
   name: "strfry"
   fullname: "strfry-chart"
+  nip11:
+    name: ""
+    description: ""
+    pubkey: ""
+    contact: ""
+  writePolicy:
+    plugin: ""  # path to write policy plugin script; empty disables
+
+# vector: sidecar log shipper for strfry. Disabled by default.
+vector:
+  enabled: false
+  sinks:
+    console:
+      enabled: true    # emit filtered errors to stdout
+    honeycomb:
+      apiKey: ""       # set to enable Honeycomb shipping
 
 serviceAccount:
   # Specifies whether a service account should be created
