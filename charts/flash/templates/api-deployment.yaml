@@ -108,6 +108,9 @@ spec:
 {{ include "galoy.twilio.env" . | indent 8 }}
 {{ include "galoy.geetest.env" . | indent 8 }}
 
+{{/* DO Spaces */}}
+{{ include "galoy.doSpaces.env" . | indent 8 }}
+
 {{ include "galoy.kratos.env" . | indent 8 }}
 
         - name: OATHKEEPER_DECISION_ENDPOINT

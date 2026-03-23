@@ -273,6 +273,28 @@ Return Galoy environment variables for Twilio
 {{- end -}}
 
 {{/*
+Return Galoy environment variables for DO Spaces
+*/}}
+{{- define "galoy.doSpaces.env" -}}
+- name: DO_SPACES_ENDPOINT
+  value: {{ .Values.galoy.doSpaces.endpoint | quote }}
+- name: DO_SPACES_REGION
+  value: {{ .Values.galoy.doSpaces.region | quote }}
+- name: DO_SPACES_BUCKET
+  value: {{ .Values.galoy.doSpaces.bucket | quote }}
+- name: DO_SPACES_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.galoy.doSpacesExistingSecret.name }}
+      key: {{ .Values.galoy.doSpacesExistingSecret.access_key }}
+- name: DO_SPACES_SECRET_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.galoy.doSpacesExistingSecret.name }}
+      key: {{ .Values.galoy.doSpacesExistingSecret.secret_key }}
+{{- end -}}
+
+{{/*
 Return Galoy environment variables for Geetest
 */}}
 {{- define "galoy.geetest.env" -}}
