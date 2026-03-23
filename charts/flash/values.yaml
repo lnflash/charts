@@ -341,6 +341,14 @@ galoy:
   proxyCheckExistingSecret:
     name: proxy-check-api-key
     key: api-key
+  doSpaces:
+    endpoint: ""
+    region: ""
+    bucket: ""
+  doSpacesExistingSecret:
+    name: do-spaces-creds
+    access_key: id_documents_access_key
+    secret_key: id_documents_secret_key
   mattermostWebhookUrl: "mattermostwebhookurl"
   nostr:
     zapReceiptsExistingSecret:
@@ -471,6 +479,9 @@ secrets:
   svixSecretKey:
   ## Api key for proxy check
   proxyCheckApiKey:
+  ## Secrets for DO Spaces
+  doSpacesAccessKey:
+  doSpacesSecretKey:
   ## secret for Ibex webhook authentication
   ibexEmail:
   ibexPassword:
