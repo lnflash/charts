@@ -35,6 +35,7 @@ galoy:
         to:
         from:
         subject: "New Cashout"
+    notificationTopics: []
     ibex:
       url:
       email:
