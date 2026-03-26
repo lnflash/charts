@@ -43,4 +43,6 @@ spec:
           {{ toYaml .Values.galoy.mongoMigrationJob.resources | nindent 10 }}
         env:
 {{ include "galoy.mongodb.env" . | indent 8 }}
+        - name: NOTIFICATION_TOPICS
+          value: {{ join "," .Values.galoy.config.notificationTopics | quote }}
       restartPolicy: Never
