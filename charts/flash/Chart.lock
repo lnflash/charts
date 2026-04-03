@@ -13,9 +13,9 @@ dependencies:
   version: 0.36.0
 - name: router
   repository: oci://ghcr.io/apollographql/helm-charts
-  version: 1.25.0
+  version: 2.13.0
 - name: price
   repository: file://../price
   version: 0.5.10
-digest: sha256:ed985f260ddfe80dddd4c73010437c7becdfb1a965b7f393b83ecd412451e6e8
-generated: "2025-12-18T09:13:12.924579003-06:00"
+digest: sha256:c758481c5e815f697b9220a8655ada6cdd9ac65eb1a4f357680ba427a960e7e4
+generated: "2026-04-03T10:18:43.405163617-05:00"
