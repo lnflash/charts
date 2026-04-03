@@ -1045,7 +1045,7 @@ router:
         listen: "0.0.0.0:8088"
       supergraph:
         introspection: true
-        listen: "0.0.0.0:80"
+        listen: "0.0.0.0:4000"
         path: /graphql
       override_subgraph_url:
         public: "http://api:4002/graphql"
