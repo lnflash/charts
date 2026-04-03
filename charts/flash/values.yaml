@@ -1041,26 +1041,39 @@ router:
         enabled: true
       homepage:
         enabled: false
+      health_check:
+        listen: "0.0.0.0:8088"
       supergraph:
         introspection: true
+        listen: "0.0.0.0:80"
         path: /graphql
       override_subgraph_url:
-        public: http://api:4002/graphql
+        public: "http://api:4002/graphql"
       headers:
         all:
           request:
             - propagate:
-                matching: .*
+                matching: ".*"
       traffic_shaping:
         router:
           timeout: 180s # If client requests to the router take longer
         all:
           timeout: 180s # If subgraph requests takes longer
       telemetry:
-        tracing:
-          otlp:
-            endpoint: http://opentelemetry-collector.otel.svc.cluster.local:4318
-            protocol: http
+        exporters:
+          tracing:
+            otlp:
+              endpoint: "http://opentelemetry-collector.otel.svc.cluster.local:4318"
+              protocol: http
+              enabled: true
+          metrics:
+            common:
+              resource:
+                service.name: flash-router
+            prometheus:
+              enabled: false
+              listen: "0.0.0.0:9090"
+              path: /metrics
 ingress-nginx:
   enabled: false
   controller:
