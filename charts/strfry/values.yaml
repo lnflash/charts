@@ -8,7 +8,7 @@ replicaCount: 1
 
 persistence:
   enabled: true
-  size: 1Gi
+  size: 10Gi
 
 imagePullSecrets: []
 nameOverride: ""
