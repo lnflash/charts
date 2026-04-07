@@ -132,6 +132,12 @@ spec:
         - name: MATTERMOST_WEBHOOK_URL
           value: {{ .Values.galoy.mattermostWebhookUrl | quote }}
 
+        - name: ERPNEXT_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: admin-api
+              key: api-key
+
         {{ if .Values.galoy.api.firebaseNotifications.enabled }}
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/tmp/firebase-service-account/service-account.json"
