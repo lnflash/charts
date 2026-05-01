@@ -57,6 +57,10 @@ spec:
               secretKeyRef:
                 name: {{ .Values.redis.auth.existingSecret | quote }}
                 key: {{ .Values.redis.auth.existingSecretPasswordKey | quote }}
+          {{- if not .Values.redis.sentinel.enabled }}
+          - name: REDIS_TYPE
+            value: "standalone"
+          {{- end }}
           {{ range until (.Values.redis.replica.replicaCount | int) }}
           - name: {{ printf "REDIS_%d_DNS" . }}
             value: {{ printf "flash-redis-node-%d.flash-redis-headless" . | quote }}
