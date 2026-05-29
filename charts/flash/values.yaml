@@ -36,9 +36,9 @@ galoy:
         from:
         subject: "New Cashout"
     ibex:
-      url:
-      email:
-      password:
+      clientId:
+      clientSecret:
+      environment: "sandbox"
       webhook:
         uri:
         port: 4008
@@ -482,9 +482,9 @@ secrets:
   ## Secrets for DO Spaces
   doSpacesAccessKey:
   doSpacesSecretKey:
-  ## secret for Ibex webhook authentication
-  ibexEmail:
-  ibexPassword:
+  ## secret for Ibex authentication
+  ibexClientId:
+  ibexClientSecret:
   ibexWebhookKey:
 ## Tracing details
 ##
