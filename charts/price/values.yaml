@@ -86,8 +86,8 @@ realtime:
         cron: "*/15 * * * * *"
   image:
     repository: docker.io/lnflash/price
-    digest: "sha256:de2f75611324e725d89b97780add246c8960a9bc1349d6b8b8cd1b496f7b5adc"
-    git_ref: "674a6c1"
+    digest: "sha256:8f6422c3a762ee5badf7d5014652c00b19c3d357db4566a972c62d23130422e9"
+    git_ref: "edge"
   service:
     type: ClusterIP
     prometheus: 9464
@@ -100,14 +100,14 @@ history:
   valuesOverride: {}
   image:
     repository: docker.io/lnflash/price-history
-    digest: "sha256:9c0d351636bc7433aed82e7937db8aeed9cf608bb928824ab3a33927e959e90e"
+    digest: "sha256:916de25989444b317a2704a80a90fcda1af9899feba970daa2db1cc63e8f7159"
   service:
     type: ClusterIP
     prometheus: 9464
     grpc: 50052
   migrateImage:
     repository: docker.io/lnflash/price-history-migrate
-    digest: sha256:2c24a5b5c7ef01af61c51d1fb07217ae5a70b82b395b287bafaac89363ed3cbe
+    digest: sha256:7a290eb277752b5ab41c3311f3ed409bf344a294a1319e10c9dab58c4c77482e
   cron:
     resources: {}
   migrationJob:
@@ -130,12 +130,13 @@ postgresql:
     password: price-history
 ibex:
   url:
+  environment: production
   secrets:
     name: ibex-auth
-    email:
-      key: email
-    password:
-      key: api-password
+    clientId:
+      key: client-id
+    clientSecret:
+      key: client-secret
     webhook:
       key: webhook-secret
 

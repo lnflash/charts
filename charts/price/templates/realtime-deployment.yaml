@@ -40,16 +40,18 @@ spec:
           env:
           - name: IBEX_URL
             value: {{ .Values.ibex.url | quote }}
-          - name: IBEX_EMAIL
+          - name: IBEX_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.ibex.secrets.name | quote }}
-                key: {{ .Values.ibex.secrets.email.key | quote }}
-          - name: IBEX_PASSWORD
+                key: {{ .Values.ibex.secrets.clientId.key | quote }}
+          - name: IBEX_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.ibex.secrets.name | quote }}
-                key: {{ .Values.ibex.secrets.password.key | quote }}
+                key: {{ .Values.ibex.secrets.clientSecret.key | quote }}
+          - name: IBEX_ENVIRONMENT
+            value: {{ .Values.ibex.environment | quote }}
           - name: REDIS_MASTER_NAME
             value: {{ .Values.redis.sentinel.masterSet | quote }}
           - name: REDIS_PASSWORD
