@@ -20,7 +20,7 @@ resource "helm_release" "nostr_multiplexer" {
   set = [
     {
       name  = "graphqlUrl"
-      value = "http://galoy-oathkeeper-proxy.${local.galoy_namespace}.svc.cluster.local:4455/graphql"
+      value = "http://flash-oathkeeper-proxy.${local.galoy_namespace}.svc.cluster.local:4455/graphql"
     },
     {
       name  = "ingress.hosts[0]"

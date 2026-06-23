@@ -8,8 +8,8 @@ variable "IBEX_PASSWORD" {}
 locals {
   smoketest_namespace       = "${var.name_prefix}-smoketest"
   galoy_namespace           = "${var.name_prefix}-galoy"
-  galoy_oathkeeper_proxy    = "galoy-oathkeeper-proxy.${local.galoy_namespace}.svc.cluster.local"
-  price_history_service     = "galoy-price-history.${local.galoy_namespace}.svc.cluster.local"
+  galoy_oathkeeper_proxy    = "flash-oathkeeper-proxy.${local.galoy_namespace}.svc.cluster.local"
+  price_history_service     = "flash-price-history.${local.galoy_namespace}.svc.cluster.local"
   kratos_pg_host            = "postgresql.${local.galoy_namespace}.svc.cluster.local"
   nostr_zap_receipts_key    = "bb159f7aaafa75a7d4470307c9d6ea18409d4f082b41abcf6346aaae5b2b3b10"
   dummy_lnd_pubkey          = "020000000000000000000000000000000000000000000000000000000000000001"
@@ -66,7 +66,7 @@ resource "kubernetes_secret" "kratos_master_user_password" {
 
 resource "kubernetes_secret" "oathkeeper" {
   metadata {
-    name      = "galoy-oathkeeper"
+    name      = "flash-oathkeeper"
     namespace = kubernetes_namespace.galoy.metadata[0].name
   }
 
@@ -112,7 +112,7 @@ resource "kubernetes_secret" "flash_nostr_keys" {
 }
 
 resource "helm_release" "galoy" {
-  name      = "galoy"
+  name      = "flash"
   chart     = "${path.module}/../../charts/flash"
   namespace = kubernetes_namespace.galoy.metadata[0].name
 

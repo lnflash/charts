@@ -2,7 +2,7 @@ galoy:
   bria:
     host: bria.external.flash.invalid
   dealer:
-    host: galoy-price-realtime
+    host: flash-price-realtime
   lnd1:
     dns: lnd1.external.flash.invalid
   lnd2:
@@ -75,7 +75,7 @@ secrets:
   mongodbRootPassword: password
   mongodbMetricsPassword: password
   mongodbReplicaSetKey: replica
-  mongodbConnectionString: mongodb://testUser:password@galoy-mongodb:27017/galoy
+  mongodbConnectionString: mongodb://testUser:password@flash-mongodb:27017/galoy
   redisPassword: password
   geetestId: dummy
   geetestSecretKey: dummy
@@ -110,23 +110,23 @@ price:
           name: US Dollar
           flag: US
       exchanges:
-        - name: kraken-usd
+        - name: kraken
           enabled: true
           quoteAlias: USD
           base: BTC
           quote: USD
           provider: ccxt
           cron: "*/15 * * * * *"
-        - name: bitstamp-usd
+        - name: bitstamp
           enabled: true
           quoteAlias: USD
           base: BTC
           quote: USD
           provider: ccxt
           cron: "*/15 * * * * *"
-    host: galoy-price-realtime
+    host: flash-price-realtime
   history:
-    host: galoy-price-history
+    host: flash-price-history
   postgresql:
     primary:
       persistence:
