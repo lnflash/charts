@@ -30,6 +30,9 @@ resource "helm_release" "bria" {
   ]
 
   dependency_update = true
+
+  wait    = false
+  timeout = 900
 }
 
 resource "kubernetes_secret" "bria_smoketest" {

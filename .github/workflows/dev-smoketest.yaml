@@ -16,14 +16,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: AbsaOSS/k3d-action@v2.4.0
-        name: "Create Single Cluster"
-        with:
-          cluster-name: "k3s-default"
-          args: >-
-            --image rancher/k3s:v1.27.4-k3s1
-            -v "$(pwd):/charts"
-            --k3s-arg --disable=traefik@server:0
+      - name: Create k3d Cluster
+        run: |
+          k3d cluster create --image rancher/k3s:v1.27.4-k3s1 \
+            -v "$(pwd):/charts" \
+            --k3s-arg --disable=traefik@server:0 \
             --k3s-arg --disable=servicelb@server:0
       - name: Deploy Infra over K3D in Dev Mode
         run: |

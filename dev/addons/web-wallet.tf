@@ -26,6 +26,8 @@ resource "kubernetes_secret" "web_wallet_mobile_secret" {
 
 resource "helm_release" "web_wallet" {
   name      = "web-wallet"
+  wait      = false
+  timeout   = 300
   chart     = "${path.module}/../../charts/web-wallet"
   namespace = kubernetes_namespace.addons.metadata[0].name
 
@@ -42,6 +44,8 @@ resource "helm_release" "web_wallet_mobile" {
   values = [
     file("${path.module}/web-wallet-mobile-values.yml")
   ]
+  wait    = false
+  timeout = 300
 }
 
 resource "kubernetes_secret" "web_wallet_smoketest" {

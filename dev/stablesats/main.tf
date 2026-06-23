@@ -40,6 +40,8 @@ resource "kubernetes_secret" "stablesats_secrets" {
 
 resource "helm_release" "stablesats" {
   name      = "stablesats"
+  wait      = false
+  timeout   = 300
   chart     = "${path.module}/../../charts/stablesats"
   namespace = kubernetes_namespace.stablesats.metadata[0].name
 

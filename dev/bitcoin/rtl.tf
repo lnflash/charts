@@ -5,6 +5,9 @@ resource "helm_release" "rtl" {
 
   dependency_update = true
 
+  wait    = false
+  timeout = 900
+
   depends_on = [
     helm_release.lnd,
     helm_release.loop

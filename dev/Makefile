@@ -1,6 +1,7 @@
 TF:=terraform
 REPO:=$(shell git rev-parse --show-toplevel)
 NS-PREFIX:=staging
+TF_VARS:=-var-file=dev.tfvars
 
 create-cluster:
 	k3d cluster create --image rancher/k3s:v1.27.4-k3s1 -v "$(REPO):/charts" \
@@ -11,13 +12,23 @@ delete-cluster:
 	k3d cluster delete && rm terraform.tfstate
 
 init:
+	helm repo add bitnami https://charts.bitnami.com/bitnami
+	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	helm repo add strimzi https://strimzi.io/charts/
+	helm repo add kube-monkey https://asobti.github.io/kube-monkey/charts/repo
+	helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+	helm repo add prometheus https://prometheus-community.github.io/helm-charts
+	helm repo update
+	for dir in $$(ls ../charts); do \
+		cd ../charts/$$dir && helm dependency update --skip-refresh 2>/dev/null; cd -; \
+	done
 	terraform init
 
 deploy-services:
-	$(TF) apply -target module.galoy_deps.helm_release.cert_manager \
+	$(TF) apply $(TF_VARS) -target module.galoy_deps.helm_release.cert_manager \
 				-var="bitcoin_network=regtest"	\
 				-var="name_prefix=$(NS-PREFIX)" -auto-approve
-	$(TF) apply -target module.galoy_deps \
+	$(TF) apply $(TF_VARS) -target module.galoy_deps \
 				-var="bitcoin_network=regtest" 	\
 				-var="name_prefix=$(NS-PREFIX)" -auto-approve
 
@@ -41,7 +52,7 @@ redeploy-ingress:
 				-var="name_prefix=$(NS-PREFIX)" -auto-approve
 
 deploy:
-	$(TF) apply -var="bitcoin_network=regtest" \
+	$(TF) apply $(TF_VARS) -var="bitcoin_network=regtest" \
 				-var="name_prefix=$(NS-PREFIX)" -auto-approve
 
 all: create-cluster init deploy-services deploy

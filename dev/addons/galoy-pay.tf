@@ -1,6 +1,8 @@
 resource "helm_release" "galoy_pay" {
   name      = "galoy-pay"
-  chart     = "${path.module}/../../charts/galoy-pay"
+  wait      = false
+  timeout   = 300
+  chart     = "${path.module}/../../charts/flash-pay"
   namespace = kubernetes_namespace.addons.metadata[0].name
 
   values = [

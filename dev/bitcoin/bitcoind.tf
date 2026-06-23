@@ -18,6 +18,9 @@ resource "helm_release" "bitcoind" {
     file("${path.module}/bitcoind-${var.bitcoin_network}-values.yml")
   ]
 
+  wait    = false
+  timeout = 900
+
   depends_on = [
     kubernetes_secret.bitcoind
   ]
@@ -54,6 +57,9 @@ resource "helm_release" "bitcoind_onchain" {
     file("${path.module}/bitcoind-${var.bitcoin_network}-values.yml"),
     file("${path.module}/bitcoind-onchain-values.yml")
   ]
+
+  wait    = false
+  timeout = 900
 
   depends_on = [
     kubernetes_secret.bitcoind_onchain,

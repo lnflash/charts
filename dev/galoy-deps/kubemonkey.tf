@@ -19,7 +19,7 @@ locals {
 
 resource "helm_release" "kubemonkey" {
   name      = "kubemonkey"
-  chart     = "${path.module}/../../charts/galoy-deps"
+  chart     = "${path.module}/../../charts/flash-deps"
   namespace = kubernetes_namespace.kubemonkey.metadata[0].name
 
   values = [

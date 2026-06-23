@@ -4,7 +4,9 @@ resource "helm_release" "fulcrum" {
   namespace = kubernetes_namespace.bitcoin.metadata[0].name
 
   dependency_update = true
-  timeout           = local.bitcoin_network == "regtest" ? 900 : 9000
+
+  wait    = false
+  timeout = local.bitcoin_network == "regtest" ? 900 : 9000
   values = [
     file("${path.module}/fulcrum-${var.bitcoin_network}-values.yml")
   ]

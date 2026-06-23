@@ -259,8 +259,6 @@ resource "kubernetes_secret" "loop1_credentials" {
   data = data.kubernetes_secret.loop1_credentials.data
 }
 
-resource "jose_keyset" "oathkeeper" {}
-
 resource "kubernetes_secret" "oathkeeper" {
   metadata {
     name      = "galoy-oathkeeper"
@@ -268,9 +266,7 @@ resource "kubernetes_secret" "oathkeeper" {
   }
 
   data = {
-    "mutator.id_token.jwks.json" = jsonencode({
-      keys = [jsondecode(jose_keyset.oathkeeper.private_key)]
-    })
+    "mutator.id_token.jwks.json" = file("${path.module}/oathkeeper_mutator_id_token_jwks.json")
   }
 }
 
@@ -279,11 +275,15 @@ resource "helm_release" "postgresql" {
   name       = "postgresql"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "postgresql"
+  version    = "15.5.38"
   namespace  = kubernetes_namespace.galoy.metadata[0].name
 
   values = [
     file("${path.module}/postgresql-values.yml")
   ]
+
+  wait    = false
+  timeout = 300
 }
 
 resource "random_password" "kratos_callback_api_key" {
@@ -325,7 +325,7 @@ resource "kubernetes_secret" "proxy_check_api_key" {
 
 resource "helm_release" "galoy" {
   name      = "galoy"
-  chart     = "${path.module}/../../helm/flash"
+  chart     = "${path.module}/../../charts/flash"
   namespace = kubernetes_namespace.galoy.metadata[0].name
 
   values = [
@@ -351,6 +351,7 @@ resource "helm_release" "galoy" {
   ]
 
   dependency_update = true
+  wait              = false
   timeout           = 900
 }
 
@@ -385,11 +386,3 @@ resource "kubernetes_secret" "smoketest" {
   }
 }
 
-terraform {
-  required_providers {
-    jose = {
-      source  = "bluemill/jose"
-      version = "1.0.0"
-    }
-  }
-}

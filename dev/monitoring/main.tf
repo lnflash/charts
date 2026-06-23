@@ -13,6 +13,8 @@ resource "kubernetes_namespace" "monitoring" {
 
 resource "helm_release" "monitoring" {
   name      = "monitoring"
+  wait      = false
+  timeout   = 300
   chart     = "${path.module}/../../charts/monitoring"
   namespace = kubernetes_namespace.monitoring.metadata[0].name
 

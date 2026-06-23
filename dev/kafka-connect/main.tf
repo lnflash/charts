@@ -20,6 +20,8 @@ resource "kubernetes_secret" "kafka_connect_smoketest" {
 
 resource "helm_release" "kafka_connect" {
   name      = "kafka-connect"
+  wait      = false
+  timeout   = 300
   chart     = "${path.module}/../../charts/kafka-connect"
   namespace = local.kafka_namespace
 

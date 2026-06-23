@@ -6,6 +6,9 @@ resource "helm_release" "loop" {
 
   dependency_update = true
 
+  wait    = false
+  timeout = 900
+
   values = [
     file("${path.module}/loop-values.yml")
   ]

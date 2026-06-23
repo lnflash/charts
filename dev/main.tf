@@ -15,11 +15,9 @@ module "galoy_deps" {
 }
 
 module "infra_services" {
-  source = "git::https://github.com/GaloyMoney/galoy-infra.git//modules/smoketest/gcp?ref=13b2ef9"
+  source = "./infra-services"
 
-  name_prefix      = local.name_prefix
-  cluster_endpoint = "dummy"
-  cluster_ca_cert  = "dummy"
+  name_prefix = local.name_prefix
 }
 
 module "kafka_connect" {
