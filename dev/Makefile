@@ -17,20 +17,21 @@ delete-cluster:
 	rm -f terraform.tfstate
 
 init:
-	helm repo add bitnami https://charts.bitnami.com/bitnami
-	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-	helm repo add strimzi https://strimzi.io/charts/
-	helm repo add kube-monkey https://asobti.github.io/kube-monkey/charts/repo
-	helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-	helm repo add ory https://k8s.ory.sh/helm/charts
-	helm repo update
-	registry_config=$$(mktemp -d); docker_config=$$(mktemp -d); \
-	trap 'rm -rf "$$registry_config" "$$docker_config"' EXIT; \
-	mkdir -p "$$registry_config" "$$docker_config"; \
-	printf '{"auths":{}}\n' > "$$registry_config/config.json"; \
+	helm_home=$$(mktemp -d); helm_config=$$(mktemp -d); helm_cache=$$(mktemp -d); helm_data=$$(mktemp -d); docker_config=$$(mktemp -d); \
+	trap 'rm -rf "$$helm_home" "$$helm_config" "$$helm_cache" "$$helm_data" "$$docker_config"' EXIT; \
+	mkdir -p "$$helm_config" "$$helm_cache" "$$helm_data" "$$docker_config"; \
+	printf '{"auths":{}}\n' > "$$helm_config/registry.json"; \
 	printf '{"auths":{}}\n' > "$$docker_config/config.json"; \
+	run_helm() { HOME="$$helm_home" DOCKER_CONFIG="$$docker_config" HELM_CONFIG_HOME="$$helm_config" HELM_CACHE_HOME="$$helm_cache" HELM_DATA_HOME="$$helm_data" HELM_REGISTRY_CONFIG="$$helm_config/registry.json" helm "$$@"; }; \
+	run_helm repo add bitnami https://charts.bitnami.com/bitnami; \
+	run_helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx; \
+	run_helm repo add strimzi https://strimzi.io/charts/; \
+	run_helm repo add kube-monkey https://asobti.github.io/kube-monkey/charts/repo; \
+	run_helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts; \
+	run_helm repo add ory https://k8s.ory.sh/helm/charts; \
+	run_helm repo update; \
 	for chart in $(HELM_DEP_CHARTS); do \
-		DOCKER_CONFIG="$$docker_config" HELM_REGISTRY_CONFIG="$$registry_config/config.json" helm dependency update --skip-refresh $$chart || exit $$?; \
+		run_helm dependency update --skip-refresh $$chart || exit $$?; \
 	done
 	$(TF) init
 
