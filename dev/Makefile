@@ -26,7 +26,6 @@ init:
 	run_helm repo add bitnami https://charts.bitnami.com/bitnami; \
 	run_helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx; \
 	run_helm repo add strimzi https://strimzi.io/charts/; \
-	run_helm repo add kube-monkey https://asobti.github.io/kube-monkey/charts/repo; \
 	run_helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts; \
 	run_helm repo add ory https://k8s.ory.sh/helm/charts; \
 	run_helm repo update; \
