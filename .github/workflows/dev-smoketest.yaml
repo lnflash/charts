@@ -34,6 +34,16 @@ jobs:
           retry_on: error
           max_attempts: 2
           command: pushd dev && source ./.envrc && make deploy
+      - name: Wait for Flash Workloads
+        timeout-minutes: 15
+        run: |
+          kubectl -n galoy-dev-galoy wait --for=condition=complete job --all --timeout=10m
+          for resource in $(kubectl -n galoy-dev-galoy get deployment,statefulset -o name); do
+            kubectl -n galoy-dev-galoy rollout status "$resource" --timeout=10m
+          done
+          for resource in $(kubectl -n galoy-dev-nostr get deployment,statefulset -o name); do
+            kubectl -n galoy-dev-nostr rollout status "$resource" --timeout=5m
+          done
       - name: Flash API Smoketest
         timeout-minutes: 10
         run: |
