@@ -42,19 +42,22 @@ jobs:
             for (const pr of botPrs) {
               core.info(`Checking PR #${pr.number}: ${pr.title}`);
 
-              // Check mergeability (null = GitHub still computing)
-              if (pr.mergeable === false) {
+              // `mergeable` is only computed by pulls.get, not pulls.list.
+              const { data: full } = await github.rest.pulls.get({
+                owner, repo, pull_number: pr.number
+              });
+              if (full.mergeable === false) {
                 core.info(`  Has merge conflicts, skipping`);
                 continue;
               }
-              if (pr.mergeable === null) {
-                core.info(`  Mergeability unknown, skipping`);
+              if (full.mergeable === null) {
+                core.info(`  Mergeability still computing, skipping this run`);
                 continue;
               }
 
               // Get check runs for the PR head sha
-              const { data: checks } = await github.rest.check.listForRef({
-                owner, repo, ref: pr.head.sha, per_page: 100
+              const { data: checks } = await github.rest.checks.listForRef({
+                owner, repo, ref: full.head.sha, per_page: 100
               });
 
               const runs = checks.check_runs;
@@ -86,10 +89,14 @@ jobs:
               }
 
               core.info(`  All checks passed, merging (squash)...`);
-              await github.rest.pulls.merge({
-                owner, repo,
-                pull_number: pr.number,
-                merge_method: 'squash'
-              });
-              core.info(`  Merged PR #${pr.number}`);
+              try {
+                await github.rest.pulls.merge({
+                  owner, repo,
+                  pull_number: pr.number,
+                  merge_method: 'squash'
+                });
+                core.info(`  Merged PR #${pr.number}`);
+              } catch (e) {
+                core.warning(`  Merge failed for #${pr.number}: ${e.message}`);
+              }
             }
