@@ -16,7 +16,7 @@ resource "helm_release" "flash_pay" {
     })
   ]
 
-  dependency_update = true
+  dependency_update = false
   wait              = false
   timeout           = 300
 }

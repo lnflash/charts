@@ -140,7 +140,7 @@ resource "helm_release" "galoy" {
     kubernetes_secret.oathkeeper
   ]
 
-  dependency_update = true
+  dependency_update = false
   wait              = false
   timeout           = 900
 }
