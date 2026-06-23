@@ -1,0 +1,102 @@
+name: flashbot-automerge
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+  check_run:
+    types: [completed]
+    branches: ['bot-*']
+
+jobs:
+  automerge:
+    if: |
+      github.event_name == 'check_run' ||
+      contains(github.event.pull_request.labels.*.name, 'flashbot')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+    steps:
+      - name: Merge eligible flashbot PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const { data: prs } = await github.rest.pulls.list({
+              owner, repo, state: 'open', per_page: 50
+            });
+
+            const botPrs = prs.filter(pr =>
+              pr.labels.some(l => l.name === 'flashbot') &&
+              !(pr.head.repo && pr.head.repo.fork)
+            );
+
+            if (botPrs.length === 0) {
+              core.info('No open flashbot PRs');
+              return;
+            }
+
+            for (const pr of botPrs) {
+              core.info(`Checking PR #${pr.number}: ${pr.title}`);
+
+              // `mergeable` is only computed by pulls.get, not pulls.list.
+              const { data: full } = await github.rest.pulls.get({
+                owner, repo, pull_number: pr.number
+              });
+              if (full.mergeable === false) {
+                core.info(`  Has merge conflicts, skipping`);
+                continue;
+              }
+              if (full.mergeable === null) {
+                core.info(`  Mergeability still computing, skipping this run`);
+                continue;
+              }
+
+              // Get check runs for the PR head sha
+              const { data: checks } = await github.rest.checks.listForRef({
+                owner, repo, ref: full.head.sha, per_page: 100
+              });
+
+              const runs = checks.check_runs;
+              if (runs.length === 0) {
+                core.info(`  No checks yet, skipping`);
+                continue;
+              }
+
+              const allCompleted = runs.every(r => r.status === 'completed');
+              if (!allCompleted) {
+                const pending = runs.filter(r => r.status !== 'completed').length;
+                core.info(`  ${pending} check(s) still running`);
+                continue;
+              }
+
+              const allSuccess = runs.every(r =>
+                r.conclusion === 'success' ||
+                r.conclusion === 'neutral' ||
+                r.conclusion === 'skipped'
+              );
+              if (!allSuccess) {
+                const failed = runs
+                  .filter(r => r.conclusion !== 'success' &&
+                               r.conclusion !== 'neutral' &&
+                               r.conclusion !== 'skipped')
+                  .map(r => `${r.name} (${r.conclusion})`);
+                core.info(`  Checks failed: ${failed.join(', ')}`);
+                continue;
+              }
+
+              core.info(`  All checks passed, merging (squash)...`);
+              try {
+                await github.rest.pulls.merge({
+                  owner, repo,
+                  pull_number: pr.number,
+                  merge_method: 'squash'
+                });
+                core.info(`  Merged PR #${pr.number}`);
+              } catch (e) {
+                core.warning(`  Merge failed for #${pr.number}: ${e.message}`);
+              }
+            }

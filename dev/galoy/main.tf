@@ -61,7 +61,7 @@ resource "kubernetes_secret" "ibex_auth" {
   }
 
   data = {
-    "api-password" : var.IBEX_PASSWORD 
+    "api-password" : var.IBEX_PASSWORD
     "webhook-secret" : "not-so-secret"
   }
 }

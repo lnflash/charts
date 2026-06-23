@@ -74,13 +74,13 @@ resource "kubernetes_manifest" "issuer" {
         }
         solvers = [
           { dns01 = {
-              cloudflare = {
-                email = var.cloudflare_email,
-                apiKeySecretRef = {
-                  name = kubernetes_secret.cloudflare_api_key.metadata[0].name,
-                  key  = "api-key"
-                }
+            cloudflare = {
+              email = var.cloudflare_email,
+              apiKeySecretRef = {
+                name = kubernetes_secret.cloudflare_api_key.metadata[0].name,
+                key  = "api-key"
               }
+            }
             }
           }
         ]
