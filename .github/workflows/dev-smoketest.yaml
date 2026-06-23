@@ -18,11 +18,23 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create k3d Cluster
         run: |
+          k3d registry delete smoketest-registry >/dev/null 2>&1 || true
+          k3d registry create smoketest-registry --port 127.0.0.1:5001 --no-help
+          registries_file="$(mktemp)"
+          trap 'rm -f "$registries_file"' EXIT
+          cat > "$registries_file" <<'YAML'
+          mirrors:
+            "docker.io":
+              endpoint:
+                - "http://k3d-smoketest-registry:5000"
+          YAML
           k3d cluster create --image rancher/k3s:v1.27.4-k3s1 \
             -v "$(pwd):/charts" \
+            --registry-use k3d-smoketest-registry:5000 \
+            --registry-config "$registries_file" \
             --k3s-arg --disable=traefik@server:0 \
             --k3s-arg --disable=servicelb@server:0
-      - name: Preload Docker Hub Images
+      - name: Mirror Docker Hub Images
         run: |
           images=(
             docker.io/bitnamilegacy/mongodb:7.0.9-debian-12-r4
@@ -41,14 +53,42 @@ jobs:
             docker.io/oryd/kratos:v1.0.0
             docker.io/oryd/oathkeeper:v0.40.6
           )
+          docker_host="${DOCKER_HOST:-}"
+          if [ -z "$docker_host" ] && [ -S "$HOME/.docker/run/docker.sock" ]; then
+            docker_host="unix://$HOME/.docker/run/docker.sock"
+          fi
           docker_config="$(mktemp -d)"
           trap 'rm -rf "$docker_config"' EXIT
-          for image in "${images[@]}"; do
-            if ! docker image inspect "$image" >/dev/null 2>&1; then
-              DOCKER_CONFIG="$docker_config" docker pull "$image"
+          docker_cmd() {
+            if [ -n "$docker_host" ]; then
+              DOCKER_HOST="$docker_host" docker "$@"
+            else
+              docker "$@"
             fi
+          }
+          docker_pull() {
+            if [ -n "$docker_host" ]; then
+              DOCKER_HOST="$docker_host" DOCKER_CONFIG="$docker_config" docker pull "$@"
+            else
+              DOCKER_CONFIG="$docker_config" docker pull "$@"
+            fi
+          }
+          for image in "${images[@]}"; do
+            if ! docker_cmd image inspect "$image" >/dev/null 2>&1; then
+              docker_pull "$image"
+            fi
+            repository="${image#docker.io/}"
+            if [[ "$repository" == *@* ]]; then
+              repository="${repository%%@*}"
+              tag="smoketest"
+            else
+              tag="${repository##*:}"
+              repository="${repository%:*}"
+            fi
+            target="127.0.0.1:5001/${repository}:${tag}"
+            docker_cmd tag "$image" "$target"
+            docker_cmd push "$target"
           done
-          k3d image import --cluster k3s-default "${images[@]}"
       - name: Deploy Flash Dependencies
         run: |
           pushd dev && source ./.envrc
@@ -105,3 +145,4 @@ jobs:
         run: |
           rm -rf ci/tasks/smoketest-settings
           k3d cluster delete --all
+          k3d registry delete smoketest-registry >/dev/null 2>&1 || true
