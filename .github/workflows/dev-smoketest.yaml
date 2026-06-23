@@ -19,10 +19,32 @@ jobs:
       - name: Create k3d Cluster
         run: |
           k3d cluster create --image rancher/k3s:v1.27.4-k3s1 \
-            --registry-config .github/k3d-registries.yaml \
             -v "$(pwd):/charts" \
             --k3s-arg --disable=traefik@server:0 \
             --k3s-arg --disable=servicelb@server:0
+      - name: Preload Docker Hub Images
+        run: |
+          images=(
+            docker.io/bitnamilegacy/mongodb:7.0.9-debian-12-r4
+            docker.io/bitnamilegacy/postgresql:16.4.0-debian-12-r14
+            docker.io/bitnamilegacy/postgresql:16.6.0-debian-12-r2
+            docker.io/bitnamilegacy/redis:7.2.1-debian-11-r0
+            docker.io/bitnamilegacy/redis-sentinel:7.2.1-debian-11-r0
+            docker.io/groundnuty/k8s-wait-for:v1.5.1
+            docker.io/lnflash/flash-app@sha256:acdf3c5643bc344ed252b44ec3c5a30321d251538e67ada381959e8273c7974b
+            docker.io/lnflash/flash-pay@sha256:a910ae53ce13159f0c4f52b7aae35445a50fba94e3b702b279cfa58eb4e41486
+            docker.io/lnflash/galoy-app-migrate@sha256:c98109394cd9e8b7f6d2cea7f0c219a62a66584822de3600ee4ece981c814f73
+            docker.io/lnflash/galoy-app-websocket@sha256:e8104f3fc37131a1cdd504cf8249defbf17efc7025d759e129ee4fb42132fc62
+            docker.io/lnflash/price@sha256:8f6422c3a762ee5badf7d5014652c00b19c3d357db4566a972c62d23130422e9
+            docker.io/lnflash/price-history@sha256:916de25989444b317a2704a80a90fcda1af9899feba970daa2db1cc63e8f7159
+            docker.io/lnflash/price-history-migrate@sha256:7a290eb277752b5ab41c3311f3ed409bf344a294a1319e10c9dab58c4c77482e
+            docker.io/oryd/kratos:v1.0.0
+            docker.io/oryd/oathkeeper:v0.40.6
+          )
+          for image in "${images[@]}"; do
+            docker pull "$image"
+          done
+          k3d image import --cluster k3s-default "${images[@]}"
       - name: Deploy Flash Dependencies
         run: |
           pushd dev && source ./.envrc
