@@ -39,6 +39,7 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/ws-server.js"
+        - "-c"
         - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.websocket.resources | nindent 10 }}
