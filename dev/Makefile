@@ -24,12 +24,13 @@ init:
 	helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 	helm repo add ory https://k8s.ory.sh/helm/charts
 	helm repo update
-	registry_config=$$(mktemp -d); \
-	trap 'rm -rf "$$registry_config"' EXIT; \
-	mkdir -p "$$registry_config"; \
+	registry_config=$$(mktemp -d); docker_config=$$(mktemp -d); \
+	trap 'rm -rf "$$registry_config" "$$docker_config"' EXIT; \
+	mkdir -p "$$registry_config" "$$docker_config"; \
 	printf '{"auths":{}}\n' > "$$registry_config/config.json"; \
+	printf '{"auths":{}}\n' > "$$docker_config/config.json"; \
 	for chart in $(HELM_DEP_CHARTS); do \
-		HELM_REGISTRY_CONFIG="$$registry_config/config.json" helm dependency update --skip-refresh $$chart || exit $$?; \
+		DOCKER_CONFIG="$$docker_config" HELM_REGISTRY_CONFIG="$$registry_config/config.json" helm dependency update --skip-refresh $$chart || exit $$?; \
 	done
 	$(TF) init
 
