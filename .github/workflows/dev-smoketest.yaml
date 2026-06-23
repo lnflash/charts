@@ -41,8 +41,12 @@ jobs:
             docker.io/oryd/kratos:v1.0.0
             docker.io/oryd/oathkeeper:v0.40.6
           )
+          docker_config="$(mktemp -d)"
+          trap 'rm -rf "$docker_config"' EXIT
           for image in "${images[@]}"; do
-            docker pull "$image"
+            if ! docker image inspect "$image" >/dev/null 2>&1; then
+              DOCKER_CONFIG="$docker_config" docker pull "$image"
+            fi
           done
           k3d image import --cluster k3s-default "${images[@]}"
       - name: Deploy Flash Dependencies
