@@ -1,6 +1,6 @@
 mkdir -p smoketest-settings
 
-kubectl -n galoy-dev-smoketest get secret ${CHART}-smoketest -o json | jq -r '.data' > smoketest-settings/data.json
+kubectl -n "${SMOKETEST_NAMESPACE:-galoy-dev-smoketest}" get secret ${CHART}-smoketest -o json | jq -r '.data' > smoketest-settings/data.json
 
 cat <<EOF > smoketest-settings/helpers.sh
 function setting() {

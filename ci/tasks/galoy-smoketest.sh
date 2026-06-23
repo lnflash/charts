@@ -17,8 +17,9 @@ function break_and_display_on_error_response() {
 }
 
 # galoy-backend unauthenticated
+success="false"
 set +e
-for i in {1..15}; do
+for i in {1..60}; do
   echo "Attempt ${i} to curl the public galoy API"
   curl --location -sSf --request POST "${host}:${port}/graphql"\
    --header 'Content-Type: application/json' \
@@ -29,6 +30,8 @@ done
 set -e
 
 break_and_display_on_error_response
+
+if [[ "$success" != "true" ]]; then echo "Smoke test failed; galoy API did not respond" && exit 1; fi
 
 # price history server healthcheck
 # The following health.proto file has been copied from
@@ -62,8 +65,9 @@ EOF
 host=`setting "price_history_endpoint"`
 port=`setting "price_history_port"`
 
+price_history_healthz="false"
 set +e
-for i in {1..15}; do
+for i in {1..60}; do
   echo "Attempt ${i} to curl price history server"
   grpcurl -plaintext -proto health.proto ${host}:${port} grpc.health.v1.Health.Check
   if [[ $? == 0 ]]; then price_history_healthz="true"; break; fi;

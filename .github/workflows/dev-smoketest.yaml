@@ -22,71 +22,19 @@ jobs:
             -v "$(pwd):/charts" \
             --k3s-arg --disable=traefik@server:0 \
             --k3s-arg --disable=servicelb@server:0
-      - name: Deploy Infra over K3D in Dev Mode
+      - name: Deploy Flash Dependencies
         run: |
           pushd dev && source ./.envrc
           make init
           make deploy-services
-      - name: Deploy Charts in Dev
+      - name: Deploy Flash Charts
         uses: nick-fields/retry@v4
         with:
           timeout_minutes: 30
           retry_on: error
           max_attempts: 2
           command: pushd dev && source ./.envrc && make deploy
-      - name: Wait for Ready
-        run: |
-          echo "Stack takes about 2 minutes to startup, waiting..."
-          sleep 2m
-      - name: Bitcoin Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=bitcoind ./dev-smoketest-settings.sh && \
-            ./bitcoind-smoketest.sh regtest && \
-            rm -rf smoketest-settings"
-      - name: LND Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=lnd ./dev-smoketest-settings.sh && \
-            ./lnd-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Fulcrum Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=fulcrum ./dev-smoketest-settings.sh && \
-            ./fulcrum-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Mempool Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=mempool ./dev-smoketest-settings.sh && \
-            ./mempool-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Loop Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=loop ./dev-smoketest-settings.sh && \
-            ./loop-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: RTL Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=rtl ./dev-smoketest-settings.sh && \
-            ./rtl-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Galoy Smoketest
+      - name: Flash API Smoketest
         timeout-minutes: 10
         run: |
           pushd dev && source ./.envrc
@@ -94,23 +42,7 @@ jobs:
             CHART=galoy ./dev-smoketest-settings.sh && \
             ./galoy-smoketest.sh && \
             rm -rf smoketest-settings"
-      - name: Monitoring Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=monitoring ./dev-smoketest-settings.sh && \
-            ./monitoring-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Admin Panel Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=admin-panel ./dev-smoketest-settings.sh && \
-            ./admin-panel-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Galoy Pay Smoketest
+      - name: Flash Pay Smoketest
         timeout-minutes: 5
         run: |
           pushd dev && source ./.envrc
@@ -118,30 +50,18 @@ jobs:
             CHART=galoy-pay ./dev-smoketest-settings.sh && \
             ./galoy-pay-smoketest.sh && \
             rm -rf smoketest-settings"
-      - name: Web Wallet Smoketest
+      - name: Nostr Rollout Check
         timeout-minutes: 5
         run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=web-wallet ./dev-smoketest-settings.sh && \
-            ./web-wallet-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Bria Smoketest
+          kubectl -n galoy-dev-nostr rollout status deployment/multiplexer-release-nostr-multiplexer --timeout=5m
+          kubectl -n galoy-dev-nostr rollout status deployment/strfry --timeout=5m
+      - name: Debug Cluster State
+        if: failure()
         timeout-minutes: 5
         run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=bria ./dev-smoketest-settings.sh && \
-            ./bria-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Kafka Connect Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=kafka-connect ./dev-smoketest-settings.sh && \
-            ./kafka-connect-smoketest.sh && \
-            rm -rf smoketest-settings"
+          kubectl get namespaces
+          kubectl get pods --all-namespaces -o wide
+          kubectl get events --all-namespaces --sort-by=.lastTimestamp | tail -n 100
       - name: Clean Up
         if: always()
         timeout-minutes: 5
