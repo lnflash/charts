@@ -103,6 +103,27 @@ loop:
 
 price:
   realtime:
+    config:
+      quotes:
+        - code: USD
+          symbol: "$"
+          name: US Dollar
+          flag: US
+      exchanges:
+        - name: kraken-usd
+          enabled: true
+          quoteAlias: USD
+          base: BTC
+          quote: USD
+          provider: ccxt
+          cron: "*/15 * * * * *"
+        - name: bitstamp-usd
+          enabled: true
+          quoteAlias: USD
+          base: BTC
+          quote: USD
+          provider: ccxt
+          cron: "*/15 * * * * *"
     host: galoy-price-realtime
   history:
     host: galoy-price-history
