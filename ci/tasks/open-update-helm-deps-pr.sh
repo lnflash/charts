@@ -16,5 +16,5 @@ gh pr create \
   --body-file ../body.md \
   --base ${BRANCH} \
   --head ${BOT_BRANCH} \
-  --label galoybot \
+  --label flashbot \
   --label helm || true

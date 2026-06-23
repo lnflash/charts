@@ -11,7 +11,7 @@ locals {
   cluster_location = "us-east1"
   gcp_project      = "galoy-staging"
 
-  smoketest_namespace  = "flash-staging-smoketest"
+  smoketest_namespace = "flash-staging-smoketest"
   # bitcoin_namespace    = "galoy-staging-bitcoin"
   testflight_namespace = var.testflight_namespace
   smoketest_kubeconfig = var.smoketest_kubeconfig
@@ -354,7 +354,7 @@ resource "kubernetes_secret" "ibex_auth" {
   }
 
   data = {
-    "api-password" : var.IBEX_PASSWORD 
+    "api-password" : var.IBEX_PASSWORD
     "webhook-secret" : "not-so-secret"
   }
 }
