@@ -104,7 +104,7 @@ Return Galoy environment variables for MongoDB configuration
 {{ if eq .Values.mongodb.architecture "replicaset" }}
 - name: MONGODB_ADDRESS
   value: "{{ range until (.Values.mongodb.replicaCount | int) }}
-  {{- printf "flash-mongodb-%d.galoy-mongodb-headless" . -}}
+  {{- printf "%s-mongodb-%d.%s-mongodb-headless" $.Release.Name . $.Release.Name -}}
   {{- if lt . (sub $.Values.mongodb.replicaCount 1 | int) -}},{{- end -}}
   {{ end }}"
 - name: MONGODB_USER
@@ -116,7 +116,7 @@ Return Galoy environment variables for MongoDB configuration
       key: mongodb-passwords
 {{ else if eq .Values.mongodb.architecture "standalone" }}
 - name: MONGODB_ADDRESS
-  value: "flash-mongodb"
+  value: {{ printf "%s-mongodb" .Release.Name | quote }}
 - name: MONGODB_USER
   value: {{ index .Values.mongodb.auth.usernames 0 | quote }}
 - name: MONGODB_PASSWORD
@@ -247,7 +247,7 @@ Return Galoy environment variables for Redis configuration
       key: {{ .Values.redis.auth.existingSecretPasswordKey | quote }}
 {{ range until (.Values.redis.replica.replicaCount | int) }}
 - name: {{ printf "REDIS_%d_DNS" . }}
-  value: {{ printf "flash-redis-node-%d.flash-redis-headless" . | quote }}
+  value: {{ printf "%s-redis-node-%d.%s-redis-headless" $.Release.Name . $.Release.Name | quote }}
 {{ end }}
 {{- end -}}
 
