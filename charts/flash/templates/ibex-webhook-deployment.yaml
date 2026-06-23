@@ -40,7 +40,6 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/ibex-webhook-server.js"
-        - "--configPath"
         - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.ibex.webhook.resources | nindent 10 }}
@@ -80,6 +79,7 @@ spec:
 {{/* Bitcoin/LND */}}
 {{ include "galoy.lnd1.env" . | indent 8 }}
 {{ include "galoy.bria.env" . | indent 8 }}
+{{ include "galoy.ibex.env" . | indent 8 }}
 
 {{/* API Specifics */}}
 {{ include "galoy.twilio.env" . | indent 8 }}

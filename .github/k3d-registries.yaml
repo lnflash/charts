@@ -1,0 +1,4 @@
+mirrors:
+  docker.io:
+    endpoint:
+      - "http://hubproxy.docker.internal:5555"

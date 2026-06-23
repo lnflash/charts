@@ -19,6 +19,7 @@ jobs:
       - name: Create k3d Cluster
         run: |
           k3d cluster create --image rancher/k3s:v1.27.4-k3s1 \
+            --registry-config .github/k3d-registries.yaml \
             -v "$(pwd):/charts" \
             --k3s-arg --disable=traefik@server:0 \
             --k3s-arg --disable=servicelb@server:0

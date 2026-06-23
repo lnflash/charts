@@ -12,7 +12,7 @@ locals {
   price_history_service     = "flash-price-history.${local.galoy_namespace}.svc.cluster.local"
   kratos_pg_host            = "postgresql.${local.galoy_namespace}.svc.cluster.local"
   nostr_zap_receipts_key    = "bb159f7aaafa75a7d4470307c9d6ea18409d4f082b41abcf6346aaae5b2b3b10"
-  dummy_lnd_pubkey          = "020000000000000000000000000000000000000000000000000000000000000001"
+  dummy_lnd_pubkey          = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
   dummy_base64_secret_value = base64encode("dummy")
 }
 
@@ -83,6 +83,7 @@ resource "kubernetes_secret" "ibex_auth" {
 
   data = {
     "api-password"   = var.IBEX_PASSWORD
+    "api-email"      = "dev@example.com"
     "client-id"      = "dev-client-id"
     "client-secret"  = var.IBEX_PASSWORD
     "webhook-secret" = "not-so-secret"
@@ -124,7 +125,8 @@ resource "helm_release" "galoy" {
       dummy_base64_secret_value = local.dummy_base64_secret_value,
       twilio_verify_service_id  = var.TWILIO_VERIFY_SERVICE_ID,
       twilio_account_sid        = var.TWILIO_ACCOUNT_SID,
-      twilio_auth_token         = var.TWILIO_AUTH_TOKEN
+      twilio_auth_token         = var.TWILIO_AUTH_TOKEN,
+      ibex_listener_host        = "http://ibex-webhook.${local.galoy_namespace}.svc.cluster.local:4008"
     }),
     file("${path.module}/galoy-${var.bitcoin_network}-values.yml")
   ]

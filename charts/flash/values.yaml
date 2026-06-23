@@ -95,6 +95,13 @@ galoy:
         successThreshold: 2
         timeoutSeconds: 1
   ibex:
+    url: https://api-sandbox.poweredbyibex.io
+    listenerHost:
+    authExistingSecret:
+      name: ibex-auth
+      email_key: api-email
+      password_key: api-password
+      webhook_secret_key: webhook-secret
     webhook:
       nameOverride:
       replicas: 1
