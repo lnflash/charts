@@ -3,6 +3,10 @@ galoy:
     host: bria.external.flash.invalid
   dealer:
     host: flash-price-realtime
+  doSpaces:
+    endpoint: https://example.com
+    region: dev
+    bucket: dev
   ibex:
     listenerHost: ${ibex_listener_host}
   lnd1:
@@ -36,8 +40,20 @@ galoy:
         JMD:
           bid: 150
           ask: 160
+    sendgrid:
+      apiKey: dev-sendgrid-api-key
     swap:
+      loopOutWhenHotWalletLessThan: 0
+      swapOutAmount: 0
       swapProviders: []
+      lnd1loopRestEndpoint: https://localhost:8081
+      lnd1loopRpcEndpoint: localhost:11010
+      lnd2loopRestEndpoint: https://localhost:8082
+      lnd2loopRpcEndpoint: localhost:11011
+      feeAccountingEnabled: false
+    cronConfig:
+      rebalanceEnabled: false
+      swapEnabled: false
   api:
     flashPay:
       hostname: pay.staging.flashapp.me
