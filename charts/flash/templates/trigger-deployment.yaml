@@ -48,6 +48,7 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/trigger.js"
+        - "-c"
         - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.trigger.resources | nindent 10 }}

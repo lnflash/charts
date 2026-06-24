@@ -40,6 +40,7 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/ibex-webhook-server.js"
+        - "-c"
         - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.ibex.webhook.resources | nindent 10 }}

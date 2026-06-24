@@ -55,6 +55,7 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/exporter.js"
+        - "-c"
         - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.exporter.resources | nindent 10 }}
