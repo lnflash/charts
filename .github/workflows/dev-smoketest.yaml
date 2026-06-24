@@ -61,12 +61,13 @@ jobs:
             docker_host="unix://$HOME/.docker/run/docker.sock"
           fi
           docker_config="$(mktemp -d)"
+          printf '{"auths":{}}\n' > "$docker_config/config.json"
           trap 'rm -rf "$docker_config"' EXIT
           docker_cmd() {
             if [ -n "$docker_host" ]; then
-              DOCKER_HOST="$docker_host" docker "$@"
+              DOCKER_HOST="$docker_host" DOCKER_CONFIG="$docker_config" docker "$@"
             else
-              docker "$@"
+              DOCKER_CONFIG="$docker_config" docker "$@"
             fi
           }
           docker_pull() {
