@@ -60,6 +60,9 @@ jobs:
           if [ -z "$docker_host" ] && [ -S "$HOME/.docker/run/docker.sock" ]; then
             docker_host="unix://$HOME/.docker/run/docker.sock"
           fi
+          if [ -z "$docker_host" ] && [ -S "/Users/dread/.docker/run/docker.sock" ]; then
+            docker_host="unix:///Users/dread/.docker/run/docker.sock"
+          fi
           docker_config="$(mktemp -d)"
           printf '{"auths":{}}\n' > "$docker_config/config.json"
           trap 'rm -rf "$docker_config"' EXIT
