@@ -1,11 +1,5 @@
 galoy:
   network: regtest
-  images:
-    app:
-      repository: lnflash/flash-dev:latest
-      imagePullPolicy: Always
-      digest: sha256:df8d5b820ea0a84642e8ed37cf485a5cce29dbde976801962100a002931130c2
-      git_ref: "d2a438"
   api:
     replicas: 1
     ingress:

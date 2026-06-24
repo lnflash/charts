@@ -45,7 +45,6 @@ jobs:
             docker.io/groundnuty/k8s-wait-for:v1.5.1
             docker.io/dockurr/strfry@sha256:df140472554e5a0b5bbe08ec417805d283098621833e44827d8018c98b74243d
             docker.io/lnflash/flash-app@sha256:acdf3c5643bc344ed252b44ec3c5a30321d251538e67ada381959e8273c7974b
-            docker.io/lnflash/flash-dev@sha256:df8d5b820ea0a84642e8ed37cf485a5cce29dbde976801962100a002931130c2
             docker.io/lnflash/flash-pay@sha256:a910ae53ce13159f0c4f52b7aae35445a50fba94e3b702b279cfa58eb4e41486
             docker.io/lnflash/galoy-app-migrate@sha256:c98109394cd9e8b7f6d2cea7f0c219a62a66584822de3600ee4ece981c814f73
             docker.io/lnflash/galoy-app-websocket@sha256:e8104f3fc37131a1cdd504cf8249defbf17efc7025d759e129ee4fb42132fc62
