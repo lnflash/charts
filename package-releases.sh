@@ -9,7 +9,7 @@ CHARTS=(
   "price"
 )
 
-REGISTRY="oci://ghcr.io/brh28"
+REGISTRY="oci://ghcr.io/lnflash"
 
 # Check if a specific chart was provided as argument
 if [ -n "$1" ]; then

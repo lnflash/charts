@@ -14,14 +14,13 @@ name: Publish flash chart & sync deployments pin
 # `helm push` no-ops if the version already exists, and the pin PR is skipped
 # when the deployments pin already matches.
 #
-# REQUIRED SECRETS (see PR description for the credential decision):
-#   GHCR_PUBLISH_USER   — user with write:packages on ghcr.io/brh28 (personal
-#                         namespace; the repo's default GITHUB_TOKEN cannot push
-#                         there). Consider migrating the chart to the org
-#                         namespace ghcr.io/lnflash to drop this dependency.
-#   GHCR_PUBLISH_TOKEN  — that user's PAT (write:packages).
-#   DEPLOYMENTS_PAT     — PAT with `repo` scope on lnflash/deployments, to open
-#                         the terraform-pin PR.
+# The chart publishes to the org namespace oci://ghcr.io/lnflash, so the
+# built-in GITHUB_TOKEN (packages: write) authenticates — no personal PAT.
+#
+# REQUIRED SECRET:
+#   DEPLOYMENTS_PAT — PAT with `repo` scope on lnflash/deployments, to open the
+#                     cross-repo terraform-pin PR (a repo's GITHUB_TOKEN can't
+#                     write to another repo).
 
 on:
   push:
@@ -37,6 +36,9 @@ jobs:
   publish-and-sync:
     name: Publish flash chart and sync deployments pin
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
@@ -54,17 +56,16 @@ jobs:
 
       - name: Package & push chart to OCI (idempotent)
         env:
-          GHCR_USER: ${{ secrets.GHCR_PUBLISH_USER }}
-          GHCR_TOKEN: ${{ secrets.GHCR_PUBLISH_TOKEN }}
+          GHCR_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          echo "${GHCR_TOKEN}" | helm registry login ghcr.io -u "${GHCR_USER}" --password-stdin
+          echo "${GHCR_TOKEN}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
           # The flash chart has a local `file://../price` dependency, so build
           # deps from the repo root (all sibling charts are present here).
           helm dependency update charts/flash
           helm package charts/flash
           # `already exists` is not an error — an unchanged version is a no-op.
-          helm push flash-*.tgz oci://ghcr.io/brh28 2>&1 | tee push.log || {
+          helm push flash-*.tgz oci://ghcr.io/lnflash 2>&1 | tee push.log || {
             grep -qi "already exists" push.log && echo "version already published; skipping" || exit 1
           }
           rm -f flash-*.tgz
@@ -98,5 +99,5 @@ jobs:
           git push -u origin "$branch"
           gh pr create --repo lnflash/deployments \
             --title "chore(flash): bump chart version pin to ${VERSION}" \
-            --body "Automated: flash chart ${VERSION} was published to ghcr.io/brh28. Bumps the terraform \`helm_release\` pin so \`make flash ENV=<env>\` pulls it. Merge, then apply on the jumpbox." \
+            --body "Automated: flash chart ${VERSION} was published to ghcr.io/lnflash. Bumps the terraform \`helm_release\` pin so \`make flash ENV=<env>\` pulls it. Merge, then apply on the jumpbox." \
             --head "$branch"
