@@ -85,7 +85,13 @@ jobs:
             docker_host="unix:///Users/dread/.docker/run/docker.sock"
           fi
           docker_config="$(mktemp -d)"
-          printf '{"auths":{}}\n' > "$docker_config/config.json"
+          # Give Docker an explicit empty (anonymous) auth entry for Docker Hub
+          # and no credential store, so it never invokes the macOS keychain
+          # helper. On the self-hosted Mac runner, Docker Desktop consults the
+          # osxkeychain helper for docker.io even with an empty config; the
+          # helper can't run in the headless CI session ("keychain cannot be
+          # accessed"), failing every pull of an uncached (public) image.
+          printf '{"auths":{"https://index.docker.io/v1/":{"auth":""}},"credsStore":"","credHelpers":{}}\n' > "$docker_config/config.json"
           trap 'rm -rf "$docker_config"' EXIT
           docker_cmd() {
             if [ -n "$docker_host" ]; then
