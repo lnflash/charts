@@ -6,5 +6,8 @@ auth:
   password: kratos-pg
   database: kratos-pg
 
+image:
+  repository: bitnamilegacy/postgresql
+
 persistence:
   enabled: false

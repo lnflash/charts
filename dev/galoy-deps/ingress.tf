@@ -28,7 +28,7 @@ resource "kubernetes_namespace" "ingress" {
 
 resource "helm_release" "cert_manager" {
   name      = "cert-manager"
-  chart     = "${path.module}/../../charts/galoy-deps"
+  chart     = "${path.module}/../../charts/flash-deps"
   namespace = kubernetes_namespace.ingress.metadata[0].name
 
   values = [
@@ -42,7 +42,7 @@ resource "helm_release" "cert_manager" {
 
 resource "helm_release" "ingress_nginx" {
   name      = "ingress-nginx"
-  chart     = "${path.module}/../../charts/galoy-deps"
+  chart     = "${path.module}/../../charts/flash-deps"
   namespace = kubernetes_namespace.ingress.metadata[0].name
 
   values = [
@@ -59,6 +59,8 @@ resource "helm_release" "ingress_nginx" {
 }
 
 resource "kubernetes_manifest" "issuer" {
+  count = 0
+
   manifest = {
     apiVersion = "cert-manager.io/v1"
     kind       = "ClusterIssuer"

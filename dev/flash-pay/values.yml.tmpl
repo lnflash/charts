@@ -1,0 +1,14 @@
+graphqlUrl: http://api.${galoy_namespace}.svc.cluster.local:4002/graphql
+graphqlWebsocketUrl: ws://websocket.${galoy_namespace}.svc.cluster.local:4000/graphql
+ibexWebhookUrl: http://ibex-webhook.${galoy_namespace}.svc.cluster.local:4008
+nostrPubkeyHex: 7b1219d72d0d0bbf195674e7e89a499be7678997b43b4cd8c7b273c277d7ad75
+oathkeeper:
+  service:
+    host: flash-oathkeeper-proxy.${galoy_namespace}.svc.cluster.local
+    port: 4455
+galoy-nostr:
+  enabled: false
+redis:
+  redis0Dns: "flash-redis-node-0.flash-redis-headless.${galoy_namespace}.svc.cluster.local"
+  redis1Dns: "flash-redis-node-0.flash-redis-headless.${galoy_namespace}.svc.cluster.local"
+  redis2Dns: "flash-redis-node-0.flash-redis-headless.${galoy_namespace}.svc.cluster.local"

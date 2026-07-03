@@ -10,7 +10,7 @@ resource "kubernetes_namespace" "otel" {
 
 resource "helm_release" "otel" {
   name      = "opentelemetry-collector"
-  chart     = "${path.module}/../../charts/galoy-deps"
+  chart     = "${path.module}/../../charts/flash-deps"
   namespace = kubernetes_namespace.otel.metadata[0].name
 
   values = [
