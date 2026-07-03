@@ -1,6 +1,63 @@
 galoy:
   bria:
-    host: bria-api.galoy-dev-bitcoin.svc.cluster.local
+    host: bria.external.flash.invalid
+  dealer:
+    host: flash-price-realtime
+  doSpaces:
+    endpoint: https://example.com
+    region: dev
+    bucket: dev
+  ibex:
+    listenerHost: ${ibex_listener_host}
+  lnd1:
+    dns: lnd1.external.flash.invalid
+  lnd2:
+    dns: lnd2.external.flash.invalid
+  kratos:
+    config:
+      api:
+        secret:
+          callbackApiKey: ${kratos_callback_api_key}
+  config:
+    admin_accounts:
+      - role: bankowner
+        phone: "+16505554334"
+    bria:
+      hotWalletName: dev
+      queueNames:
+        fast: fast
+      coldStorage:
+        walletName: cold
+        hotToColdRebalanceQueueName: dev
+    ibex:
+      clientId: dev-client-id
+      clientSecret: dev-client-secret
+      environment: sandbox
+      webhook:
+        uri: ${ibex_listener_host}
+    exchangeRates:
+      USD:
+        JMD:
+          bid: 150
+          ask: 160
+    sendgrid:
+      apiKey: dev-sendgrid-api-key
+    swap:
+      loopOutWhenHotWalletLessThan: 0
+      swapOutAmount: 0
+      swapProviders: []
+      lnd1loopRestEndpoint: https://localhost:8081
+      lnd1loopRpcEndpoint: localhost:11010
+      lnd2loopRestEndpoint: https://localhost:8082
+      lnd2loopRpcEndpoint: localhost:11011
+      feeAccountingEnabled: false
+    cronConfig:
+      rebalanceEnabled: false
+      swapEnabled: false
+  api:
+    flashPay:
+      hostname: pay.staging.flashapp.me
+
 kratos:
   kratos:
     config:
@@ -15,7 +72,7 @@ kratos:
                     config:
                       url: http://invalid-because-we-dont-want-profile-to-be-updated
                       method: POST
-                      body: base64://ZnVuY3Rpb24oY3R4KSB7CiAgICBpZGVudGl0eV9pZDogaWYgc3RkLm9iamVjdEhhcyhjdHgsICJpZGVudGl0eSIpIHRoZW4gY3R4LmlkZW50aXR5LmlkIGVsc2UgbnVsbCwKICAgIHBob25lOiBpZiBzdGQub2JqZWN0SGFzKGN0eC5pZGVudGl0eS50cmFpdHMsICJwaG9uZSIpIHRoZW4gY3R4LmlkZW50aXR5LnRyYWl0cy5waG9uZSBlbHNlIG51bGwsCiAgICB0cmFuc2llbnRfcGF5bG9hZDogaWYgc3RkLm9iamVjdEhhcyhjdHguZmxvdywgInRyYW5zaWVudF9wYXlsb2FkIikgdGhlbiBjdHguZmxvdy50cmFuc2llbnRfcGF5bG9hZCBlbHNlIG51bGwsCiAgICBzY2hlbWFfaWQ6IGN0eC5pZGVudGl0eS5zY2hlbWFfaWQsCiAgICBmbG93X2lkOiBjdHguZmxvdy5pZCwKICAgIGZsb3dfdHlwZTogY3R4LmZsb3cudHlwZQp9Cg==
+                      body: base64://ZnVuY3Rpb24oY3R4KSB7CiAgICBpZGVudGl0eV9pZDogdHJ1ZSwKICAgIHNjaGVtYV9pZDogY3R4LmlkZW50aXR5LnNjaGVtYV9pZAp9Cg==
                       auth:
                         type: api_key
                         config:
@@ -40,3 +97,72 @@ kratos:
                           value: ${kratos_callback_api_key}
                           in: header
                   - hook: session
+
+postgresql:
+  enabled: false
+
+secrets:
+  create: true
+  mongodbPassword: password
+  mongodbRootPassword: password
+  mongodbMetricsPassword: password
+  mongodbReplicaSetKey: replica
+  mongodbConnectionString: mongodb://testUser:password@flash-mongodb:27017/galoy
+  redisPassword: password
+  geetestId: dummy
+  geetestSecretKey: dummy
+  twilioVerifyServiceId: ${twilio_verify_service_id}
+  twilioAccountSid: ${twilio_account_sid}
+  twilioAuthToken: ${twilio_auth_token}
+  lnd1Macaroon: ${dummy_base64_secret_value}
+  lnd1Tls: ${dummy_base64_secret_value}
+  lnd1LoopMacaroon: ${dummy_base64_secret_value}
+  lnd1LoopTls: ${dummy_base64_secret_value}
+  lnd1PubKey: ${dummy_lnd_pubkey}
+  lnd2Macaroon: ${dummy_base64_secret_value}
+  lnd2Tls: ${dummy_base64_secret_value}
+  lnd2LoopMacaroon: ${dummy_base64_secret_value}
+  lnd2LoopTls: ${dummy_base64_secret_value}
+  lnd2PubKey: ${dummy_lnd_pubkey}
+  briaApiKey: bria_dev_000000000000000000000
+  svixSecretKey: dummy
+  proxyCheckApiKey: dummy
+  doSpacesAccessKey: dummy
+  doSpacesSecretKey: dummy
+
+loop:
+  enabled: false
+
+price:
+  realtime:
+    config:
+      quotes:
+        - code: USD
+          symbol: "$"
+          name: US Dollar
+          flag: US
+      exchanges:
+        - name: kraken
+          enabled: true
+          quoteAlias: USD
+          base: BTC
+          quote: USD
+          provider: ccxt
+          cron: "*/15 * * * * *"
+        - name: bitstamp
+          enabled: true
+          quoteAlias: USD
+          base: BTC
+          quote: USD
+          provider: ccxt
+          cron: "*/15 * * * * *"
+    host: flash-price-realtime
+  history:
+    host: flash-price-history
+  postgresql:
+    primary:
+      persistence:
+        enabled: false
+  ibex:
+    url: https://api-sandbox.poweredbyibex.io
+    environment: sandbox

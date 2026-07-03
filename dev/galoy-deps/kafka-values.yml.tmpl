@@ -7,10 +7,14 @@ kubemonkey:
 opentelemetry-collector:
   enabled: false
 strimzi-kafka-operator:
+%{ if length(watch_namespaces) == 0 ~}
+  watchNamespaces: []
+%{ else ~}
   watchNamespaces:
 %{ for namespace in watch_namespaces ~}
   - "${namespace}"
 %{ endfor ~}
+%{ endif ~}
   kafka:
     listener:
       type: nodeport

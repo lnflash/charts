@@ -65,7 +65,7 @@ spec:
           {{- end }}
           {{ range until (.Values.redis.replica.replicaCount | int) }}
           - name: {{ printf "REDIS_%d_DNS" . }}
-            value: {{ printf "flash-redis-node-%d.flash-redis-headless" . | quote }}
+            value: {{ printf "%s-redis-node-%d.%s-redis-headless" $.Release.Name . $.Release.Name | quote }}
           {{ end }}
           volumeMounts:
             - name: custom-yaml

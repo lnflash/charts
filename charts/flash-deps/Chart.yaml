@@ -32,11 +32,6 @@ dependencies:
     repository: https://strimzi.io/charts/
     version: 0.36.1
     condition: strimzi-kafka-operator.enabled
-  - name: kube-monkey
-    alias: kubemonkey
-    repository: https://asobti.github.io/kube-monkey/charts/repo
-    version: 1.5.2
-    condition: kubemonkey.enabled
   - name: opentelemetry-collector
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
     version: 0.68.1

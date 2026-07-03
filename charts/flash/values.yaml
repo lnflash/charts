@@ -22,18 +22,20 @@ galoy:
           bid:
           ask:
     cashout:
+      enabled: false # flags-off baseline; enable per environment via overrides
+      skipPayment: true
       minimum:
-        amount:
+        amount: 0
         currency: USD
       maximum:
-        amount:
+        amount: 0
         currency: USD
       accountLevel: 2
       fee: 200 # basis points
       duration: 600 # seconds
       email:
-        to:
-        from:
+        to: dev@example.com
+        from: dev@example.com
         subject: "New Cashout"
     ibex:
       clientId:
@@ -95,6 +97,13 @@ galoy:
         successThreshold: 2
         timeoutSeconds: 1
   ibex:
+    url: https://api-sandbox.poweredbyibex.io
+    listenerHost:
+    authExistingSecret:
+      name: ibex-auth
+      email_key: api-email
+      password_key: api-password
+      webhook_secret_key: webhook-secret
     webhook:
       nameOverride:
       replicas: 1

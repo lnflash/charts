@@ -1,0 +1,6 @@
+cloudflare_api_key       = "dummy"
+cloudflare_email         = "dummy@flashapp.me"
+TWILIO_VERIFY_SERVICE_ID = "dummy"
+TWILIO_ACCOUNT_SID       = "dummy"
+TWILIO_AUTH_TOKEN        = "dummy"
+IBEX_PASSWORD            = "dummy"

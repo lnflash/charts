@@ -15,7 +15,7 @@ locals {
 
 resource "helm_release" "kafka" {
   name      = "kafka"
-  chart     = "${path.module}/../../charts/galoy-deps"
+  chart     = "${path.module}/../../charts/flash-deps"
   namespace = kubernetes_namespace.kafka.metadata[0].name
 
   values = [
