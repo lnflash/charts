@@ -145,6 +145,24 @@ jobs:
           for resource in $(kubectl -n galoy-dev-nostr get deployment,statefulset -o name); do
             kubectl -n galoy-dev-nostr rollout status "$resource" --timeout=5m
           done
+      - name: Diagnostics on workload failure
+        if: failure()
+        run: |
+          for ns in galoy-dev-galoy galoy-dev-nostr; do
+            echo "::group::[$ns] pods"
+            kubectl -n "$ns" get pods -o wide || true
+            echo "::endgroup::"
+            # Describe + logs for any pod not Running/Completed (the culprits).
+            for pod in $(kubectl -n "$ns" get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}' 2>/dev/null | awk '$2!="Running" && $2!="Succeeded" {print $1}'); do
+              echo "::group::[$ns/$pod] describe"
+              kubectl -n "$ns" describe pod "$pod" || true
+              echo "::endgroup::"
+              echo "::group::[$ns/$pod] logs (current + previous)"
+              kubectl -n "$ns" logs "$pod" --all-containers --tail=200 || true
+              kubectl -n "$ns" logs "$pod" --all-containers --previous --tail=200 2>/dev/null || true
+              echo "::endgroup::"
+            done
+          done
       - name: Flash API Smoketest
         timeout-minutes: 10
         run: |
