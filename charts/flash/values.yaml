@@ -22,7 +22,7 @@ galoy:
           bid:
           ask:
     cashout:
-      enabled: true
+      enabled: false # flags-off baseline; enable per environment via overrides
       skipPayment: true
       minimum:
         amount: 0
