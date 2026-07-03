@@ -1,36 +1,5 @@
 galoy:
   network: regtest
-  images:
-    app:
-      repository: lnflash/flash-dev:latest
-      imagePullPolicy: Always
-      digest: sha256:df8d5b820ea0a84642e8ed37cf485a5cce29dbde976801962100a002931130c2
-      git_ref: "d2a438"
-  config:
-    swap:
-      loopOutWhenHotWalletLessThan: 500000
-      swapOutAmount:  250000
-      swapProviders: ["Loop"]
-      lnd1loopRestEndpoint: https://lnd1-loop.galoy-dev-bitcoin.svc.cluster.local:8081
-      lnd1loopRpcEndpoint: lnd1-loop.galoy-dev-bitcoin.svc.cluster.local:11010
-      lnd2loopRestEndpoint: https://lnd1-loop.galoy-dev-bitcoin.svc.cluster.local:8081
-      lnd2loopRpcEndpoint: lnd1-loop.galoy-dev-bitcoin.svc.cluster.local:11010
-
-  bitcoind:
-    dns: bitcoind.galoy-dev-bitcoin.svc.cluster.local
-    port: 18332
-
-  lnd1:
-    dns: lnd1.galoy-dev-bitcoin.svc.cluster.local
-
-  dealer:
-    host: dealer-price.galoy-dev-addons.svc.cluster.local
-
-  ibex:
-    url: https://api-sandbox.poweredbyibex.io
-    email: mail2michaelennis@gmail.com
-    webhook:
-      externalUri: https://ibex.staging.flashapp.me:8080 
   api:
     replicas: 1
     ingress:
@@ -39,14 +8,13 @@ galoy:
       annotations:
         nginx.ingress.kubernetes.io/ssl-redirect: "false"
       extraPaths:
-      - path: /(graphql|kratos|browser|healthz|metrics|auth)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: api
-            port:
-              number: 4002
-              
+        - path: /(graphql|kratos|browser|healthz|metrics|auth)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: api
+              port:
+                number: 4002
   admin:
     ingress:
       enabled: true
@@ -56,13 +24,13 @@ galoy:
         nginx.ingress.kubernetes.io/rewrite-target: /$1
         nginx.ingress.kubernetes.io/ssl-redirect: "false"
       extraPaths:
-      - path: /admin/?(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: graphql-admin
-            port:
-              number: 4001
+        - path: /admin/?(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: graphql-admin
+              port:
+                number: 4001
 
 mongodb:
   architecture: standalone
@@ -85,13 +53,10 @@ redis:
     getMasterTimeout: 5
 
 price:
-  service:
-    type: NodePort
-
-postgresql:
-  primary:
-    persistence:
-      enabled: false
+  postgresql:
+    primary:
+      persistence:
+        enabled: false
 
 oathkeeper:
   replicaCount: 1
@@ -100,6 +65,3 @@ oathkeeper:
 
 kratos:
   replicaCount: 1
-
-secrets:
-  create: false

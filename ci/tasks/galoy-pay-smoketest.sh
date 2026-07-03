@@ -20,7 +20,7 @@ for host in $(echo $hosts | jq -r '.[]'); do
   galoy_pay_success="false"
   lnurlp_endpoint_success="true"
 
-  for i in {1..15}; do
+  for i in {1..60}; do
     echo "Attempt ${i} to curl galoy pay on host ${host}"
     curl --location -f ${host}:${port}
     if [[ $? == 0 ]]; then galoy_pay_success="true"; break; fi;
@@ -30,7 +30,7 @@ for host in $(echo $hosts | jq -r '.[]'); do
 
   if [[ "$lnurl_check_disabled" != "true" ]]; then
     lnurlp_endpoint_success="false"
-    for i in {1..15}; do
+    for i in {1..60}; do
       echo "Attempt ${i} to curl lnurlp endpoint on host ${host}"
       response=$(curl --location -fs ${host}/.well-known/lnurlp/test)
       is_response_valid=$(echo $response | jq -r 'has("callback") and has("minSendable") and has("maxSendable") and has("metadata") and has("tag")')

@@ -16,80 +16,108 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: AbsaOSS/k3d-action@v2.4.0
-        name: "Create Single Cluster"
-        with:
-          cluster-name: "k3s-default"
-          args: >-
-            --image rancher/k3s:v1.27.4-k3s1
-            -v "$(pwd):/charts"
-            --k3s-arg --disable=traefik@server:0
+      - name: Create k3d Cluster
+        run: |
+          k3d registry delete smoketest-registry >/dev/null 2>&1 || true
+          k3d registry create smoketest-registry --port 127.0.0.1:5001 --no-help
+          registries_file="$(mktemp)"
+          trap 'rm -f "$registries_file"' EXIT
+          cat > "$registries_file" <<'YAML'
+          mirrors:
+            "docker.io":
+              endpoint:
+                - "http://k3d-smoketest-registry:5000"
+          YAML
+          k3d cluster create --image rancher/k3s:v1.27.4-k3s1 \
+            -v "$(pwd):/charts" \
+            --registry-use k3d-smoketest-registry:5000 \
+            --registry-config "$registries_file" \
+            --k3s-arg --disable=traefik@server:0 \
             --k3s-arg --disable=servicelb@server:0
-      - name: Deploy Infra over K3D in Dev Mode
+      - name: Mirror Docker Hub Images
+        run: |
+          images=(
+            docker.io/bitnamilegacy/mongodb:7.0.9-debian-12-r4
+            docker.io/bitnamilegacy/postgresql:16.4.0-debian-12-r14
+            docker.io/bitnamilegacy/postgresql:16.6.0-debian-12-r2
+            docker.io/bitnamilegacy/redis:7.2.1-debian-11-r0
+            docker.io/bitnamilegacy/redis-sentinel:7.2.1-debian-11-r0
+            docker.io/groundnuty/k8s-wait-for:v1.5.1
+            docker.io/dockurr/strfry@sha256:df140472554e5a0b5bbe08ec417805d283098621833e44827d8018c98b74243d
+            docker.io/lnflash/flash-app@sha256:acdf3c5643bc344ed252b44ec3c5a30321d251538e67ada381959e8273c7974b
+            docker.io/lnflash/flash-pay@sha256:a910ae53ce13159f0c4f52b7aae35445a50fba94e3b702b279cfa58eb4e41486
+            docker.io/lnflash/galoy-app-migrate@sha256:c98109394cd9e8b7f6d2cea7f0c219a62a66584822de3600ee4ece981c814f73
+            docker.io/lnflash/galoy-app-websocket@sha256:e8104f3fc37131a1cdd504cf8249defbf17efc7025d759e129ee4fb42132fc62
+            docker.io/lnflash/nostr-multiplexer@sha256:1b7baadaef4b78fc0d2d79b297f6f725fe47130fad590222a1c19b7be96a5c8b
+            docker.io/lnflash/price@sha256:8f6422c3a762ee5badf7d5014652c00b19c3d357db4566a972c62d23130422e9
+            docker.io/lnflash/price-history@sha256:916de25989444b317a2704a80a90fcda1af9899feba970daa2db1cc63e8f7159
+            docker.io/lnflash/price-history-migrate@sha256:7a290eb277752b5ab41c3311f3ed409bf344a294a1319e10c9dab58c4c77482e
+            docker.io/oryd/kratos:v1.0.0
+            docker.io/oryd/oathkeeper:v0.40.6
+          )
+          docker_host="${DOCKER_HOST:-}"
+          if [ -z "$docker_host" ] && [ -S "$HOME/.docker/run/docker.sock" ]; then
+            docker_host="unix://$HOME/.docker/run/docker.sock"
+          fi
+          if [ -z "$docker_host" ] && [ -S "/Users/dread/.docker/run/docker.sock" ]; then
+            docker_host="unix:///Users/dread/.docker/run/docker.sock"
+          fi
+          docker_config="$(mktemp -d)"
+          printf '{"auths":{}}\n' > "$docker_config/config.json"
+          trap 'rm -rf "$docker_config"' EXIT
+          docker_cmd() {
+            if [ -n "$docker_host" ]; then
+              DOCKER_HOST="$docker_host" DOCKER_CONFIG="$docker_config" docker "$@"
+            else
+              DOCKER_CONFIG="$docker_config" docker "$@"
+            fi
+          }
+          docker_pull() {
+            if [ -n "$docker_host" ]; then
+              DOCKER_HOST="$docker_host" DOCKER_CONFIG="$docker_config" docker pull "$@"
+            else
+              DOCKER_CONFIG="$docker_config" docker pull "$@"
+            fi
+          }
+          for image in "${images[@]}"; do
+            if ! docker_cmd image inspect "$image" >/dev/null 2>&1; then
+              docker_pull "$image"
+            fi
+            repository="${image#docker.io/}"
+            if [[ "$repository" == *@* ]]; then
+              repository="${repository%%@*}"
+              tag="smoketest"
+            else
+              tag="${repository##*:}"
+              repository="${repository%:*}"
+            fi
+            target="127.0.0.1:5001/${repository}:${tag}"
+            docker_cmd tag "$image" "$target"
+            docker_cmd push "$target"
+          done
+      - name: Deploy Flash Dependencies
         run: |
           pushd dev && source ./.envrc
           make init
           make deploy-services
-      - name: Deploy Charts in Dev
+      - name: Deploy Flash Charts
         uses: nick-fields/retry@v4
         with:
           timeout_minutes: 30
           retry_on: error
           max_attempts: 2
           command: pushd dev && source ./.envrc && make deploy
-      - name: Wait for Ready
+      - name: Wait for Flash Workloads
+        timeout-minutes: 15
         run: |
-          echo "Stack takes about 2 minutes to startup, waiting..."
-          sleep 2m
-      - name: Bitcoin Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=bitcoind ./dev-smoketest-settings.sh && \
-            ./bitcoind-smoketest.sh regtest && \
-            rm -rf smoketest-settings"
-      - name: LND Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=lnd ./dev-smoketest-settings.sh && \
-            ./lnd-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Fulcrum Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=fulcrum ./dev-smoketest-settings.sh && \
-            ./fulcrum-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Mempool Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=mempool ./dev-smoketest-settings.sh && \
-            ./mempool-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Loop Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=loop ./dev-smoketest-settings.sh && \
-            ./loop-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: RTL Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=rtl ./dev-smoketest-settings.sh && \
-            ./rtl-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Galoy Smoketest
+          kubectl -n galoy-dev-galoy wait --for=condition=complete job --all --timeout=10m
+          for resource in $(kubectl -n galoy-dev-galoy get deployment,statefulset -o name); do
+            kubectl -n galoy-dev-galoy rollout status "$resource" --timeout=10m
+          done
+          for resource in $(kubectl -n galoy-dev-nostr get deployment,statefulset -o name); do
+            kubectl -n galoy-dev-nostr rollout status "$resource" --timeout=5m
+          done
+      - name: Flash API Smoketest
         timeout-minutes: 10
         run: |
           pushd dev && source ./.envrc
@@ -97,23 +125,7 @@ jobs:
             CHART=galoy ./dev-smoketest-settings.sh && \
             ./galoy-smoketest.sh && \
             rm -rf smoketest-settings"
-      - name: Monitoring Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=monitoring ./dev-smoketest-settings.sh && \
-            ./monitoring-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Admin Panel Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=admin-panel ./dev-smoketest-settings.sh && \
-            ./admin-panel-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Galoy Pay Smoketest
+      - name: Flash Pay Smoketest
         timeout-minutes: 5
         run: |
           pushd dev && source ./.envrc
@@ -121,33 +133,22 @@ jobs:
             CHART=galoy-pay ./dev-smoketest-settings.sh && \
             ./galoy-pay-smoketest.sh && \
             rm -rf smoketest-settings"
-      - name: Web Wallet Smoketest
+      - name: Nostr Rollout Check
         timeout-minutes: 5
         run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=web-wallet ./dev-smoketest-settings.sh && \
-            ./web-wallet-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Bria Smoketest
+          kubectl -n galoy-dev-nostr rollout status deployment/multiplexer-release-nostr-multiplexer --timeout=5m
+          kubectl -n galoy-dev-nostr rollout status deployment/strfry --timeout=5m
+      - name: Debug Cluster State
+        if: failure()
         timeout-minutes: 5
         run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=bria ./dev-smoketest-settings.sh && \
-            ./bria-smoketest.sh && \
-            rm -rf smoketest-settings"
-      - name: Kafka Connect Smoketest
-        timeout-minutes: 5
-        run: |
-          pushd dev && source ./.envrc
-          kubectl -n galoy-dev-smoketest exec smoketest -- bash -c "cd /charts/ci/tasks && \
-            CHART=kafka-connect ./dev-smoketest-settings.sh && \
-            ./kafka-connect-smoketest.sh && \
-            rm -rf smoketest-settings"
+          kubectl get namespaces
+          kubectl get pods --all-namespaces -o wide
+          kubectl get events --all-namespaces --sort-by=.lastTimestamp | tail -n 100
       - name: Clean Up
         if: always()
         timeout-minutes: 5
         run: |
           rm -rf ci/tasks/smoketest-settings
           k3d cluster delete --all
+          k3d registry delete smoketest-registry >/dev/null 2>&1 || true

@@ -14,11 +14,6 @@ strimzi-kafka-operator:
     resources: {}
   resources: {}
 
-kubemonkey:
-  enabled: true
-  fullnameOverride: kubemonkey
-  resources: {}
-
 opentelemetry-collector:
   enabled: true
   resources: {}

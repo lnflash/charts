@@ -48,7 +48,7 @@ spec:
         - "-r"
         - "/app/lib/services/tracing.js"
         - "lib/servers/trigger.js"
-        - "--configPath"
+        - "-c"
         - "/var/yaml/custom.yaml"
         resources:
           {{ toYaml .Values.galoy.trigger.resources | nindent 10 }}
@@ -92,6 +92,7 @@ spec:
 {{/* Bitcoin/LND */}}
 {{ include "galoy.lnd1.env" . | indent 8 }}
 {{ include "galoy.bria.env" . | indent 8 }}
+{{ include "galoy.ibex.env" . | indent 8 }}
 
 {{/* API Specifics */}}
 {{ include "galoy.twilio.env" . | indent 8 }}
