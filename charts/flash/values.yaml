@@ -45,6 +45,25 @@ galoy:
         uri:
         port: 4008
         secret: "not-so-secret"
+    # `bridge` is a REQUIRED config section for the flash app image (see the
+    # api config schema, src/config/schema.ts). The dev config previously
+    # lacked it, so every config-loading server (api/websocket/trigger/
+    # ibex-webhook/exporter) crash-looped on schema validation once the image
+    # started requiring it. Disabled baseline; real values injected/overridden
+    # per environment (deployments overlays).
+    bridge:
+      enabled: false
+      apiKey: ""
+      baseUrl: "https://api.sandbox.bridge.xyz/v0"
+      developerFeePercent: 2.0
+      webhook:
+        port: 4009
+        timestampSkewMs: 300000
+        publicKeys:
+          kyc: "<replace>"
+          deposit: "<replace>"
+          transfer: "<replace>"
+          external_account: "<replace>"
   images:
     app:
       repository: lnflash/flash-app
