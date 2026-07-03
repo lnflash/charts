@@ -1,0 +1,103 @@
+name: Publish flash chart & sync deployments pin
+
+# Pieces 2 and 3 of the one-step-deploy automation (piece 1 lives in the flash
+# repo: it patch-bumps charts/flash/Chart.yaml `version` on every image bump).
+#
+# On merge to main, when the flash chart version changes:
+#   (2) package the chart and push it to the OCI registry, so the new version
+#       actually exists to be pulled (the manual `package-releases.sh` step).
+#   (3) open a PR in lnflash/deployments bumping the terraform `version` pin in
+#       tf-modules/flash/main.tf to match, so `make flash ENV=<env>` pulls it.
+#
+# Publish runs before the pin sync, so the version is guaranteed to exist in the
+# registry before deployments is told to pull it. Both steps are idempotent:
+# `helm push` no-ops if the version already exists, and the pin PR is skipped
+# when the deployments pin already matches.
+#
+# The chart publishes to the org namespace oci://ghcr.io/lnflash, so the
+# built-in GITHUB_TOKEN (packages: write) authenticates — no personal PAT.
+#
+# REQUIRED SECRET:
+#   DEPLOYMENTS_PAT — PAT with `repo` scope on lnflash/deployments, to open the
+#                     cross-repo terraform-pin PR (a repo's GITHUB_TOKEN can't
+#                     write to another repo).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "charts/flash/Chart.yaml"
+
+concurrency:
+  group: publish-flash-chart
+  cancel-in-progress: false
+
+jobs:
+  publish-and-sync:
+    name: Publish flash chart and sync deployments pin
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install helm & yq
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.15.4
+
+      - name: Resolve chart version
+        id: ver
+        run: |
+          version="$(yq e '.version' charts/flash/Chart.yaml)"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Flash chart version: ${version}"
+
+      - name: Package & push chart to OCI (idempotent)
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          echo "${GHCR_TOKEN}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+          # The flash chart has a local `file://../price` dependency, so build
+          # deps from the repo root (all sibling charts are present here).
+          helm dependency update charts/flash
+          helm package charts/flash
+          # `already exists` is not an error — an unchanged version is a no-op.
+          helm push flash-*.tgz oci://ghcr.io/lnflash 2>&1 | tee push.log || {
+            grep -qi "already exists" push.log && echo "version already published; skipping" || exit 1
+          }
+          rm -f flash-*.tgz
+
+      - name: Sync terraform version pin in deployments
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOYMENTS_PAT }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/lnflash/deployments.git" dep
+          cd dep
+          pin_file="tf-modules/flash/main.tf"
+          current="$(grep -oE 'version[[:space:]]*=[[:space:]]*"[0-9]+\.[0-9]+\.[0-9]+"' "$pin_file" | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+          if [ "$current" = "$VERSION" ]; then
+            echo "deployments pin already at ${VERSION}; nothing to do"
+            exit 0
+          fi
+          branch="chore/bump-flash-chart-${VERSION}"
+          git config user.email "bot@flash.io"
+          git config user.name "CI Bot"
+          git checkout -b "$branch"
+          # Bump only the flash helm_release version pin (the first `version =
+          # "<current>"`), never flash-pay's. Portable awk (GNU/BSD): replace
+          # the first line matching the current flash version, then stop.
+          awk -v old="$current" -v new="$VERSION" \
+            '!done && $0 ~ "version[[:space:]]*=[[:space:]]*\"" old "\"" { sub("\"" old "\"", "\"" new "\""); done=1 } { print }' \
+            "$pin_file" > "$pin_file.tmp" && mv "$pin_file.tmp" "$pin_file"
+          git add "$pin_file"
+          git commit -m "chore(flash): bump chart version pin ${current} -> ${VERSION}"
+          git push -u origin "$branch"
+          gh pr create --repo lnflash/deployments \
+            --title "chore(flash): bump chart version pin to ${VERSION}" \
+            --body "Automated: flash chart ${VERSION} was published to ghcr.io/lnflash. Bumps the terraform \`helm_release\` pin so \`make flash ENV=<env>\` pulls it. Merge, then apply on the jumpbox." \
+            --head "$branch"
