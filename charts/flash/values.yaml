@@ -16,6 +16,15 @@ galoy:
       coldStorage:
         walletName: cold
         hotToColdRebalanceQueueName: dev
+    # Flash is IBEX-custodial: no LND nodes, no cold-wallet rebalance, no swap
+    # outs. lndTasksEnabled gates the upstream-galoy LND maintenance tasks in
+    # the cron server (app image >= the #430 schema; older images reject the
+    # key). With all three off, the daily cron runs only mongo expiry cleanup
+    # and Bridge<->IBEX reconciliation.
+    cronConfig:
+      rebalanceEnabled: false
+      swapEnabled: false
+      lndTasksEnabled: false
     exchangeRates:
       USD:
         JMD:
