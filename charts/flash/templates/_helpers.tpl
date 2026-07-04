@@ -237,16 +237,13 @@ Define kratos env vars
 {{- define "galoy.ibex.env" -}}
 - name: IBEX_URL
   value: {{ .Values.galoy.ibex.url | quote }}
-- name: IBEX_EMAIL
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.galoy.ibex.authExistingSecret.name | quote }}
-      key: {{ .Values.galoy.ibex.authExistingSecret.email_key | quote }}
-- name: IBEX_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ .Values.galoy.ibex.authExistingSecret.name | quote }}
-      key: {{ .Values.galoy.ibex.authExistingSecret.password_key | quote }}
+{{/*
+  IBEX_EMAIL / IBEX_PASSWORD were removed: the app reads IBEX credentials from
+  the config file (ibex.clientId / ibex.clientSecret in custom.yaml), not env,
+  and the ibex-auth secret was migrated to client-id/client-secret keys — the
+  old api-email/api-password keys no longer exist, so referencing them made
+  kubelet fail every pod with CreateContainerConfigError.
+*/}}
 - name: IBEX_LISTENER_HOST
   value: {{ .Values.galoy.ibex.listenerHost | quote }}
 - name: IBEX_WEBHOOK_SECRET
