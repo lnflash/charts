@@ -120,8 +120,9 @@ galoy:
     listenerHost:
     authExistingSecret:
       name: ibex-auth
-      email_key: api-email
-      password_key: api-password
+      # email_key/password_key removed — the secret's api-email/api-password
+      # keys are gone (migrated to client-id/client-secret, consumed via the
+      # config file, not env). Only the webhook secret is still env-injected.
       webhook_secret_key: webhook-secret
     webhook:
       nameOverride:
