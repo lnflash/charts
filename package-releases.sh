@@ -27,6 +27,13 @@ fi
 
 for chart in "${CHARTS[@]}"; do
   echo "Processing $chart..."
+  # flash bundles price via file://../price, but helm does not recurse into a
+  # local subchart's own dependencies (and charts/price/charts/ is gitignored).
+  # Without this, flash packages price WITHOUT its bitnami postgresql and the
+  # next helm upgrade prunes the live price-history postgres from the cluster.
+  if [ "$chart" = "flash" ]; then
+    helm dependency update "charts/price"
+  fi
   helm dependency update "charts/$chart"
   helm package "charts/$chart"
 
