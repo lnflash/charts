@@ -18,6 +18,18 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create k3d Cluster
         run: |
+          # Self-heal boot debris: if the runner host was shut down mid-run,
+          # Docker Desktop restores the old k3d containers on startup and
+          # cluster creation fails with "already exists". k3d's own delete can
+          # miss restored containers whose bookkeeping was lost, so fall back
+          # to removing anything k3d-labeled at the docker level.
+          k3d cluster delete --all || true
+          leftovers="$(docker ps -aq --filter "label=app=k3d")"
+          if [ -n "$leftovers" ]; then
+            echo "removing leftover k3d containers: $leftovers"
+            docker rm -f $leftovers || true
+          fi
+          docker network rm k3d-k3s-default >/dev/null 2>&1 || true
           k3d registry delete smoketest-registry >/dev/null 2>&1 || true
           k3d registry create smoketest-registry --port 127.0.0.1:5001 --no-help
           registries_file="$(mktemp)"
