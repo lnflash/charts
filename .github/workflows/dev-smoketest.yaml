@@ -16,6 +16,17 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - name: Runner disk hygiene
+        run: |
+          # Self-hosted runner accumulates images across runs (each flash
+          # digest ~1-2GB + mirrors); Docker VM disk pressure surfaces as
+          # slow pulls, Pending pods, and helm install timeouts. Log state
+          # and prune anything unused older than a day.
+          docker system df
+          docker system prune -af --filter "until=24h" || true
+          docker volume prune -f || true
+          docker system df
+
       - name: Create k3d Cluster
         run: |
           # Self-heal boot debris: if the runner host was shut down mid-run,
