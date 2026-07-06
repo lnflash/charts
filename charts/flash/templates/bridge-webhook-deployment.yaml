@@ -1,0 +1,161 @@
+{{- if .Values.galoy.bridge.webhook.enabled -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "galoy.bridge.webhook.fullname" . }}
+  labels:
+    app: {{ template "galoy.bridge.webhook.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: Helm
+    kube-monkey/enabled: enabled
+    kube-monkey/identifier: {{ template "galoy.bridge.webhook.fullname" . }}
+    kube-monkey/kill-mode: fixed
+    kube-monkey/kill-value: "1"
+    kube-monkey/mtbf: "8"
+spec:
+  replicas: {{ .Values.galoy.bridge.webhook.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "galoy.bridge.webhook.fullname" . }}
+  template:
+    metadata:
+      name: {{ template "galoy.bridge.webhook.fullname" . }}
+      labels:
+        app: {{ template "galoy.bridge.webhook.fullname" . }}
+        kube-monkey/enabled: enabled
+        kube-monkey/identifier: {{ template "galoy.bridge.webhook.fullname" . }}
+    spec:
+      serviceAccountName: {{ template "flash.name" . }}
+      initContainers:
+      - name: wait-for-mongodb-migrate
+        image: "groundnuty/k8s-wait-for:v1.5.1"
+        args:
+        - job-wr
+        - {{ template "galoy.migration.jobname" . }}
+      containers:
+      - name: bridge-webhook
+        image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
+        args:
+        - "-r"
+        - "/app/lib/services/tracing.js"
+        - "lib/servers/bridge-webhook-server.js"
+        - "-c"
+        - "/var/yaml/custom.yaml"
+        resources:
+          {{ toYaml .Values.galoy.bridge.webhook.resources | nindent 10 }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.galoy.bridge.webhook.port }}
+          protocol: TCP
+        env:
+        - name: HELMREVISION
+          value: {{ .Release.Revision | quote }}
+        - name: LOGLEVEL
+          value: {{ .Values.galoy.bridge.webhook.logLevel | quote }}
+        - name: NETWORK
+          value: {{ .Values.galoy.network }}
+        - name: GALOY_API_PORT
+          value: {{ .Values.galoy.api.port | quote }}
+        - name: GALOY_ADMIN_PORT
+          value: {{ .Values.galoy.admin.port | quote }}
+        - name: WEBSOCKET_PORT
+          value: {{ .Values.galoy.websocket.port | quote }}
+        - name: TRIGGER_PORT
+          value: {{ .Values.galoy.trigger.port | quote }}
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: {{ .Values.tracing.otelExporterOtlpEndpoint | quote }}
+        - name: TRACING_SERVICE_NAME
+          value: "{{ .Values.tracing.prefix }}-{{ template "galoy.bridge.webhook.fullname" . }}"
+        - name: NOSTR_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.nostr.zapReceiptsExistingSecret.name }}
+              key: {{ .Values.galoy.nostr.zapReceiptsExistingSecret.key }}
+
+{{/* Databases */}}
+{{ include "galoy.mongodb.env" . | indent 8 }}
+{{ include "galoy.redis.env" . | indent 8 }}
+
+{{/* Bitcoin/LND */}}
+{{ include "galoy.lnd1.env" . | indent 8 }}
+{{ include "galoy.bria.env" . | indent 8 }}
+{{ include "galoy.ibex.env" . | indent 8 }}
+
+{{/* API Specifics */}}
+{{ include "galoy.twilio.env" . | indent 8 }}
+{{ include "galoy.geetest.env" . | indent 8 }}
+
+{{ include "galoy.kratos.env" . | indent 8 }}
+
+        - name: OATHKEEPER_DECISION_ENDPOINT
+          value: http://flash-oathkeeper-api:4456
+
+        - name: PRICE_HISTORY_HOST
+          value: {{ .Values.price.history.host | quote }}
+        - name: PRICE_HISTORY_PORT
+          value: {{ .Values.price.history.port | quote }}
+        - name: PRICE_SERVER_HOST
+          value: {{ .Values.galoy.dealer.host | quote }}
+        - name: PRICE_SERVER_PORT
+          value: {{ .Values.galoy.dealer.port | quote }}
+
+        - name: PRICE_HOST
+          value: {{ .Values.price.realtime.host | quote }}
+
+        - name: SVIX_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.svixExistingSecret.name }}
+              key: {{ .Values.galoy.svixExistingSecret.secret_key }}
+
+        - name: PROXY_CHECK_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.proxyCheckExistingSecret.name }}
+              key: {{ .Values.galoy.proxyCheckExistingSecret.key }}
+
+        - name: LND_PRIORITY
+          value: {{ .Values.galoy.lndPriority }}
+
+        {{ if .Values.galoy.api.firebaseNotifications.enabled }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/tmp/firebase-service-account/service-account.json"
+        {{ end }}
+
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.galoy.bridge.webhook.port }}
+          initialDelaySeconds: {{ .Values.galoy.bridge.webhook.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.galoy.bridge.webhook.probes.liveness.periodSeconds }}
+          failureThreshold: {{ .Values.galoy.bridge.webhook.probes.liveness.failureThreshold }}
+          timeoutSeconds: {{ .Values.galoy.bridge.webhook.probes.liveness.timeoutSeconds }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.galoy.bridge.webhook.port }}
+          initialDelaySeconds: {{ .Values.galoy.bridge.webhook.probes.readiness.initialDelaySeconds }}
+          failureThreshold: {{ .Values.galoy.bridge.webhook.probes.readiness.failureThreshold }}
+          successThreshold: {{ .Values.galoy.bridge.webhook.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.galoy.bridge.webhook.probes.readiness.timeoutSeconds }}
+        volumeMounts:
+        {{ if .Values.galoy.api.firebaseNotifications.enabled }}
+        - name: firebase-notifications-service-account
+          mountPath: /tmp/firebase-service-account/
+          readOnly: true
+        {{ end }}
+        - name: custom-yaml
+          mountPath: "/var/yaml/"
+      volumes:
+      {{ if .Values.galoy.api.firebaseNotifications.enabled }}
+      - name: firebase-notifications-service-account
+        secret:
+          secretName: {{ .Values.galoy.api.firebaseNotifications.existingSecret.name }}
+          items:
+          - key: {{ .Values.galoy.api.firebaseNotifications.existingSecret.key }}
+            path: service-account.json
+      {{ end }}
+      - name: custom-yaml
+        secret:
+          secretName: "{{ template "galoy.config.name" . }}"
+{{- end -}}

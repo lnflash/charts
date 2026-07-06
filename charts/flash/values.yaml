@@ -157,6 +157,33 @@ galoy:
           failureThreshold: 5
           successThreshold: 2
           timeoutSeconds: 1
+  # Bridge webhook receiver (lib/servers/bridge-webhook-server.js). Off by
+  # default: the deployment/service/ingress render only when enabled — flip
+  # per environment alongside the bridge feature flag.
+  bridge:
+    webhook:
+      enabled: false
+      nameOverride:
+      replicas: 1
+      logLevel: debug
+      port: 4009
+      serviceType: ClusterIP
+      resources: {}
+      ingress:
+        enabled:
+        hosts:
+        clusterIssuer:
+      probes:
+        liveness:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 5
+          timeoutSeconds: 1
+        readiness:
+          initialDelaySeconds: 5
+          failureThreshold: 5
+          successThreshold: 2
+          timeoutSeconds: 1
   trigger:
     nameOverride:
     replicas: 1

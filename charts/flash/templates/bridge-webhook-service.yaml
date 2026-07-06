@@ -1,0 +1,20 @@
+{{- if .Values.galoy.bridge.webhook.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "galoy.bridge.webhook.fullname" . }}
+  labels:
+    app: {{ template "galoy.bridge.webhook.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: {{ .Values.galoy.bridge.webhook.serviceType }}
+  ports:
+    - port: {{ .Values.galoy.bridge.webhook.port }}
+      targetPort: {{ .Values.galoy.bridge.webhook.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "galoy.bridge.webhook.fullname" . }}
+{{- end -}}
