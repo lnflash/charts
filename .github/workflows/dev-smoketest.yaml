@@ -20,6 +20,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      # terraform is no longer preinstalled on ubuntu-24.04 runner images.
+      # terraform_wrapper breaks Makefile-driven terraform (exit codes/stdout).
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
       - name: Install k3d
         run: |
           curl -fsSL https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
