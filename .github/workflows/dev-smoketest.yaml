@@ -10,38 +10,22 @@ concurrency:
 jobs:
   smoketest:
     name: Hit smoketests against Charts in Dev Setup
-    runs-on: self-hosted
+    # GitHub-hosted runner (public repo: 4 vCPU / 16GB / 150GB, ephemeral).
+    # Ephemerality is load-bearing: the previous persistent Mac runner needed
+    # disk pruning, boot-debris self-healing, and keychain workarounds, and
+    # exposed a self-hosted runner on a public repo.
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Runner disk hygiene
+      - name: Install k3d
         run: |
-          # Self-hosted runner accumulates images across runs (each flash
-          # digest ~1-2GB + mirrors); Docker VM disk pressure surfaces as
-          # slow pulls, Pending pods, and helm install timeouts. Log state
-          # and prune anything unused older than a day.
-          docker system df
-          docker system prune -af --filter "until=24h" || true
-          docker volume prune -f || true
-          docker system df
-
+          curl -fsSL https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+          k3d version
       - name: Create k3d Cluster
         run: |
-          # Self-heal boot debris: if the runner host was shut down mid-run,
-          # Docker Desktop restores the old k3d containers on startup and
-          # cluster creation fails with "already exists". k3d's own delete can
-          # miss restored containers whose bookkeeping was lost, so fall back
-          # to removing anything k3d-labeled at the docker level.
-          k3d cluster delete --all || true
-          leftovers="$(docker ps -aq --filter "label=app=k3d")"
-          if [ -n "$leftovers" ]; then
-            echo "removing leftover k3d containers: $leftovers"
-            docker rm -f $leftovers || true
-          fi
-          docker network rm k3d-k3s-default >/dev/null 2>&1 || true
-          k3d registry delete smoketest-registry >/dev/null 2>&1 || true
           k3d registry create smoketest-registry --port 127.0.0.1:5001 --no-help
           registries_file="$(mktemp)"
           trap 'rm -f "$registries_file"' EXIT
@@ -100,39 +84,9 @@ jobs:
             docker.io/oryd/kratos:v1.0.0
             docker.io/oryd/oathkeeper:v0.40.6
           )
-          docker_host="${DOCKER_HOST:-}"
-          if [ -z "$docker_host" ] && [ -S "$HOME/.docker/run/docker.sock" ]; then
-            docker_host="unix://$HOME/.docker/run/docker.sock"
-          fi
-          if [ -z "$docker_host" ] && [ -S "/Users/dread/.docker/run/docker.sock" ]; then
-            docker_host="unix:///Users/dread/.docker/run/docker.sock"
-          fi
-          docker_config="$(mktemp -d)"
-          # Give Docker an explicit empty (anonymous) auth entry for Docker Hub
-          # and no credential store, so it never invokes the macOS keychain
-          # helper. On the self-hosted Mac runner, Docker Desktop consults the
-          # osxkeychain helper for docker.io even with an empty config; the
-          # helper can't run in the headless CI session ("keychain cannot be
-          # accessed"), failing every pull of an uncached (public) image.
-          printf '{"auths":{"https://index.docker.io/v1/":{"auth":""}},"credsStore":"","credHelpers":{}}\n' > "$docker_config/config.json"
-          trap 'rm -rf "$docker_config"' EXIT
-          docker_cmd() {
-            if [ -n "$docker_host" ]; then
-              DOCKER_HOST="$docker_host" DOCKER_CONFIG="$docker_config" docker "$@"
-            else
-              DOCKER_CONFIG="$docker_config" docker "$@"
-            fi
-          }
-          docker_pull() {
-            if [ -n "$docker_host" ]; then
-              DOCKER_HOST="$docker_host" DOCKER_CONFIG="$docker_config" docker pull "$@"
-            else
-              DOCKER_CONFIG="$docker_config" docker pull "$@"
-            fi
-          }
           for image in "${images[@]}"; do
-            if ! docker_cmd image inspect "$image" >/dev/null 2>&1; then
-              docker_pull "$image"
+            if ! docker image inspect "$image" >/dev/null 2>&1; then
+              docker pull "$image"
             fi
             repository="${image#docker.io/}"
             if [[ "$repository" == *@* ]]; then
@@ -143,8 +97,8 @@ jobs:
               repository="${repository%:*}"
             fi
             target="127.0.0.1:5001/${repository}:${tag}"
-            docker_cmd tag "$image" "$target"
-            docker_cmd push "$target"
+            docker tag "$image" "$target"
+            docker push "$target"
           done
       - name: Deploy Flash Dependencies
         run: |
