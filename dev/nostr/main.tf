@@ -45,6 +45,12 @@ resource "helm_release" "strfry" {
     {
       name  = "persistence.size"
       value = "1Gi"
+    },
+    {
+      # CI runners cap the container hard NOFILE limit below strfry's
+      # production setting; strfry exits at startup if setrlimit fails.
+      name  = "strfry.nofiles"
+      value = "0"
     }
   ]
 
