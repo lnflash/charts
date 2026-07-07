@@ -17,6 +17,9 @@ fullnameOverride: ""
 strfry:
   name: "strfry"
   fullname: "strfry-chart"
+  # OS open-files limit strfry sets at startup; it EXITS if this exceeds the
+  # container's hard limit (e.g. 65536 on GitHub-hosted runners). 0 = don't set.
+  nofiles: 1000000
   nip11:
     name: ""
     description: ""

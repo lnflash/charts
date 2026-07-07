@@ -140,8 +140,10 @@ jobs:
             echo "::group::[$ns] pods"
             kubectl -n "$ns" get pods -o wide || true
             echo "::endgroup::"
-            # Describe + logs for any pod not Running/Completed (the culprits).
-            for pod in $(kubectl -n "$ns" get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}' 2>/dev/null | awk '$2!="Running" && $2!="Succeeded" {print $1}'); do
+            # Describe + logs for any pod not healthy (the culprits). Select by
+            # the STATUS column + restart count, not .status.phase — a
+            # CrashLoopBackOff pod's phase is still "Running".
+            for pod in $(kubectl -n "$ns" get pods --no-headers 2>/dev/null | awk '($3!="Running" && $3!="Completed") || $4+0>0 {print $1}'); do
               echo "::group::[$ns/$pod] describe"
               kubectl -n "$ns" describe pod "$pod" || true
               echo "::endgroup::"
