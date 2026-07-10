@@ -2,14 +2,25 @@ name: flashbot-automerge
 on:
   pull_request:
     types: [labeled, synchronize, reopened]
+  # check_run NEVER fires for checks produced by GitHub Actions itself:
+  # events created with GITHUB_TOKEN don't trigger workflows (anti-recursion).
+  # Since dev-smoketest moved onto Actions runners, the "final check went
+  # green" moment was invisible here and bump PRs sat unmerged (seen on
+  # charts#212, 2026-07-10). workflow_run IS delivered for completed Actions
+  # workflows, so use it as the post-checks trigger. check_run kept for any
+  # external (Checks-API) CI.
   check_run:
     types: [completed]
     branches: ['bot-*']
+  workflow_run:
+    workflows: ["dev-smoketest"]
+    types: [completed]
 
 jobs:
   automerge:
     if: |
       github.event_name == 'check_run' ||
+      github.event_name == 'workflow_run' ||
       contains(github.event.pull_request.labels.*.name, 'flashbot')
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -60,7 +71,10 @@ jobs:
                 owner, repo, ref: full.head.sha, per_page: 100
               });
 
-              const runs = checks.check_runs;
+              // Ignore our own job's check runs: an in-progress automerge run
+              // attaches to the same head sha and would otherwise see itself
+              // as "still running" and skip forever.
+              const runs = checks.check_runs.filter((r) => r.name !== 'automerge');
               if (runs.length === 0) {
                 core.info(`  No checks yet, skipping`);
                 continue;
