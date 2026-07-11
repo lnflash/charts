@@ -1,0 +1,29 @@
+{{- if .Values.maintenance.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "strfry.fullname" . }}-maintenance
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "strfry.fullname" . }}-maintenance
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: [{{ include "strfry.name" . | quote }}]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "strfry.fullname" . }}-maintenance
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "strfry.fullname" . }}-maintenance
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "strfry.fullname" . }}-maintenance
+    namespace: {{ .Release.Namespace }}
+{{- end }}
