@@ -70,17 +70,26 @@ spec:
           volumeMounts:
             - name: custom-yaml
               mountPath: "/var/yaml/"
+          # The grpc health endpoint reports NOT_SERVING whenever the realtime
+          # USD price is stale (upstream feed gap), not only when the process
+          # is wedged. Liveness must therefore be far more tolerant than
+          # readiness: restarting cannot conjure an upstream price, and with a
+          # single replica each kill is a full price outage.
           livenessProbe:
             grpc:
               port: 50051
               service: ""
-            initialDelaySeconds: 45
-            timeoutSeconds: 2
+            initialDelaySeconds: {{ .Values.realtime.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.realtime.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.realtime.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.realtime.livenessProbe.failureThreshold }}
           readinessProbe:
             grpc:
               port: 50051
               service: ""
-            timeoutSeconds: 2
+            periodSeconds: {{ .Values.realtime.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.realtime.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.realtime.readinessProbe.failureThreshold }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.realtime.nodeSelector }}

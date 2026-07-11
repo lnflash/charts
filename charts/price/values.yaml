@@ -30,6 +30,19 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 realtime:
+  # Liveness tolerates ~2min of NOT_SERVING before restarting: the health
+  # endpoint goes NOT_SERVING on upstream feed staleness (see Ibex
+  # cacheSeconds below), and a restart cannot fix a feed gap. Readiness
+  # stays tight so stale-price pods are pulled from service immediately.
+  livenessProbe:
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 12
+  readinessProbe:
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
   config:
     quotes:
       - {code: "USD", symbol: "$", name: "US Dollar", flag: "\U0001F1FA\U0001F1F8"}
@@ -55,7 +68,11 @@ realtime:
         provider: "ibex"
         cron: "*/15 * * * * *"
         config:
-          cacheSeconds: 180
+          # Must be well above the refresh cron: Ibex is the ONLY USD source,
+          # and when the cache expires with no fresh price the health endpoint
+          # reports NOT_SERVING (USD gap -> readiness pulled -> api errors).
+          # 600s tolerates ~40 consecutive failed refreshes before going stale.
+          cacheSeconds: 600
       - name: "free-currency-rates-usd"
         enabled: true
         quoteAlias: "*"
@@ -72,16 +89,18 @@ realtime:
         enabled: true
         quoteAlias: "*"
         base: "BTC"
-        quote: "*"
-        excludedQuotes: ["USD"]
+        # Only quotes kraken actually lists (USD intentionally absent: the
+        # realtime USD rate must track Ibex). Wildcard polling for Caribbean
+        # quotes produced permanent BadSymbol noise (~31k lines/6h).
+        quote: ["EUR", "GBP", "CAD", "CHF", "JPY", "AUD"]
         provider: "ccxt"
         cron: "*/20 * * * * *"
       - name: "bitstamp"
         enabled: true
         quoteAlias: "*"
         base: "BTC"
-        quote: "*"
-        excludedQuotes: ["USD"]
+        # Only quotes bitstamp actually lists (USD intentionally absent).
+        quote: ["EUR", "GBP"]
         provider: "ccxt"
         cron: "*/15 * * * * *"
   image:
