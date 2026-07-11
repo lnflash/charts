@@ -14,6 +14,25 @@ spec:
       labels:
         app: strfry
     spec:
+      {{- if .Values.maintenance.enabled }}
+      initContainers:
+        # If the weekly maintenance CronJob left a compacted copy of the LMDB,
+        # swap it in before the relay opens the DB. Safe here because strategy
+        # is Recreate: the old pod is gone before this runs.
+        - name: swap-compacted-db
+          image: {{ .Values.maintenance.busyboxImage }}
+          command:
+            - sh
+            - -c
+            - |
+              if [ -f /app/strfry-db/data.mdb.compacted ]; then
+                mv -f /app/strfry-db/data.mdb.compacted /app/strfry-db/data.mdb
+                rm -f /app/strfry-db/lock.mdb
+              fi
+          volumeMounts:
+            - name: strfry-db
+              mountPath: /app/strfry-db
+      {{- end }}
       containers:
         - name: strfry
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}

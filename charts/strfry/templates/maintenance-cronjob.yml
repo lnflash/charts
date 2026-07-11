@@ -1,0 +1,77 @@
+{{- if .Values.maintenance.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "strfry.fullname" . }}-maintenance
+spec:
+  schedule: {{ .Values.maintenance.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: {{ include "strfry.fullname" . }}-maintenance
+          restartPolicy: Never
+          # RWO block-storage volume: must run on the same node as the relay pod
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app: strfry
+                  topologyKey: kubernetes.io/hostname
+          initContainers:
+            # LMDB is multi-process safe on the same node, so delete runs
+            # while the relay is live. Compact writes a compacted copy that
+            # the relay's swap-compacted-db initContainer picks up on the
+            # restart triggered below; deleted pages are only reclaimed on
+            # that swap. Events written between compact and restart are lost
+            # (window is seconds).
+            - name: retention-delete
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}
+              workingDir: /app
+              command: ["/app/strfry", "delete", "--age={{ .Values.maintenance.retentionAgeSeconds }}"]
+              volumeMounts:
+                - name: strfry-db
+                  mountPath: /app/strfry-db
+                - name: strfry-conf
+                  mountPath: /etc/strfry.conf
+                  subPath: strfry.conf
+            - name: compact
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}
+              workingDir: /app
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  rm -f /app/strfry-db/data.mdb.compacted.tmp
+                  /app/strfry compact /app/strfry-db/data.mdb.compacted.tmp
+                  mv /app/strfry-db/data.mdb.compacted.tmp /app/strfry-db/data.mdb.compacted
+              volumeMounts:
+                - name: strfry-db
+                  mountPath: /app/strfry-db
+                - name: strfry-conf
+                  mountPath: /etc/strfry.conf
+                  subPath: strfry.conf
+          containers:
+            - name: restart-relay
+              image: {{ .Values.maintenance.kubectlImage }}
+              command:
+                - kubectl
+                - -n
+                - {{ .Release.Namespace }}
+                - rollout
+                - restart
+                - deployment/{{ include "strfry.name" . }}
+          volumes:
+            - name: strfry-db
+              persistentVolumeClaim:
+                claimName: {{ include "strfry.fullname" . }}-db-pvc
+            - name: strfry-conf
+              configMap:
+                name: {{ include "strfry.fullname" . }}-configmap
+{{- end }}

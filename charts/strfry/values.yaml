@@ -10,6 +10,18 @@ persistence:
   enabled: true
   size: 10Gi
 
+# Weekly DB maintenance: delete events older than retentionAgeSeconds
+# (online, LMDB multi-process), compact the LMDB to a sidecar file, then
+# restart the relay so its initContainer swaps the compacted DB in.
+# LMDB never shrinks in place — without this the volume fills up
+# (see lnflash/ops-handbook incidents/2026-07-11-nostr-relay-disk-full.md).
+maintenance:
+  enabled: false
+  schedule: "0 4 * * 0" # Sundays 04:00 UTC
+  retentionAgeSeconds: 7776000 # 90 days
+  kubectlImage: bitnami/kubectl:1.31.4
+  busyboxImage: busybox:1.36.1
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
