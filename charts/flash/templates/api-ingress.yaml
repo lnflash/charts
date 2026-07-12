@@ -31,6 +31,13 @@ metadata:
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header X-Forwarded-Host $host;
       proxy_set_header X-Forwarded-Uri $request_uri;
+      # Overwrite any client-supplied X-Real-IP on the oathkeeper auth subrequest
+      # with the ingress-observed peer, so the FIP-07 API-key IP-constraint check
+      # (which oathkeeper forwards to /auth/api-key/check) enforces against a
+      # trusted source IP instead of a spoofable header. nginx sets X-Real-IP on
+      # the main upstream but not on this auth location — without this line the
+      # value is client-controlled.
+      proxy_set_header X-Real-IP $remote_addr;
     {{- with .Values.galoy.api.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
