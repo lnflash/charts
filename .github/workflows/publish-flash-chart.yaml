@@ -23,6 +23,13 @@ name: Publish flash chart & sync deployments pin
 #                     write to another repo).
 
 on:
+  # Manual trigger: publishes whatever version is currently in
+  # charts/flash/Chart.yaml and opens the deployments pin PR. Needed because the
+  # push trigger below does NOT fire when Chart.yaml is bumped by an Actions
+  # token (flashbot-automerge) — GitHub suppresses push-triggered workflows for
+  # pushes made via the built-in token, so bot-merged image bumps otherwise
+  # never publish. Run this after such a merge.
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
