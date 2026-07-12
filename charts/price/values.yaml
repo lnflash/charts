@@ -87,7 +87,10 @@ realtime:
           cacheSeconds: 1800
       - name: "kraken"
         enabled: true
-        quoteAlias: "*"
+        # quoteAlias must pair 1:1 with quote when quote is a list — the
+        # realtime config loader rejects mismatched lengths (yaml.ts
+        # getExchangesConfig), and "*" coerces to a single-element array.
+        quoteAlias: ["EUR", "GBP", "CAD", "CHF", "JPY", "AUD"]
         base: "BTC"
         # Only quotes kraken actually lists (USD intentionally absent: the
         # realtime USD rate must track Ibex). Wildcard polling for Caribbean
@@ -97,7 +100,7 @@ realtime:
         cron: "*/20 * * * * *"
       - name: "bitstamp"
         enabled: true
-        quoteAlias: "*"
+        quoteAlias: ["EUR", "GBP"]
         base: "BTC"
         # Only quotes bitstamp actually lists (USD intentionally absent).
         quote: ["EUR", "GBP"]
