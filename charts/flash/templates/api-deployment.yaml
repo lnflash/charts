@@ -31,6 +31,10 @@ spec:
         app: {{ template "galoy.api.fullname" . }}
         kube-monkey/enabled: enabled
         kube-monkey/identifier: {{ template "galoy.api.fullname" . }}
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: {{ .Values.galoy.api.metricsPort | default 3001 | quote }}
+        prometheus.io/scrape: "true"
     spec:
       serviceAccountName: {{ template "flash.name" . }}
 
@@ -59,6 +63,9 @@ spec:
         - name: admin
           containerPort: {{ .Values.galoy.admin.port }}
           protocol: TCP
+        - name: metrics
+          containerPort: {{ .Values.galoy.api.metricsPort | default 3001 }}
+          protocol: TCP
 
         env:
         - name: HELMREVISION
@@ -71,6 +78,8 @@ spec:
           value: {{ .Values.galoy.api.port | quote }}
         - name: GALOY_ADMIN_PORT
           value: {{ .Values.galoy.admin.port | quote }}
+        - name: API_METRICS_PORT
+          value: {{ .Values.galoy.api.metricsPort | default 3001 | quote }}
         - name: TRIGGER_PORT
           value: {{ .Values.galoy.trigger.port | quote }}
         - name: WEBSOCKET_PORT
