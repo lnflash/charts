@@ -33,7 +33,10 @@ spec:
             - name: retention-delete
               image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}
               workingDir: /app
-              command: ["/app/strfry", "delete", "--age={{ .Values.maintenance.retentionAgeSeconds }}"]
+              # int64 coercion is load-bearing: Helm parses YAML numbers as float64,
+              # so rendering retentionAgeSeconds raw yields "7.776e+06" (scientific
+              # notation), which strfry's --age integer parser rejects. See values.yaml.
+              command: ["/app/strfry", "delete", "--age={{ .Values.maintenance.retentionAgeSeconds | int64 }}"]
               volumeMounts:
                 - name: strfry-db
                   mountPath: /app/strfry-db
