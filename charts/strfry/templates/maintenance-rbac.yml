@@ -9,10 +9,17 @@ kind: Role
 metadata:
   name: {{ include "strfry.fullname" . }}-maintenance
 rules:
+  # scale the relay down/up around the maintenance window (kubectl scale patches
+  # the scale subresource)
   - apiGroups: ["apps"]
-    resources: ["deployments"]
+    resources: ["deployments", "deployments/scale"]
     resourceNames: [{{ include "strfry.name" . | quote }}]
-    verbs: ["get", "patch"]
+    verbs: ["get", "patch", "update"]
+  # `kubectl wait --for=delete pod -l app=strfry` needs to watch pods; list/watch
+  # can't be restricted by resourceName, so this is namespace-scoped
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

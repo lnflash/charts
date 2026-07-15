@@ -24,12 +24,24 @@ spec:
                       app: strfry
                   topologyKey: kubernetes.io/hostname
           initContainers:
-            # LMDB is multi-process safe on the same node, so delete runs
-            # while the relay is live. Compact writes a compacted copy that
-            # the relay's swap-compacted-db initContainer picks up on the
-            # restart triggered below; deleted pages are only reclaimed on
-            # that swap. Events written between compact and restart are lost
-            # (window is seconds).
+            # strfry's `delete` needs an exclusive LMDB write transaction, which it
+            # can never obtain while the relay holds the single writer lock — it
+            # fails deterministically with "mdb_txn_begin: Resource temporarily
+            # unavailable", even when the relay is idle. So quiesce the relay first:
+            # scale it to 0 and wait for the pod to terminate and release the DB.
+            # `compact` only needs a read txn, but we keep it inside the quiesced
+            # window for a clean, consistent copy. The relay is scaled back up by
+            # the restart-relay container below; its fresh pod swaps the compacted
+            # copy into place via the Deployment's swap-compacted-db initContainer.
+            - name: scale-down
+              image: {{ .Values.maintenance.kubectlImage }}
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  kubectl -n {{ .Release.Namespace }} scale deployment/{{ include "strfry.name" . }} --replicas=0
+                  kubectl -n {{ .Release.Namespace }} wait --for=delete pod -l app=strfry --timeout=180s
             - name: retention-delete
               image: {{ .Values.image.repository }}:{{ .Values.image.tag }}@sha256:{{ .Values.image.digest }}
               workingDir: /app
@@ -61,15 +73,18 @@ spec:
                   mountPath: /etc/strfry.conf
                   subPath: strfry.conf
           containers:
+            # Scale the relay back up. Recreate strategy + the Deployment's
+            # swap-compacted-db initContainer means the fresh pod swaps in the
+            # compacted DB and clears the stale lock before opening it.
             - name: restart-relay
               image: {{ .Values.maintenance.kubectlImage }}
               command:
                 - kubectl
                 - -n
                 - {{ .Release.Namespace }}
-                - rollout
-                - restart
+                - scale
                 - deployment/{{ include "strfry.name" . }}
+                - --replicas=1
           volumes:
             - name: strfry-db
               persistentVolumeClaim:
