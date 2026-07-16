@@ -19,7 +19,11 @@ maintenance:
   enabled: false
   schedule: "0 4 * * 0" # Sundays 04:00 UTC
   retentionAgeSeconds: 7776000 # 90 days
-  kubectlImage: bitnami/kubectl:1.31.4
+  # bitnami/kubectl was removed from Docker Hub (Bitnami deprecated their free
+  # catalog → image NotFound → the maintenance job dies at scale-down with
+  # ImagePullBackOff). rancher/kubectl is a maintained same-version drop-in for
+  # the scale-down + restart-relay steps; verified it pulls (v1.31.4) 2026-07-15.
+  kubectlImage: rancher/kubectl:v1.31.4
   busyboxImage: busybox:1.36.1
 
 imagePullSecrets: []
