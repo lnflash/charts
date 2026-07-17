@@ -78,7 +78,19 @@ jobs:
               // Ignore our own job's check runs: an in-progress automerge run
               // attaches to the same head sha and would otherwise see itself
               // as "still running" and skip forever.
-              const runs = checks.check_runs.filter((r) => r.name !== 'automerge');
+              const allRuns = checks.check_runs.filter((r) => r.name !== 'automerge');
+
+              // A concurrency-cancelled duplicate leaves a permanent
+              // 'cancelled' check run on the head sha next to its successful
+              // sibling, which pins the all-green test false forever and the
+              // bump PR sits unmerged (charts#212, charts#233). Ignore a
+              // cancelled run when another run of the same name succeeded.
+              const succeededNames = new Set(
+                allRuns.filter((r) => r.conclusion === 'success').map((r) => r.name),
+              );
+              const runs = allRuns.filter(
+                (r) => !(r.conclusion === 'cancelled' && succeededNames.has(r.name)),
+              );
               if (runs.length === 0) {
                 core.info(`  No checks yet, skipping`);
                 continue;
