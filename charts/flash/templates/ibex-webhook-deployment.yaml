@@ -115,6 +115,19 @@ spec:
               name: {{ .Values.galoy.proxyCheckExistingSecret.name }}
               key: {{ .Values.galoy.proxyCheckExistingSecret.key }}
 
+        - name: OPS_DISCORD_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.discordWebhooksExistingSecret.name }}
+              key: {{ .Values.galoy.discordWebhooksExistingSecret.ops_key }}
+              optional: true
+        - name: ALERT_DISCORD_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.galoy.discordWebhooksExistingSecret.name }}
+              key: {{ .Values.galoy.discordWebhooksExistingSecret.alert_key }}
+              optional: true
+
         - name: LND_PRIORITY
           value: {{ .Values.galoy.lndPriority }}
 

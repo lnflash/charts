@@ -406,6 +406,10 @@ galoy:
   proxyCheckExistingSecret:
     name: proxy-check-api-key
     key: api-key
+  discordWebhooksExistingSecret:
+    name: discord-webhooks
+    ops_key: ops-webhook-url
+    alert_key: alert-webhook-url
   doSpaces:
     endpoint: ""
     region: ""
@@ -544,6 +548,9 @@ secrets:
   svixSecretKey:
   ## Api key for proxy check
   proxyCheckApiKey:
+  ## Discord webhook URLs (ops activity feed + alerts)
+  opsDiscordWebhookUrl:
+  alertDiscordWebhookUrl:
   ## Secrets for DO Spaces
   doSpacesAccessKey:
   doSpacesSecretKey:
