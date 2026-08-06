@@ -400,6 +400,16 @@ galoy:
     verify_service_id: TWILIO_VERIFY_SERVICE_ID
     account_sid_key: TWILIO_ACCOUNT_SID
     auth_token_key: TWILIO_AUTH_TOKEN
+  # WhatsApp delivery via the self-hosted Baileys wa-bridge (flash PR #463).
+  # Set url (full endpoint incl. /send) per env to route WhatsApp sends through
+  # the bridge; leave empty (default) to inject nothing and keep the Twilio
+  # fallback. The referenced secret must exist in-cluster wherever url is set
+  # (created by deployments terraform from WA_BRIDGE_SEND_TOKEN).
+  waBridge:
+    url: ""
+    existingSecret:
+      name: wa-bridge-secret
+      send_token_key: send-token
   svixExistingSecret:
     name: svix-secret
     secret_key: svix-secret

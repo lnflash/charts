@@ -296,6 +296,23 @@ Return Galoy environment variables for Twilio
 {{- end -}}
 
 {{/*
+Return Galoy environment variables for the WhatsApp Baileys wa-bridge.
+The api reads WA_BRIDGE_URL + WA_BRIDGE_SECRET straight from process.env
+(not the yaml config); when both are set, WhatsApp sends route through the
+bridge's authed POST /send instead of Twilio. The include site gates on
+galoy.waBridge.url so an unset url injects nothing (Twilio fallback).
+*/}}
+{{- define "galoy.waBridge.env" -}}
+- name: WA_BRIDGE_URL
+  value: {{ .Values.galoy.waBridge.url | quote }}
+- name: WA_BRIDGE_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.galoy.waBridge.existingSecret.name }}
+      key: {{ .Values.galoy.waBridge.existingSecret.send_token_key }}
+{{- end -}}
+
+{{/*
 Return Galoy environment variables for DO Spaces
 */}}
 {{- define "galoy.doSpaces.env" -}}
