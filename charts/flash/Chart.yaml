@@ -2,8 +2,8 @@ apiVersion: v2 # https://helm.sh/docs/topics/charts/#the-apiversion-field
 name: flash
 description: A Helm chart for the Flash application backend
 type: application
-version: 3.2.48
-appVersion: 0.9.33
+version: 3.2.49
+appVersion: 0.9.34
 dependencies:
   - name: redis
     repository: https://charts.bitnami.com/bitnami
