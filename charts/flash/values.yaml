@@ -73,6 +73,17 @@ galoy:
           deposit: "<replace>"
           transfer: "<replace>"
           external_account: "<replace>"
+    # Fygaro card top-up webhook (app schema `fygaro`, default-off). HMAC
+    # shared secrets keyed by the Fygaro-Key-ID header value are injected per
+    # environment via deployments overlays — never committed here.
+    fygaro:
+      enabled: false
+      webhook:
+        port: 4010
+        timestampSkewMs: 300000
+        secrets: {}
+      credit:
+        enabled: false # auto-credit gate; leave OFF until the record+notify path is trusted
   images:
     app:
       repository: lnflash/flash-app
@@ -167,6 +178,34 @@ galoy:
       replicas: 1
       logLevel: debug
       port: 4009
+      serviceType: ClusterIP
+      resources: {}
+      ingress:
+        enabled:
+        hosts:
+        clusterIssuer:
+      probes:
+        liveness:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 5
+          timeoutSeconds: 1
+        readiness:
+          initialDelaySeconds: 5
+          failureThreshold: 5
+          successThreshold: 2
+          timeoutSeconds: 1
+  # Fygaro webhook receiver (lib/servers/fygaro-webhook-server.js) — card
+  # top-up payment hooks. Off by default: the deployment/service/ingress
+  # render only when enabled — flip per environment alongside the fygaro
+  # feature flag in galoy.config.
+  fygaro:
+    webhook:
+      enabled: false
+      nameOverride:
+      replicas: 1
+      logLevel: debug
+      port: 4010
       serviceType: ClusterIP
       resources: {}
       ingress:

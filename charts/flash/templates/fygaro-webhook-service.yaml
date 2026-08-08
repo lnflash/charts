@@ -1,0 +1,20 @@
+{{- if .Values.galoy.fygaro.webhook.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "galoy.fygaro.webhook.fullname" . }}
+  labels:
+    app: {{ template "galoy.fygaro.webhook.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: {{ .Values.galoy.fygaro.webhook.serviceType }}
+  ports:
+    - port: {{ .Values.galoy.fygaro.webhook.port }}
+      targetPort: {{ .Values.galoy.fygaro.webhook.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "galoy.fygaro.webhook.fullname" . }}
+{{- end -}}
