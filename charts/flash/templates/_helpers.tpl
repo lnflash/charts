@@ -38,6 +38,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- default "bridge-webhook" .Values.galoy.bridge.webhook.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "galoy.fygaro.webhook.fullname" -}}
+{{- default "fygaro-webhook" .Values.galoy.fygaro.webhook.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create a default fully qualified exporter name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
