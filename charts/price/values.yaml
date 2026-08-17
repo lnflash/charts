@@ -65,6 +65,14 @@ realtime:
         quoteAlias: "*"
         base: "BTC"
         quote: "USD"
+        # IBEX has no currency id for these, so the `quoteAlias: "*"` fan-out
+        # asks it for pairs it can never price: each one fails locally every
+        # cron tick with `Ibex Id not found for currency <X>`, ~36 errors/min
+        # across the 9 of them, on every cluster. Nothing is lost by excluding
+        # them — free-currency-rates already covers every non-USD quote, which
+        # is where these actually get their rate. Currencies IBEX DOES support
+        # (USD, JMD, EUR, GBP, HTG) are untouched.
+        excludedQuotes: ["XCD", "ANG", "BSD", "BBD", "BZD", "KYD", "CUP", "DOP", "TTD"]
         provider: "ibex"
         cron: "*/15 * * * * *"
         config:
