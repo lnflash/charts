@@ -19,6 +19,11 @@ spec:
 
   replicas: {{ .Values.galoy.api.replicas }}
 
+  {{- with .Values.galoy.api.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
   selector:
     matchLabels:
       app: {{ template "galoy.api.fullname" . }}
