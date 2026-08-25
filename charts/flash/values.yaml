@@ -112,6 +112,17 @@ galoy:
       existingSecret:
         name: galoyapp-firebase-serviceaccount
         key: galoyapp-firebase-serviceaccount.json
+    # Rollout strategy for the api Deployment, passed through verbatim
+    # (e.g. {type: Recreate} or {type: RollingUpdate, rollingUpdate: {maxSurge: 0, maxUnavailable: 1}}).
+    #
+    # UNSET by default, which keeps the Kubernetes default: RollingUpdate
+    # 25%/25%. On a single-replica deployment that rounds to maxSurge 1 /
+    # maxUnavailable 0 — the new pod MUST be scheduled before the old one is
+    # released. On a cluster with no headroom that cannot complete, and a
+    # config change becomes a 15-minute helm timeout instead of a fast
+    # failure (api-on-test, 2026-08-21). Environments that prefer a few
+    # seconds of downtime over an unschedulable upgrade set Recreate here.
+    strategy: {}
     probes:
       enabled: true
       liveness:
