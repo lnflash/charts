@@ -44,5 +44,16 @@ spec:
         env:
 {{ include "galoy.mongodb.env" . | indent 8 }}
         - name: NOTIFICATION_TOPICS
-          value: {{ join "," .Values.galoy.config.notificationTopics | quote }}
+          {{/*
+            mongoMigrationJob, NOT config: .Values.galoy.config is serialised
+            wholesale into the app's custom.yaml by galoy-custom-config-secret.yaml,
+            and the app's configSchema sets additionalProperties:false — so
+            reading this from there meant the only way to supply the value was
+            to crash-loop every app pod at boot. It was therefore never set,
+            the notification-topic migrations threw, migrate-mongo aborted the
+            whole run, and prod applied no migration for five months (ENG-565).
+            This is migration-Job config; the app reads topics off user
+            documents, never from custom.yaml.
+          */}}
+          value: {{ join "," .Values.galoy.mongoMigrationJob.notificationTopics | quote }}
       restartPolicy: Never
