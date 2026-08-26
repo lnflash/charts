@@ -393,6 +393,12 @@ galoy:
     enabled: false
   mongoMigrationJob:
     resources: {}
+    # FCM topics the notification-topic migrations stamp onto every user; they
+    # throw when this is empty, and migrate-mongo then aborts the entire `up`
+    # run. Empty by default so a chart consumer must choose deliberately —
+    # per environment, since a shared list would let one environment's
+    # broadcasts reach another's devices.
+    notificationTopics: []
   ## Kratos
   kratos:
     publicApiUrl: http://flash-kratos-public
