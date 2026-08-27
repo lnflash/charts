@@ -125,7 +125,17 @@ jobs:
           # lives long enough and can never complete here - waiting on
           # `job --all` then times out on them (flaked 2026-07-06).
           for job in $(kubectl -n galoy-dev-galoy get job -o json | jq -r '.items[] | select((.metadata.ownerReferences // []) | map(.kind) | index("CronJob") | not) | .metadata.name'); do
-            kubectl -n galoy-dev-galoy wait --for=condition=complete "job/$job" --timeout=10m
+            # A FAILED job never satisfies condition=complete, so a plain wait
+            # burns the full timeout and reports "timed out waiting for the
+            # condition" with no clue why. Since flash#497 the migrate job can
+            # genuinely fail (that is the point), so surface the logs instead
+            # of leaving the next person a ten-minute mystery.
+            if ! kubectl -n galoy-dev-galoy wait --for=condition=complete "job/$job" --timeout=10m; then
+              echo "::error::job/$job did not complete — logs follow"
+              kubectl -n galoy-dev-galoy logs "job/$job" --tail=80 --all-containers || true
+              kubectl -n galoy-dev-galoy describe "job/$job" | tail -20 || true
+              exit 1
+            fi
           done
           for resource in $(kubectl -n galoy-dev-galoy get deployment,statefulset -o name); do
             kubectl -n galoy-dev-galoy rollout status "$resource" --timeout=10m

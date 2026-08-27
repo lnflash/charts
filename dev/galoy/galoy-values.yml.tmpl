@@ -1,4 +1,12 @@
 galoy:
+  mongoMigrationJob:
+    # The notification-topic migrations throw without this, which now fails the
+    # migrate Job outright (flash#497) instead of being swallowed — so the dev
+    # smoketest hangs on `wait --for=condition=complete`. Dev-only values; the
+    # dev- prefix keeps this throwaway cluster off the real alert topics.
+    notificationTopics:
+      - dev-EMERGENCY
+      - dev-ATTENTION
   bria:
     host: bria.external.flash.invalid
   dealer:
