@@ -33,6 +33,84 @@ break_and_display_on_error_response
 
 if [[ "$success" != "true" ]]; then echo "Smoke test failed; galoy API did not respond" && exit 1; fi
 
+# kratos registration smoketest (pre-persist + post-persist hook chain)
+#
+# selfservice.flows.registration.after.password.hooks in charts/flash/values.yaml
+# chains a pre-persist validation webhook (POST /kratos/preregistration) and a
+# post-persist account-creation webhook (POST /kratos/registration) ahead of
+# the session hook. Neither is reachable through the public oathkeeper proxy
+# (only /auth, /graphql, and the appcheck-gated device-login route are
+# exposed there — see the oathkeeper access_rules in charts/flash/values.yaml),
+# so this talks to kratos-public directly, the same way the api server does.
+kratos_host=$(setting "kratos_public_endpoint")
+kratos_port=$(setting "kratos_public_port")
+
+function gen_uuid() {
+  if [[ -r /proc/sys/kernel/random/uuid ]]; then
+    cat /proc/sys/kernel/random/uuid
+  elif command -v uuidgen >/dev/null 2>&1; then
+    uuidgen | tr '[:upper:]' '[:lower:]'
+  else
+    python3 -c 'import uuid; print(uuid.uuid4())'
+  fi
+}
+
+function register_smoketest_identity() {
+  local username="$1"
+  local password="$2"
+  local flow action
+  flow=$(curl -sS "http://${kratos_host}:${kratos_port}/self-service/registration/api?schema_id=username_password_deviceid_v0")
+  action=$(echo "$flow" | jq -r '.ui.action // empty')
+  curl -sS -w '\n%{http_code}' -X POST "$action" \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    --data-raw "$(jq -n --arg u "$username" --arg p "$password" '{method:"password",password:$p,traits:{username:$u}}')"
+}
+
+password="Sk$(gen_uuid | tr -d '-')Zx9!"
+
+registration_success="false"
+set +e
+for i in {1..60}; do
+  echo "Attempt ${i} to register a smoketest identity via kratos"
+  username=$(gen_uuid)
+  registration_response="$(register_smoketest_identity "$username" "$password")"
+  registration_status="$(echo "$registration_response" | tail -1)"
+  if [[ "$registration_status" == "200" ]]; then registration_success="true"; break; fi
+  sleep 1
+done
+set -e
+
+registration_body="$(echo "$registration_response" | sed '$d')"
+
+if [[ "$registration_success" != "true" ]]; then
+  echo "Smoke test failed; kratos registration never returned 200 (last status: ${registration_status})"
+  echo "$registration_body"
+  exit 1
+fi
+
+if [[ -z "$(echo "$registration_body" | jq -r '.session_token // empty')" ]]; then
+  echo "Smoke test failed; kratos registration returned 200 with no session_token — the pre-persist/post-persist hook chain did not complete"
+  echo "$registration_body"
+  exit 1
+fi
+
+echo "Registration smoketest succeeded; pre-persist and post-persist hooks both ran"
+
+# Deliberate-rejection case: re-registering the exact same identifier must be
+# refused, not silently accepted, so a regression that turns either hook into
+# a no-op (e.g. a bad response.parse setting, or the wrong auth header) has a
+# tripwire on the reject path too, not just the happy path.
+duplicate_response="$(register_smoketest_identity "$username" "$password")"
+duplicate_status="$(echo "$duplicate_response" | tail -1)"
+
+if [[ "$duplicate_status" == "200" ]]; then
+  echo "Smoke test failed; re-registering the same identifier unexpectedly succeeded"
+  exit 1
+fi
+
+echo "Duplicate-registration rejection smoketest succeeded (got HTTP ${duplicate_status} as expected)"
+
 # price history server healthcheck
 # The following health.proto file has been copied from
 # https://github.com/GaloyMoney/price/blob/main/history/src/servers/protos/health.proto
