@@ -46,10 +46,14 @@ kratos_host=$(setting "kratos_public_endpoint")
 kratos_port=$(setting "kratos_public_port")
 echo "DEBUG kratos_host=[${kratos_host}] kratos_port=[${kratos_port}]"
 echo "DEBUG raw secret data:"; cat smoketest-settings/data.json
-echo "DEBUG services matching kratos in all namespaces:"
-kubectl get svc -A 2>&1 | grep -i kratos || echo "DEBUG no kratos services found"
+echo "DEBUG all services in galoy-dev-galoy namespace:"
+kubectl -n galoy-dev-galoy get svc -o wide 2>&1 || echo "DEBUG kubectl get svc failed"
+echo "DEBUG kratos-public ingress backend:"
+kubectl -n galoy-dev-galoy get ingress flash-kratos-public -o yaml 2>&1 || echo "DEBUG no such ingress"
 echo "DEBUG nslookup from this pod:"
-(nslookup "${kratos_host}" 2>&1 || true)
+(nslookup "${kratos_host}" 2>&1 || echo "DEBUG nslookup unavailable or failed")
+echo "DEBUG kratos config actually rendered (registration hooks):"
+kubectl -n galoy-dev-galoy get cm -o yaml 2>&1 | grep -A3 "preregistration\|kratos/registration" | head -40
 
 function gen_uuid() {
   if [[ -r /proc/sys/kernel/random/uuid ]]; then
