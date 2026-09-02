@@ -44,6 +44,12 @@ if [[ "$success" != "true" ]]; then echo "Smoke test failed; galoy API did not r
 # so this talks to kratos-public directly, the same way the api server does.
 kratos_host=$(setting "kratos_public_endpoint")
 kratos_port=$(setting "kratos_public_port")
+echo "DEBUG kratos_host=[${kratos_host}] kratos_port=[${kratos_port}]"
+echo "DEBUG raw secret data:"; cat smoketest-settings/data.json
+echo "DEBUG services matching kratos in all namespaces:"
+kubectl get svc -A 2>&1 | grep -i kratos || echo "DEBUG no kratos services found"
+echo "DEBUG nslookup from this pod:"
+(nslookup "${kratos_host}" 2>&1 || true)
 
 function gen_uuid() {
   if [[ -r /proc/sys/kernel/random/uuid ]]; then
