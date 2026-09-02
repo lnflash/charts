@@ -10,7 +10,6 @@ locals {
   galoy_namespace           = "${var.name_prefix}-galoy"
   galoy_oathkeeper_proxy    = "flash-oathkeeper-proxy.${local.galoy_namespace}.svc.cluster.local"
   price_history_service     = "flash-price-history.${local.galoy_namespace}.svc.cluster.local"
-  kratos_public_service     = "flash-kratos-public.${local.galoy_namespace}.svc.cluster.local"
   kratos_pg_host            = "postgresql.${local.galoy_namespace}.svc.cluster.local"
   nostr_zap_receipts_key    = "bb159f7aaafa75a7d4470307c9d6ea18409d4f082b41abcf6346aaae5b2b3b10"
   dummy_lnd_pubkey          = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
@@ -157,11 +156,5 @@ resource "kubernetes_secret" "smoketest" {
     galoy_port             = 4455
     price_history_endpoint = local.price_history_service
     price_history_port     = 50052
-    # Kratos self-service registration isn't exposed through the oathkeeper
-    # proxy (only /auth, /graphql and the appcheck-gated device-login route
-    # are), so the registration smoketest talks to kratos-public directly,
-    # the same way the api server does.
-    kratos_public_endpoint = local.kratos_public_service
-    kratos_public_port     = 80
   }
 }
