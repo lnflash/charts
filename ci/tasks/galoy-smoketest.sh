@@ -55,16 +55,26 @@ function gen_uuid() {
   fi
 }
 
+# Kratos always applies `default_schema_id` (phone_no_password_v0, see
+# charts/flash/values.yaml) to self-service registration flows — the
+# `schema_id` query param on /self-service/registration/api is not read
+# anywhere in the registration codepath (verified against ory/kratos v1.0.0
+# source: selfservice/flow/registration/handler.go, selfservice/flow/flow.go,
+# selfservice/strategy/password/registration.go all resolve the schema via
+# Config().DefaultIdentityTraitsSchemaURL unconditionally). So this registers
+# against phone_no_password_v0's `email` trait (which has
+# credentials.password.identifier: true, and additionalProperties: false
+# rules out `username`), not the username_password_deviceid_v0 schema.
 function register_smoketest_identity() {
   local username="$1"
   local password="$2"
   local flow action
-  flow=$(curl -sS "http://${kratos_host}:${kratos_port}/self-service/registration/api?schema_id=username_password_deviceid_v0")
+  flow=$(curl -sS "http://${kratos_host}:${kratos_port}/self-service/registration/api")
   action=$(echo "$flow" | jq -r '.ui.action // empty')
   curl -sS -w '\n%{http_code}' -X POST "$action" \
     --header 'Content-Type: application/json' \
     --header 'Accept: application/json' \
-    --data-raw "$(jq -n --arg u "$username" --arg p "$password" '{method:"password",password:$p,traits:{username:$u}}')"
+    --data-raw "$(jq -n --arg u "${username}@example.com" --arg p "$password" '{method:"password",password:$p,traits:{email:$u}}')"
 }
 
 password="Sk$(gen_uuid | tr -d '-')Zx9!"
