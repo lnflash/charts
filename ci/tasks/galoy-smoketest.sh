@@ -33,6 +33,30 @@ break_and_display_on_error_response
 
 if [[ "$success" != "true" ]]; then echo "Smoke test failed; galoy API did not respond" && exit 1; fi
 
+# kratos pre-persist/post-persist registration hook chain: NOT smoketested here.
+#
+# selfservice.flows.registration.after.password.hooks in charts/flash/values.yaml
+# chains a pre-persist validation webhook (POST /kratos/preregistration) and the
+# post-persist account-creation webhook (POST /kratos/registration) ahead of the
+# session hook. An earlier version of this smoketest curled kratos-public
+# directly to exercise a real registration through both hooks. Reverted: the
+# `flash-kratos-public` ClusterIP service and its endpoint are confirmed present
+# and healthy in this cluster (kubectl get svc/endpoints, galoy-dev-galoy
+# namespace), yet DNS resolution of
+# `flash-kratos-public.galoy-dev-galoy.svc.cluster.local` from the smoketest pod
+# (a different namespace, galoy-dev-smoketest) failed for a sustained 60s in two
+# separate CI runs, unlike the identically-shaped flash-oathkeeper-proxy and
+# flash-price-history lookups above, which resolve immediately — most likely
+# network segmentation between the two namespaces with no existing allow-rule
+# for kratos. Root-causing that is an infra change, not a chart-code change, and
+# out of scope here.
+#
+# The hook chain itself is not un-tested: flash's own
+# test/flash/unit/dev/kratos-registration-hooks.spec.ts parses this repo's
+# rendered dev/ory/kratos.yml and quickstart/dev/ory/kratos.yml and asserts the
+# pre-persist hook is present and ordered ahead of the post-persist one, and
+# flash#503 unit-tests the /kratos/preregistration route handler directly.
+
 # price history server healthcheck
 # The following health.proto file has been copied from
 # https://github.com/GaloyMoney/price/blob/main/history/src/servers/protos/health.proto

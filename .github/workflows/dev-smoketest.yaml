@@ -190,6 +190,9 @@ jobs:
         run: |
           kubectl get namespaces
           kubectl get pods --all-namespaces -o wide
+          kubectl -n galoy-dev-galoy get svc -o wide
+          kubectl -n galoy-dev-galoy get endpoints
+          kubectl -n galoy-dev-galoy get ingress -o wide
           kubectl get events --all-namespaces --sort-by=.lastTimestamp | tail -n 100
       - name: Clean Up
         if: always()
