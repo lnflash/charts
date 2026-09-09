@@ -53,7 +53,13 @@ galoy:
       webhook:
         uri:
         port: 4008
-        secret: "not-so-secret"
+        # Must be >= 32 chars (MIN_SECRET_LENGTH in the app's
+        # src/utils/weak-secrets.ts). The ibex-webhook server asserts on this at
+        # boot and the entrypoint turns a weak value into a crash-looping pod, so
+        # a short placeholder here fails the dev rollout outright -- "not-so-secret"
+        # (15 chars) did exactly that on chart 3.2.80. Deployed envs override this
+        # from the ibex-auth secret's webhook-secret key; keep those >= 32 too.
+        secret: "dev-only-placeholder-not-a-real-secret-000000"
     # `bridge` is a REQUIRED config section for the flash app image (see the
     # api config schema, src/config/schema.ts). The dev config previously
     # lacked it, so every config-loading server (api/websocket/trigger/

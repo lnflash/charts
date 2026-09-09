@@ -86,7 +86,7 @@ resource "kubernetes_secret" "ibex_auth" {
     "api-email"      = "dev@example.com"
     "client-id"      = "dev-client-id"
     "client-secret"  = var.IBEX_PASSWORD
-    "webhook-secret" = "not-so-secret"
+    "webhook-secret" = "dev-only-placeholder-not-a-real-secret-000000"
   }
 }
 
