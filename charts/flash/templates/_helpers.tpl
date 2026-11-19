@@ -73,6 +73,13 @@ Balance Notification CronJob name
 {{- end -}}
 
 {{/*
+Bridge Funds Requests CronJob name
+*/}}
+{{- define "galoy.bridgeFundsRequestsCron.jobname" -}}
+{{- printf "%s-bridge-funds-requests" .Release.Name -}}
+{{- end -}}
+
+{{/*
 Mongo Backup CronJob name
 */}}
 {{- define "galoy.mongoBackupCron.jobname" -}}
