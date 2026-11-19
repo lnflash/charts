@@ -397,6 +397,13 @@ galoy:
   balanceNotificationCron:
     resources: {}
     enabled: false
+  # Hourly Bridge funds request (wire recall) watcher, ENG-889. Needs an app
+  # image with lib/servers/bridge-funds-requests-cron.js (lnflash/flash#540);
+  # an older image has no such file and every run would fail. That same image
+  # drops the watcher from the daily cron, so turn this on in the same deploy.
+  bridgeFundsRequestsCron:
+    enabled: false
+    resources: {}
   mongoMigrationJob:
     resources: {}
     # FCM topics the notification-topic migrations stamp onto every user; they

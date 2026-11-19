@@ -1,0 +1,63 @@
+{{ if .Values.galoy.bridgeFundsRequestsCron.enabled }}
+{{/*
+Hourly Bridge funds request (wire recall) watcher, ENG-889. Bridge sends no
+webhook when a sender's bank recalls a deposit, so the app polls for recalls.
+It runs the same image, env and config as the daily cron (galoy-cronjob.yaml,
+shared through _galoy-cron.tpl) with its own entrypoint. Each run is
+idempotent: handled recalls are stored in mongo and page once.
+*/}}
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: {{ template "galoy.bridgeFundsRequestsCron.jobname" . }}
+  labels:
+    app: {{ template "galoy.bridgeFundsRequestsCron.jobname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: Helm
+
+spec:
+  schedule: "17 * * * *" # Fire every hour at 17 past, off the top of the hour
+  # A run that is still going when the next is due makes the next one skip.
+  concurrencyPolicy: Forbid
+  # Missed by more than 10 minutes (e.g. control plane down): wait for the next hour.
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+
+  jobTemplate:
+    spec:
+      # Well inside the hour, so a hung run cannot block the next one.
+      activeDeadlineSeconds: 1800
+      backoffLimit: 2
+
+      template:
+        metadata:
+          labels:
+            app: {{ template "galoy.bridgeFundsRequestsCron.jobname" . }}
+        spec:
+          serviceAccountName: {{ template "flash.name" . }}
+          restartPolicy: OnFailure
+
+          initContainers:
+          - name: wait-for-mongodb-migrate
+            image: "groundnuty/k8s-wait-for:v1.5.1"
+            args:
+            - job-wr
+            - {{ template "galoy.migration.jobname" . }}
+
+          containers:
+          - name: {{ template "galoy.bridgeFundsRequestsCron.jobname" . }}
+            image: "{{ .Values.galoy.images.app.repository }}@{{ .Values.galoy.images.app.digest }}"
+            args:
+            - "-r"
+            - "/app/lib/services/tracing.js"
+            - "lib/servers/bridge-funds-requests-cron.js"
+            - "-c"
+            - "/var/yaml/custom.yaml"
+            resources:
+              {{ toYaml .Values.galoy.bridgeFundsRequestsCron.resources | nindent 14 }}
+{{- include "galoy.cron.containerEnv" (dict "root" . "jobname" (include "galoy.bridgeFundsRequestsCron.jobname" .)) }}
+{{ include "galoy.cron.volumes" (dict "root" .) }}
+{{ end }}
