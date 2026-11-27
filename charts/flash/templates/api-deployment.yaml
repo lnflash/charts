@@ -119,6 +119,31 @@ spec:
         - name: LND_PRIORITY
           value: {{ .Values.galoy.lndPriority }}
 
+        {{- /* POS on-chain checkout. The app keeps it off unless the indexer
+               settings are valid AND a minimum level or a wallet list is set. */}}
+        {{- with .Values.galoy.api.posOnChain }}
+        {{- if .network }}
+        - name: POS_ONCHAIN_NETWORK
+          value: {{ .network | quote }}
+        {{- end }}
+        {{- if .esplora }}
+        - name: POS_ONCHAIN_ESPLORA
+          value: {{ .esplora | quote }}
+        {{- end }}
+        {{- if .genesis }}
+        - name: POS_ONCHAIN_GENESIS
+          value: {{ .genesis | quote }}
+        {{- end }}
+        {{- if .minLevel }}
+        - name: POS_ONCHAIN_MIN_LEVEL
+          value: {{ .minLevel | quote }}
+        {{- end }}
+        {{- if .receiveWallets }}
+        - name: POS_ONCHAIN_RECEIVE_WALLETS
+          value: {{ join "," .receiveWallets | quote }}
+        {{- end }}
+        {{- end }}
+
         
 
 

@@ -110,6 +110,20 @@ galoy:
       enabled: true
       hosts: []
       clusterIssuer:
+    ## POS on-chain checkout (receive-only Bitcoin address for a merchant's till).
+    ## Off while this block is empty. To turn it on, set network, esplora and
+    ## genesis, plus minLevel and/or receiveWallets:
+    ##   network:        MAINNET | TESTNET | SIGNET | REGTEST
+    ##   esplora:        Esplora-compatible API base, https only, e.g. https://mempool.space/api
+    ##   genesis:        genesis block hash of that network (the app checks the indexer against it)
+    ##   minLevel:       1, 2 or 3. Every active account at or above it qualifies. 0 is refused.
+    ##   receiveWallets: list of wallet ids that qualify whatever their account's level
+    posOnChain:
+      network:
+      esplora:
+      genesis:
+      minLevel:
+      receiveWallets: []
     ## galoy.api.flashPay.hostname used for cors-allow-origin
     flashPay:
       hostname:
