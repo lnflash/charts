@@ -73,6 +73,7 @@ spec:
           protocol: TCP
 
         env:
+{{- include "galoy.posUsdtCheckout.env" . | nindent 8 }}
         - name: HELMREVISION
           value: {{ .Release.Revision | quote }}
         - name: LOGLEVEL
