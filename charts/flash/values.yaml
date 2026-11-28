@@ -99,6 +99,12 @@ galoy:
       # Currently using Galoy's images. To make changes, see /images & /ci in this repo
       digest: "sha256:66d22e50f472f8fb43a93edec095cd724df2393130d6fa3f17e98906eaedb269"
       git_ref: "ce9792c"
+  # Shared by the checkout API and the signed IBEX receive webhook.
+  posUsdtCheckout:
+    enabled: false
+    minLevel:
+    receiveWallets: []
+    maxAmountMinor: "1000000" # US cents
   api:
     nameOverride:
     replicas: 2

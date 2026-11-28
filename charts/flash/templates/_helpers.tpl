@@ -360,3 +360,35 @@ Return Galoy environment variables for Geetest
       name: {{ .Values.galoy.geetestExistingSecret.name }}
       key: {{ .Values.galoy.geetestExistingSecret.secret_key }}
 {{- end -}}
+
+{{/* API address allocation and webhook matching must use the same policy. */}}
+{{- define "galoy.posUsdtCheckout.env" -}}
+{{- with .Values.galoy.posUsdtCheckout }}
+{{- if .enabled }}
+{{- if not (or .minLevel .receiveWallets) }}
+{{- fail "galoy.posUsdtCheckout requires a minLevel or receiveWallets when enabled" }}
+{{- end }}
+{{- if and .minLevel (not (has (toString .minLevel) (list "1" "2" "3"))) }}
+{{- fail "galoy.posUsdtCheckout.minLevel must be 1, 2 or 3" }}
+{{- end }}
+- name: POS_USDT_CHECKOUT_ENABLED
+  value: "true"
+{{- with .minLevel }}
+- name: POS_USDT_MIN_LEVEL
+  value: {{ . | quote }}
+{{- end }}
+{{- with .receiveWallets }}
+- name: POS_USDT_RECEIVE_WALLETS
+  value: {{ join "," . | quote }}
+{{- end }}
+{{- with .maxAmountMinor }}
+{{- $limit := int64 . }}
+{{- if or (lt $limit 1) (gt $limit 2000000000) (ne (float64 $limit) (float64 .)) }}
+{{- fail "galoy.posUsdtCheckout.maxAmountMinor must be a whole number of cents between 1 and 2000000000" }}
+{{- end }}
+- name: POS_USDT_MAX_AMOUNT_MINOR
+  value: {{ $limit | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
